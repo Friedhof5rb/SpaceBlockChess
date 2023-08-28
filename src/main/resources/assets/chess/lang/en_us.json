@@ -1,0 +1,63 @@
+{
+
+  "item.chess.white_bishop": "White Bishop",
+  "item.chess.white_king": "White King",
+  "item.chess.white_knight": "White Knight",
+  "item.chess.white_pawn": "White Pawn",
+  "item.chess.white_queen": "White Queen",
+  "item.chess.white_rod_of_moving": "White Rod of Moving",
+  "item.chess.white_tower": "White Tower",
+
+  "item.chess.black_bishop": "Black Bishop",
+  "item.chess.black_king": "Black King",
+  "item.chess.black_knight": "Black Knight",
+  "item.chess.black_pawn": "Black Pawn",
+  "item.chess.black_queen": "Black Queen",
+  "item.chess.black_rod_of_moving": "Black Rod of Moving",
+  "item.chess.black_tower": "Black Tower",
+
+  "item.chess.capture_white_bishop": "DO NOT USE!",
+  "item.chess.capture_white_king": "DO NOT USE!",
+  "item.chess.capture_white_knight": "DO NOT USE!",
+  "item.chess.capture_white_pawn": "DO NOT USE!",
+  "item.chess.capture_white_queen": "DO NOT USE!",
+  "item.chess.capture_white_rod_of_moving": "DO NOT USE!",
+  "item.chess.capture_white_tower": "DO NOT USE!",
+
+  "item.chess.capture_black_bishop": "DO NOT USE!",
+  "item.chess.capture_black_king": "DO NOT USE!",
+  "item.chess.capture_black_knight": "DO NOT USE!",
+  "item.chess.capture_black_pawn": "DO NOT USE!",
+  "item.chess.capture_black_queen": "DO NOT USE!",
+  "item.chess.capture_black_rod_of_moving": "DO NOT USE!",
+  "item.chess.capture_black_tower": "DO NOT USE!",
+
+  "item.chess.selected_white_bishop": "DO NOT USE!",
+  "item.chess.selected_white_king": "DO NOT USE!",
+  "item.chess.selected_white_knight": "DO NOT USE!",
+  "item.chess.selected_white_pawn": "DO NOT USE!",
+  "item.chess.selected_white_queen": "DO NOT USE!",
+  "item.chess.selected_white_rod_of_moving": "DO NOT USE!",
+  "item.chess.selected_white_tower": "DO NOT USE!",
+
+  "item.chess.selected_black_bishop": "DO NOT USE!",
+  "item.chess.selected_black_king": "DO NOT USE!",
+  "item.chess.selected_black_knight": "DO NOT USE!",
+  "item.chess.selected_black_pawn": "DO NOT USE!",
+  "item.chess.selected_black_queen": "DO NOT USE!",
+  "item.chess.selected_black_rod_of_moving": "DO NOT USE!",
+  "item.chess.selected_black_tower": "DO NOT USE!",
+
+  "item.chess.start_black_pawn": "2+ Black Pawn",
+  "item.chess.start_white_pawn": "2+ White Pawn",
+
+  "item.chess.start_captured_black_pawn": "DO NOT USE!",
+  "item.chess.start_captured_white_pawn": "DO NOT USE!",
+  "item.chess.start_selected_black_pawn": "DO NOT USE!",
+  "item.chess.start_selected_white_pawn": "DO NOT USE!",
+
+  "item.chess.rod_of_rotation": "Rod of Rotation",
+  "item.chess.move_highlighter": "Move Highlighter",
+  "item.chess.rod_of_removal": "Rod of Removal",
+  "itemGroup.chess.space_chess": "Space Chess Tab"
+}

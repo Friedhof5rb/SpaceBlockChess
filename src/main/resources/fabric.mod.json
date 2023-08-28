@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "chess",
+  "version": "${version}",
+  "name": "chess",
+  "description": "",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/Friedhof5rb/SpaceBlockChess"
+  },
+  "license": "MIT License",
+  "icon": "assets/chess/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "me.friedhof.chess.client.ChessClient"
+    ],
+    "main": [
+      "me.friedhof.chess.Chess"
+    ]
+  },
+  "mixins": [
+    "chess.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
