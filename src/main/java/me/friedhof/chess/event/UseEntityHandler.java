@@ -1179,7 +1179,16 @@ private void towerMoveScheme(World w, GlobalChessData currentPosition,Direction 
         GlobalChessData takingPosition1 = moveOneInDirection(w, currentPosition, Direction.EAST);
         GlobalChessData takingPosition2 = moveOneInDirection(w, currentPosition, Direction.WEST);
         if(relativeDirection2 != Direction.UP) {
-            currentPosition = moveOneInDirection(w, currentPosition, relativeDirection2);
+
+            if(!isItemFrame(w, currentPosition.pos, currentPosition.directionWall)) {
+
+                currentPosition = moveOneInDirection(w, currentPosition, relativeDirection2);
+            }else{
+                if(getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem() == ModItems.MOVE_HIGHLIGHTER){
+                    currentPosition = moveOneInDirection(w, currentPosition, relativeDirection2);
+                }
+
+            }
         }
 
 
