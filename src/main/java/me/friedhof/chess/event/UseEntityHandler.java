@@ -1,9 +1,12 @@
 package me.friedhof.chess.event;
 
 import me.friedhof.chess.Chess;
+import me.friedhof.chess.networking.ModMessages;
 import me.friedhof.chess.util.GlobalChessData;
 import me.friedhof.chess.item.ModItems;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.block.Material;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -14,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.MessageType;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
@@ -571,16 +575,19 @@ public class UseEntityHandler implements UseEntityCallback {
                         rotation = entity.getHeldItemStack().getDamage();
                         if(e.getHeldItemStack().getItem() == ModItems.WHITE_KING){
 
-                            MinecraftClient mc = MinecraftClient.getInstance();
 
-                            mc.inGameHud.addChatMessage(MessageType.SYSTEM, new LiteralText("The White King is Dead!"), mc.player.getUuid());
+                            PacketByteBuf buffer = PacketByteBufs.create();
+                            buffer.writeString("The White King is Dead!");
+                            ClientPlayNetworking.send(ModMessages.SEND_CHAT, buffer);
+
+
 
 
                         }
                         if(e.getHeldItemStack().getItem() == ModItems.BLACK_KING){
-                            MinecraftClient mc = MinecraftClient.getInstance();
-
-                            mc.inGameHud.addChatMessage(MessageType.SYSTEM, new LiteralText("The Black King is Dead!"), mc.player.getUuid());
+                            PacketByteBuf buffer = PacketByteBufs.create();
+                            buffer.writeString("The Black King is Dead!");
+                            ClientPlayNetworking.send(ModMessages.SEND_CHAT, buffer);
                         }
                     }
 
@@ -1168,11 +1175,13 @@ private void towerMoveScheme(World w, GlobalChessData currentPosition,Direction 
 
 
         currentPosition = moveOneInDirection(w, currentPosition, relativeDirection1);
+
+        GlobalChessData takingPosition1 = moveOneInDirection(w, currentPosition, Direction.EAST);
+        GlobalChessData takingPosition2 = moveOneInDirection(w, currentPosition, Direction.WEST);
         if(relativeDirection2 != Direction.UP) {
             currentPosition = moveOneInDirection(w, currentPosition, relativeDirection2);
         }
-        GlobalChessData takingPosition1 = moveOneInDirection(w, currentPosition, Direction.EAST);
-        GlobalChessData takingPosition2 = moveOneInDirection(w, currentPosition, Direction.WEST);
+
 
 
 
