@@ -47,7 +47,7 @@ public class UseEntityHandler implements UseEntityCallback {
 
     public static Item[] blackSelectedPieces = {ModItems.CASTLE_SELECTED_BLACK_KING, ModItems.CASTLE_SELECTED_BLACK_TOWER,ModItems.START_SELECTED_BLACK_PAWN,ModItems.SELECTED_BLACK_BISHOP, ModItems.SELECTED_BLACK_KING, ModItems.SELECTED_BLACK_KNIGHT, ModItems.SELECTED_BLACK_PAWN, ModItems.SELECTED_BLACK_QUEEN, ModItems.SELECTED_BLACK_TOWER};
 
-    public static Item[] switchPieces = {ModItems.CASTLE_SWITCH_WHITE_KING,ModItems.CASTLE_SWITCH_WHITE_TOWER,ModItems.CASTLE_SWITCH_BLACK_KING,ModItems.CASTLE_SWITCH_WHITE_TOWER};
+    public static Item[] switchPieces = {ModItems.CASTLE_SWITCH_WHITE_KING,ModItems.CASTLE_SWITCH_WHITE_TOWER,ModItems.CASTLE_SWITCH_BLACK_KING,ModItems.CASTLE_SWITCH_BLACK_TOWER};
 
 
     @Override

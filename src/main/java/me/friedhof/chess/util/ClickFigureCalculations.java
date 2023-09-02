@@ -724,6 +724,7 @@ public class ClickFigureCalculations {
             if(Chess.arrayContains(UseEntityHandler.switchPieces,entity.getHeldItemStack().getItem())) {
                 Item item = FigureMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(), true);
 
+
                 ItemFrameEntity e = new ItemFrameEntity(w, entity.getBlockPos(), entity.getHorizontalFacing());
                 ItemStack stack = new ItemStack(item);
                 e.setHeldItemStack(stack);
