@@ -43,6 +43,37 @@ public class FigureMovesCalculations {
         }
     }
 
+    public static void castlingScheme(World w, GlobalChessData currentPosition, Direction relativeDirection, boolean white){
+
+        for(int i = 0; i< UseEntityHandler.figureDrawDistance; i++) {
+            currentPosition = MovementCalculations.moveOneInDirection(w, currentPosition, relativeDirection);
+
+            if(currentPosition == null){
+                return;
+            }
+
+
+            if(MovementCalculations.isItemFrame(w,currentPosition.pos,currentPosition.directionWall)){
+                if(!(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem() == ModItems.MOVE_HIGHLIGHTER)){
+
+
+                    replaceOldFigureForCastling(w,currentPosition,white);
+                    break;
+                }
+            }
+        }
+
+
+    }
+
+
+
+
+
+
+
+
+
 
 
     public static void bishopMoveScheme(World w, GlobalChessData currentPosition,Direction relativeDirection1, Direction relativeDirection2, boolean white){
@@ -269,6 +300,69 @@ public class FigureMovesCalculations {
 
 ////////////////////////////////////////////////////////
 
+    private static void replaceOldFigureForCastling(World w,GlobalChessData currentPosition, boolean white){
+
+        if(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem() == ModItems.CASTLE_WHITE_TOWER &&  white){
+            List list = w.getEntitiesByType(EntityType.ITEM_FRAME,new Box(currentPosition.pos.getX()-1,currentPosition.pos.getY()-1,currentPosition.pos.getZ()-1,currentPosition.pos.getX()+1,currentPosition.pos.getY()+1,currentPosition.pos.getZ()+1),EntityPredicates.VALID_ENTITY);
+
+
+
+            ItemFrameEntity old = MovementCalculations.dataToFigure(w,currentPosition,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem());
+            int rotation = currentPosition.itemRotation;
+            int id = 0;
+            for(int j = 0; j < list.size();j++){
+                if(list.get(j) instanceof ItemFrameEntity){
+                    ItemFrameEntity old2 = (ItemFrameEntity) list.get(j);
+                    if(old2.getHorizontalFacing() == old.getHorizontalFacing() &&
+                            old2.getBlockPos().getX() == old.getBlockPos().getX() &&  old2.getBlockPos().getY() == old.getBlockPos().getY() &&  old2.getBlockPos().getZ() == old.getBlockPos().getZ()  ){
+                        currentPosition.itemRotation = old2.getRotation();
+                        id = old2.getId();
+                        break;
+                    }
+                }
+
+            }
+            ItemFrameEntity newEntity = MovementCalculations.dataToFigureWithDamage(w,currentPosition, ModItems.CASTLE_SWITCH_WHITE_TOWER,rotation );
+
+            w.getEntityById(id).kill();
+            w.spawnEntity(newEntity);
+
+        }
+        if(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem() == ModItems.CASTLE_BLACK_TOWER &&  !white){
+            List list = w.getEntitiesByType(EntityType.ITEM_FRAME,new Box(currentPosition.pos.getX()-1,currentPosition.pos.getY()-1,currentPosition.pos.getZ()-1,currentPosition.pos.getX()+1,currentPosition.pos.getY()+1,currentPosition.pos.getZ()+1),EntityPredicates.VALID_ENTITY);
+
+
+
+            ItemFrameEntity old = MovementCalculations.dataToFigure(w,currentPosition,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem());
+            int rotation = currentPosition.itemRotation;
+            int id = 0;
+            for(int j = 0; j < list.size();j++){
+                if(list.get(j) instanceof ItemFrameEntity){
+                    ItemFrameEntity old2 = (ItemFrameEntity) list.get(j);
+                    if(old2.getHorizontalFacing() == old.getHorizontalFacing() &&
+                            old2.getBlockPos().getX() == old.getBlockPos().getX() &&  old2.getBlockPos().getY() == old.getBlockPos().getY() &&  old2.getBlockPos().getZ() == old.getBlockPos().getZ()  ){
+                        currentPosition.itemRotation = old2.getRotation();
+                        id = old2.getId();
+                        break;
+                    }
+                }
+
+            }
+            ItemFrameEntity newEntity = MovementCalculations.dataToFigureWithDamage(w,currentPosition, ModItems.CASTLE_SWITCH_BLACK_TOWER,rotation );
+
+            w.getEntityById(id).kill();
+            w.spawnEntity(newEntity);
+        }
+
+
+
+
+    }
+
+
+
+
+
 
     private static void replaceOldFigure(World w,GlobalChessData currentPosition, boolean white){
 
@@ -475,7 +569,68 @@ public class FigureMovesCalculations {
             return ModItems.START_BLACK_PAWN;
         }else if(input == ModItems.START_CAPTURE_WHITE_PAWN){
             return ModItems.START_WHITE_PAWN;
+        }else if(input == ModItems.CASTLE_BLACK_KING){
+
+            if(capture){
+                return ModItems.CASTLE_CAPTURE_BLACK_KING;
+            }else{
+                return ModItems.CASTLE_SELECTED_BLACK_KING;
+            }
+
+        }else if(input == ModItems.CASTLE_BLACK_TOWER){
+
+            if(capture){
+                return ModItems.CASTLE_CAPTURE_BLACK_TOWER;
+            }else{
+                return ModItems.CASTLE_SELECTED_BLACK_TOWER;
+            }
+
+        }else if(input == ModItems.CASTLE_WHITE_KING){
+
+            if(capture){
+                return ModItems.CASTLE_CAPTURE_WHITE_KING;
+            }else{
+                return ModItems.CASTLE_SELECTED_WHITE_KING;
+            }
+
+        }else if(input == ModItems.CASTLE_WHITE_TOWER){
+
+            if(capture){
+                return ModItems.CASTLE_CAPTURE_WHITE_TOWER;
+            }else{
+                return ModItems.CASTLE_SELECTED_WHITE_TOWER;
+            }
+
+        }else if(input == ModItems.CASTLE_CAPTURE_BLACK_KING){
+            return ModItems.CASTLE_BLACK_KING;
+        }else if(input == ModItems.CASTLE_CAPTURE_BLACK_TOWER){
+            return ModItems.CASTLE_BLACK_TOWER;
+        }else if(input == ModItems.CASTLE_CAPTURE_WHITE_KING){
+            return ModItems.CASTLE_WHITE_KING;
+        }else if(input == ModItems.CASTLE_CAPTURE_WHITE_TOWER){
+            return ModItems.CASTLE_WHITE_TOWER;
+        }else if(input == ModItems.CASTLE_SELECTED_BLACK_KING){
+            return ModItems.CASTLE_BLACK_KING;
+        }else if(input == ModItems.CASTLE_SELECTED_BLACK_TOWER){
+            return ModItems.CASTLE_BLACK_TOWER;
+        }else if(input == ModItems.CASTLE_SELECTED_WHITE_KING){
+            return ModItems.CASTLE_WHITE_KING;
+        }else if(input == ModItems.CASTLE_SELECTED_WHITE_TOWER){
+            return ModItems.CASTLE_WHITE_TOWER;
+        }else if(input == ModItems.CASTLE_SWITCH_BLACK_KING){
+            return ModItems.CASTLE_BLACK_KING;
+        }else if(input == ModItems.CASTLE_SWITCH_BLACK_TOWER){
+            return ModItems.CASTLE_BLACK_TOWER;
+        }else if(input == ModItems.CASTLE_SWITCH_WHITE_KING){
+            return ModItems.CASTLE_WHITE_KING;
+        }else if(input == ModItems.CASTLE_SWITCH_WHITE_TOWER){
+            return ModItems.CASTLE_WHITE_TOWER;
         }
+
+
+
+
+
         return input;
 
     }

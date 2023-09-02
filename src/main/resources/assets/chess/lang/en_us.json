@@ -56,8 +56,28 @@
   "item.chess.start_selected_black_pawn": "DO NOT USE!",
   "item.chess.start_selected_white_pawn": "DO NOT USE!",
 
+  "item.chess.castle_black_king": "Castle Black King",
+  "item.chess.castle_black_tower": "Castle Black Tower",
+  "item.chess.castle_white_king": "Castle White King",
+  "item.chess.castle_white_tower": "Castle White Tower",
+
+  "item.chess.castle_capture_black_king": "DO NOT USE!",
+  "item.chess.castle_capture_black_tower": "DO NOT USE!",
+  "item.chess.castle_capture_white_king": "DO NOT USE!",
+  "item.chess.castle_capture_white_tower": "DO NOT USE!",
+
+  "item.chess.castle_selected_black_king": "DO NOT USE!",
+  "item.chess.castle_selected_black_tower": "DO NOT USE!",
+  "item.chess.castle_selected_white_king": "DO NOT USE!",
+  "item.chess.castle_selected_white_tower": "DO NOT USE!",
+
+  "item.chess.castle_switch_black_king": "DO NOT USE!",
+  "item.chess.castle_switch_black_tower": "DO NOT USE!",
+  "item.chess.castle_switch_white_king": "DO NOT USE!",
+  "item.chess.castle_switch_white_tower": "DO NOT USE!",
+
   "item.chess.rod_of_rotation": "Rod of Rotation",
-  "item.chess.move_highlighter": "Move Highlighter",
+  "item.chess.move_highlighter": "Move Highlighter - DO NOT USE!",
   "item.chess.rod_of_removal": "Rod of Removal",
   "itemGroup.chess.space_chess": "Space Chess Tab"
 }

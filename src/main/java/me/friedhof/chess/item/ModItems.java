@@ -81,6 +81,26 @@ public class ModItems {
     public static final Item START_SELECTED_WHITE_PAWN = registerItem("start_selected_white_pawn",new Item(new FabricItemSettings().maxDamage(16)));
 
 
+
+    public static final Item CASTLE_BLACK_KING = registerItem("castle_black_king",new CastleBlackKingItem(new FabricItemSettings().group(ModItemGroup.SpaceChess).maxDamage(16)));
+    public static final Item CASTLE_BLACK_TOWER = registerItem("castle_black_tower",new CastleBlackTowerItem(new FabricItemSettings().group(ModItemGroup.SpaceChess).maxDamage(16)));
+    public static final Item CASTLE_CAPTURE_BLACK_KING = registerItem("castle_capture_black_king",new Item(new FabricItemSettings().maxDamage(16)));
+    public static final Item CASTLE_CAPTURE_BLACK_TOWER = registerItem("castle_capture_black_tower",new Item(new FabricItemSettings().maxDamage(16)));
+    public static final Item CASTLE_CAPTURE_WHITE_KING = registerItem("castle_capture_white_king",new Item(new FabricItemSettings().maxDamage(16)));
+    public static final Item CASTLE_CAPTURE_WHITE_TOWER = registerItem("castle_capture_white_tower",new Item(new FabricItemSettings().maxDamage(16)));
+    public static final Item CASTLE_SELECTED_BLACK_KING = registerItem("castle_selected_black_king",new Item(new FabricItemSettings().maxDamage(16)));
+    public static final Item CASTLE_SELECTED_BLACK_TOWER = registerItem("castle_selected_black_tower",new Item(new FabricItemSettings().maxDamage(16)));
+    public static final Item CASTLE_SELECTED_WHITE_KING = registerItem("castle_selected_white_king",new Item(new FabricItemSettings().maxDamage(16)));
+    public static final Item CASTLE_SELECTED_WHITE_TOWER = registerItem("castle_selected_white_tower",new Item(new FabricItemSettings().maxDamage(16)));
+    public static final Item CASTLE_SWITCH_BLACK_KING = registerItem("castle_switch_black_king",new Item(new FabricItemSettings().maxDamage(16)));
+    public static final Item CASTLE_SWITCH_BLACK_TOWER = registerItem("castle_switch_black_tower",new Item(new FabricItemSettings().maxDamage(16)));
+    public static final Item CASTLE_SWITCH_WHITE_KING = registerItem("castle_switch_white_king",new Item(new FabricItemSettings().maxDamage(16)));
+    public static final Item CASTLE_SWITCH_WHITE_TOWER = registerItem("castle_switch_white_tower",new Item(new FabricItemSettings().maxDamage(16)));
+    public static final Item CASTLE_WHITE_KING = registerItem("castle_white_king",new CastleWhiteKingItem(new FabricItemSettings().group(ModItemGroup.SpaceChess).maxDamage(16)));
+    public static final Item CASTLE_WHITE_TOWER = registerItem("castle_white_tower",new CastleWhiteTowerItem(new FabricItemSettings().group(ModItemGroup.SpaceChess).maxDamage(16)));
+
+
+
     private static Item registerItem(String name, Item item){
         return Registry.register(Registry.ITEM,new Identifier(Chess.MOD_ID,name),item);
     }

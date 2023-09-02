@@ -36,16 +36,18 @@ public class UseEntityHandler implements UseEntityCallback {
 
     public static int figureDrawDistance = 7;
     public static int searchRadius = 20;
-    public static Item[] whitePieces = {ModItems.START_WHITE_PAWN,ModItems.WHITE_BISHOP, ModItems.WHITE_KING, ModItems.WHITE_KNIGHT, ModItems.WHITE_PAWN, ModItems.WHITE_QUEEN, ModItems.WHITE_TOWER};
+    public static Item[] whitePieces = {ModItems.CASTLE_WHITE_KING, ModItems.CASTLE_WHITE_TOWER,ModItems.START_WHITE_PAWN,ModItems.WHITE_BISHOP, ModItems.WHITE_KING, ModItems.WHITE_KNIGHT, ModItems.WHITE_PAWN, ModItems.WHITE_QUEEN, ModItems.WHITE_TOWER};
 
-    public static Item[] blackPieces = {ModItems.START_BLACK_PAWN,ModItems.BLACK_BISHOP, ModItems.BLACK_KING, ModItems.BLACK_KNIGHT, ModItems.BLACK_PAWN, ModItems.BLACK_QUEEN, ModItems.BLACK_TOWER};
-    public static Item[] whiteCapturePieces = {ModItems.START_CAPTURE_WHITE_PAWN,ModItems.CAPTURE_WHITE_BISHOP, ModItems.CAPTURE_WHITE_KING, ModItems.CAPTURE_WHITE_KNIGHT, ModItems.CAPTURE_WHITE_PAWN, ModItems.CAPTURE_WHITE_QUEEN, ModItems.CAPTURE_WHITE_TOWER};
+    public static Item[] blackPieces = {ModItems.CASTLE_BLACK_KING, ModItems.CASTLE_BLACK_TOWER,ModItems.START_BLACK_PAWN,ModItems.BLACK_BISHOP, ModItems.BLACK_KING, ModItems.BLACK_KNIGHT, ModItems.BLACK_PAWN, ModItems.BLACK_QUEEN, ModItems.BLACK_TOWER};
+    public static Item[] whiteCapturePieces = {ModItems.CASTLE_CAPTURE_WHITE_KING, ModItems.CASTLE_CAPTURE_WHITE_TOWER,ModItems.START_CAPTURE_WHITE_PAWN,ModItems.CAPTURE_WHITE_BISHOP, ModItems.CAPTURE_WHITE_KING, ModItems.CAPTURE_WHITE_KNIGHT, ModItems.CAPTURE_WHITE_PAWN, ModItems.CAPTURE_WHITE_QUEEN, ModItems.CAPTURE_WHITE_TOWER};
 
-    public static Item[] blackCapturePieces = {ModItems.START_CAPTURE_BLACK_PAWN,ModItems.CAPTURE_BLACK_BISHOP, ModItems.CAPTURE_BLACK_KING, ModItems.CAPTURE_BLACK_KNIGHT, ModItems.CAPTURE_BLACK_PAWN, ModItems.CAPTURE_BLACK_QUEEN, ModItems.CAPTURE_BLACK_TOWER};
+    public static Item[] blackCapturePieces = {ModItems.CASTLE_CAPTURE_BLACK_KING, ModItems.CASTLE_CAPTURE_BLACK_TOWER,ModItems.START_CAPTURE_BLACK_PAWN,ModItems.CAPTURE_BLACK_BISHOP, ModItems.CAPTURE_BLACK_KING, ModItems.CAPTURE_BLACK_KNIGHT, ModItems.CAPTURE_BLACK_PAWN, ModItems.CAPTURE_BLACK_QUEEN, ModItems.CAPTURE_BLACK_TOWER};
 
-    public static Item[] whiteSelectedPieces = {ModItems.START_SELECTED_WHITE_PAWN,ModItems.SELECTED_WHITE_BISHOP, ModItems.SELECTED_WHITE_KING, ModItems.SELECTED_WHITE_KNIGHT, ModItems.SELECTED_WHITE_PAWN, ModItems.SELECTED_WHITE_QUEEN, ModItems.SELECTED_WHITE_TOWER};
+    public static Item[] whiteSelectedPieces = {ModItems.CASTLE_SELECTED_WHITE_KING, ModItems.CASTLE_SELECTED_WHITE_TOWER,ModItems.START_SELECTED_WHITE_PAWN,ModItems.SELECTED_WHITE_BISHOP, ModItems.SELECTED_WHITE_KING, ModItems.SELECTED_WHITE_KNIGHT, ModItems.SELECTED_WHITE_PAWN, ModItems.SELECTED_WHITE_QUEEN, ModItems.SELECTED_WHITE_TOWER};
 
-    public static Item[] blackSelectedPieces = {ModItems.START_SELECTED_BLACK_PAWN,ModItems.SELECTED_BLACK_BISHOP, ModItems.SELECTED_BLACK_KING, ModItems.SELECTED_BLACK_KNIGHT, ModItems.SELECTED_BLACK_PAWN, ModItems.SELECTED_BLACK_QUEEN, ModItems.SELECTED_BLACK_TOWER};
+    public static Item[] blackSelectedPieces = {ModItems.CASTLE_SELECTED_BLACK_KING, ModItems.CASTLE_SELECTED_BLACK_TOWER,ModItems.START_SELECTED_BLACK_PAWN,ModItems.SELECTED_BLACK_BISHOP, ModItems.SELECTED_BLACK_KING, ModItems.SELECTED_BLACK_KNIGHT, ModItems.SELECTED_BLACK_PAWN, ModItems.SELECTED_BLACK_QUEEN, ModItems.SELECTED_BLACK_TOWER};
+
+    public static Item[] switchPieces = {ModItems.CASTLE_SWITCH_WHITE_KING,ModItems.CASTLE_SWITCH_WHITE_TOWER,ModItems.CASTLE_SWITCH_BLACK_KING,ModItems.CASTLE_SWITCH_WHITE_TOWER};
 
 
     @Override
@@ -92,7 +94,11 @@ public class UseEntityHandler implements UseEntityCallback {
                 }else if (frame.getHeldItemStack().getItem() == ModItems.MOVE_HIGHLIGHTER) {
                     ClickFigureCalculations.moveFigure(world, frame);
                     return ActionResult.SUCCESS;
+                }else if(Chess.arrayContains(switchPieces, frame.getHeldItemStack().getItem())){
+                    ClickFigureCalculations.switchFigure(world,frame);
+                    return ActionResult.SUCCESS;
                 }
+
             }
 
         } else {
@@ -108,10 +114,13 @@ public class UseEntityHandler implements UseEntityCallback {
                 }else if(Chess.arrayContains(blackSelectedPieces, frame.getHeldItemStack().getItem())){
                     ClickFigureCalculations.deselectFigure(world,frame);
                     return ActionResult.SUCCESS;
-
                 } else if (frame.getHeldItemStack().getItem() == ModItems.MOVE_HIGHLIGHTER) {
                     ClickFigureCalculations.moveFigure(world,frame);
                     return ActionResult.SUCCESS;
+                }else if(Chess.arrayContains(switchPieces, frame.getHeldItemStack().getItem())){
+                    ClickFigureCalculations.switchFigure(world,frame);
+                    return ActionResult.SUCCESS;
+
                 }
             }
         }
