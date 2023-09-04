@@ -52,6 +52,7 @@ public class UseEntityHandler implements UseEntityCallback {
 
     @Override
     public ActionResult interact(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult) {
+
         boolean whitesTurn = false;
 
         if (player.getInventory().getMainHandStack().getItem() != ModItems.WHITE_ROD_OF_MOVING && player.getInventory().getMainHandStack().getItem() != ModItems.BLACK_ROD_OF_MOVING && player.getInventory().getMainHandStack().getItem() != ModItems.ROD_OF_ROTATION) {
@@ -70,6 +71,9 @@ public class UseEntityHandler implements UseEntityCallback {
                 return ActionResult.PASS;
             }
         }
+
+
+
         if (player.getInventory().getMainHandStack().getItem() == ModItems.ROD_OF_ROTATION) {
             return ActionResult.PASS;
         }
@@ -77,6 +81,12 @@ public class UseEntityHandler implements UseEntityCallback {
         if (player.getInventory().getMainHandStack().getItem() == ModItems.WHITE_ROD_OF_MOVING) {
             whitesTurn = true;
         }
+
+
+        if(world.isClient()){
+            return ActionResult.SUCCESS;
+        }
+
 
         if (whitesTurn) {
 
