@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    " R ",
+    "   "
+  ],
+  "key": {
+    "R": {
+      "item": "chess:white_king"
+    }
+  },
+  "result": {
+    "item": "chess:castle_white_king",
+    "count": 1
+  }
+}
+

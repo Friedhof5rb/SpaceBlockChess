@@ -6,7 +6,7 @@
   "item.chess.white_pawn": "White Pawn",
   "item.chess.white_queen": "White Queen",
   "item.chess.white_rod_of_moving": "White Rod of Moving",
-  "item.chess.white_tower": "White Tower",
+  "item.chess.white_tower": "White Rook",
 
   "item.chess.black_bishop": "Black Bishop",
   "item.chess.black_king": "Black King",
@@ -14,7 +14,7 @@
   "item.chess.black_pawn": "Black Pawn",
   "item.chess.black_queen": "Black Queen",
   "item.chess.black_rod_of_moving": "Black Rod of Moving",
-  "item.chess.black_tower": "Black Tower",
+  "item.chess.black_tower": "Black Rook",
 
   "item.chess.capture_white_bishop": "DO NOT USE!",
   "item.chess.capture_white_king": "DO NOT USE!",
@@ -57,9 +57,9 @@
   "item.chess.start_selected_white_pawn": "DO NOT USE!",
 
   "item.chess.castle_black_king": "Castle Black King",
-  "item.chess.castle_black_tower": "Castle Black Tower",
+  "item.chess.castle_black_tower": "Castle Black Rook",
   "item.chess.castle_white_king": "Castle White King",
-  "item.chess.castle_white_tower": "Castle White Tower",
+  "item.chess.castle_white_tower": "Castle White Rook",
 
   "item.chess.castle_capture_black_king": "DO NOT USE!",
   "item.chess.castle_capture_black_tower": "DO NOT USE!",
@@ -79,5 +79,7 @@
   "item.chess.rod_of_rotation": "Rod of Rotation",
   "item.chess.move_highlighter": "Move Highlighter - DO NOT USE!",
   "item.chess.rod_of_removal": "Rod of Removal",
-  "itemGroup.chess.space_chess": "Space Chess Tab"
+  "itemGroup.chess.space_chess": "Space Chess Tab",
+
+  "item.chess.chess_core": "Chess Core"
 }

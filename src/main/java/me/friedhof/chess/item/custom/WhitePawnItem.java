@@ -1,5 +1,6 @@
 package me.friedhof.chess.item.custom;
 
+import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.networking.ModMessages;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -25,7 +26,6 @@ public class WhitePawnItem extends Item {
         World w =  context.getWorld();
         BlockPos pos = context.getBlockPos();
         Direction d = context.getSide();
-
         if(w.isClient()) {
             PacketByteBuf buffer = PacketByteBufs.create();
             buffer.writeIntArray(new int[]{pos.getX(), pos.getY(), pos.getZ(), d.getId(),9});

@@ -1,5 +1,6 @@
 package me.friedhof.chess.networking.packet;
 
+import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItemGroup;
 import me.friedhof.chess.item.ModItems;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -22,6 +23,12 @@ public class SpawnFigureC2SPacket {
     public static void receive(MinecraftServer server, ServerPlayerEntity player,
                                ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
         World w = player.getWorld();
+
+        if (w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+            return;
+        }
+
+
 
         int[] data = buf.readIntArray();
         Direction d = Direction.byId(data[3]);

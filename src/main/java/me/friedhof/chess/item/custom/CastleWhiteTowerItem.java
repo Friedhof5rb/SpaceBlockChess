@@ -1,5 +1,6 @@
 package me.friedhof.chess.item.custom;
 
+import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.networking.ModMessages;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;

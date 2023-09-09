@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "W W",
+    " R ",
+    "W W"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:red_wool"
+    },
+    "R": {
+      "item": "chess:chess_core"
+    }
+  },
+  "result": {
+    "item": "chess:rod_of_removal",
+    "count": 1
+  }
+}
+

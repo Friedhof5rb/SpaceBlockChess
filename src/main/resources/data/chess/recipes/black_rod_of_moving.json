@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WWW",
+    "WRW",
+    "WWW"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:black_concrete"
+    },
+    "R": {
+      "item": "chess:chess_core"
+    }
+  },
+  "result": {
+    "item": "chess:black_rod_of_moving",
+    "count": 1
+  }
+}
+

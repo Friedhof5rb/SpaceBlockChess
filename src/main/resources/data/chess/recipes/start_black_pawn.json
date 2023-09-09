@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    " R ",
+    "   "
+  ],
+  "key": {
+    "R": {
+      "item": "chess:black_pawn"
+    }
+  },
+  "result": {
+    "item": "chess:start_black_pawn",
+    "count": 1
+  }
+}
+

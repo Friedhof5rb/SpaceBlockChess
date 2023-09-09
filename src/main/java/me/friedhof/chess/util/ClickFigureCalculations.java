@@ -2,6 +2,7 @@ package me.friedhof.chess.util;
 
 import me.friedhof.chess.Chess;
 import me.friedhof.chess.event.UseEntityHandler;
+import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItems;
 import me.friedhof.chess.networking.ModMessages;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -42,7 +43,9 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.SELECTED_WHITE_TOWER);
             newFrame.setHeldItemStack(stack);
-
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
             frame.kill();
             w.spawnEntity(newFrame);
 
@@ -66,6 +69,9 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.SELECTED_BLACK_TOWER);
             newFrame.setHeldItemStack(stack);
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
 
             frame.kill();
             w.spawnEntity(newFrame);
@@ -88,6 +94,9 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.SELECTED_WHITE_BISHOP);
             newFrame.setHeldItemStack(stack);
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
 
             frame.kill();
             w.spawnEntity(newFrame);
@@ -114,6 +123,9 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.SELECTED_BLACK_BISHOP);
             newFrame.setHeldItemStack(stack);
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
 
             frame.kill();
             w.spawnEntity(newFrame);
@@ -139,6 +151,9 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.SELECTED_WHITE_KNIGHT);
             newFrame.setHeldItemStack(stack);
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
 
             frame.kill();
             w.spawnEntity(newFrame);
@@ -162,6 +177,9 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.SELECTED_BLACK_KNIGHT);
             newFrame.setHeldItemStack(stack);
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
 
             frame.kill();
             w.spawnEntity(newFrame);
@@ -187,6 +205,9 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.SELECTED_WHITE_QUEEN);
             newFrame.setHeldItemStack(stack);
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
 
             frame.kill();
             w.spawnEntity(newFrame);
@@ -212,6 +233,9 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.SELECTED_BLACK_QUEEN);
             newFrame.setHeldItemStack(stack);
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
 
             frame.kill();
             w.spawnEntity(newFrame);
@@ -238,6 +262,9 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.SELECTED_WHITE_KING);
             newFrame.setHeldItemStack(stack);
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
 
             frame.kill();
             w.spawnEntity(newFrame);
@@ -263,6 +290,9 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.SELECTED_BLACK_KING);
             newFrame.setHeldItemStack(stack);
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
 
             frame.kill();
             w.spawnEntity(newFrame);
@@ -280,7 +310,10 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.SELECTED_WHITE_PAWN);
             newFrame.setHeldItemStack(stack);
-
+            newFrame.setInvulnerable(true);
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
             frame.kill();
             w.spawnEntity(newFrame);
 
@@ -297,7 +330,10 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.SELECTED_BLACK_PAWN);
             newFrame.setHeldItemStack(stack);
-
+            newFrame.setInvulnerable(true);
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
             frame.kill();
             w.spawnEntity(newFrame);
 
@@ -315,7 +351,9 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.START_SELECTED_WHITE_PAWN);
             newFrame.setHeldItemStack(stack);
-
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
             frame.kill();
             w.spawnEntity(newFrame);
 
@@ -332,7 +370,9 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.START_SELECTED_BLACK_PAWN);
             newFrame.setHeldItemStack(stack);
-
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
             frame.kill();
             w.spawnEntity(newFrame);
 
@@ -374,7 +414,9 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.CASTLE_SELECTED_WHITE_KING);
             newFrame.setHeldItemStack(stack);
-
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
             frame.kill();
             w.spawnEntity(newFrame);
         }
@@ -407,7 +449,9 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.CASTLE_SELECTED_BLACK_KING);
             newFrame.setHeldItemStack(stack);
-
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
             frame.kill();
             w.spawnEntity(newFrame);
         }
@@ -428,7 +472,9 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.CASTLE_SELECTED_WHITE_TOWER);
             newFrame.setHeldItemStack(stack);
-
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
             frame.kill();
             w.spawnEntity(newFrame);
         }
@@ -449,7 +495,9 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.CASTLE_SELECTED_BLACK_TOWER);
             newFrame.setHeldItemStack(stack);
-
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newFrame.setInvulnerable(true);
+            }
             frame.kill();
             w.spawnEntity(newFrame);
         }
@@ -474,7 +522,9 @@ public class ClickFigureCalculations {
                     ItemStack stack = new ItemStack(item);
                     e.setHeldItemStack(stack);
                     e.setRotation(entity.getRotation());
-
+                    if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                        e.setInvulnerable(true);
+                    }
                     w.getEntityById(entity.getId()).kill();
                     w.spawnEntity(e);
 
@@ -487,7 +537,9 @@ public class ClickFigureCalculations {
                     ItemStack stack = new ItemStack(item);
                     e.setHeldItemStack(stack);
                     e.setRotation(entity.getRotation());
-
+                    if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                        e.setInvulnerable(true);
+                    }
                     w.getEntityById(entity.getId()).kill();
                     w.spawnEntity(e);
 
@@ -499,7 +551,9 @@ public class ClickFigureCalculations {
                     ItemStack stack = new ItemStack(item);
                     e.setHeldItemStack(stack);
                     e.setRotation(entity.getRotation());
-
+                    if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                        e.setInvulnerable(true);
+                    }
                     w.getEntityById(entity.getId()).kill();
                     w.spawnEntity(e);
                 }
@@ -534,7 +588,9 @@ public class ClickFigureCalculations {
                     ItemStack stack = new ItemStack(item);
                     e.setHeldItemStack(stack);
                     e.setRotation(entity.getRotation());
-
+                    if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                        e.setInvulnerable(true);
+                    }
                     w.getEntityById(entity.getId()).kill();
                     w.spawnEntity(e);
 
@@ -548,7 +604,9 @@ public class ClickFigureCalculations {
                     ItemStack stack = new ItemStack(item);
                     e.setHeldItemStack(stack);
                     e.setRotation(entity.getRotation());
-
+                    if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                        e.setInvulnerable(true);
+                    }
                     w.getEntityById(entity.getId()).kill();
                     w.spawnEntity(e);
 
@@ -579,7 +637,9 @@ public class ClickFigureCalculations {
                     ItemStack stack = new ItemStack(item);
                     e.setHeldItemStack(stack);
                     e.setRotation(currentPosition.itemRotation);
-
+                    if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                        e.setInvulnerable(true);
+                    }
                     w.getEntityById(entity.getId()).kill();
                     w.spawnEntity(e);
                 }
@@ -609,7 +669,9 @@ public class ClickFigureCalculations {
                 ItemStack stack = new ItemStack(item);
                 e.setHeldItemStack(stack);
                 e.setRotation(entity.getRotation());
-
+                if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                    e.setInvulnerable(true);
+                }
                 w.getEntityById(entity.getId()).kill();
                 w.spawnEntity(e);
 
@@ -628,6 +690,10 @@ public class ClickFigureCalculations {
 
                 w.getEntityById(entity.getId()).kill();
                 if (!(e.getBlockPos().getX() == currentPosition.pos.getX() && e.getBlockPos().getY() == currentPosition.pos.getY() && e.getBlockPos().getZ() == currentPosition.pos.getZ() && e.getHorizontalFacing() == currentPosition.directionWall)){
+                    if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                        e.setInvulnerable(true);
+                    }
+
                     w.spawnEntity(e);
 
                 }else{
@@ -683,7 +749,9 @@ public class ClickFigureCalculations {
 
 
                 e.setRotation(rotation-1);
-
+                if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                    e.setInvulnerable(true);
+                }
                 w.getEntityById(entity.getId()).kill();
                 w.spawnEntity(e);
             }
@@ -714,7 +782,9 @@ public class ClickFigureCalculations {
                 ItemStack stack = new ItemStack(item);
                 e.setHeldItemStack(stack);
                 e.setRotation(entity.getRotation());
-
+                if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                    e.setInvulnerable(true);
+                }
                 w.getEntityById(entity.getId()).kill();
                 w.spawnEntity(e);
 
@@ -731,6 +801,10 @@ public class ClickFigureCalculations {
                 e.setRotation(entity.getRotation());
 
                 if(!(e.getBlockPos().getX() == currentPosition.pos.getX() && e.getBlockPos().getY() == currentPosition.pos.getY() && e.getBlockPos().getZ() == currentPosition.pos.getZ() && e.getHorizontalFacing() == currentPosition.directionWall)){
+
+                    if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                        e.setInvulnerable(true);
+                    }
                      w.getEntityById(entity.getId()).kill();
                      w.spawnEntity(e);
                 }
@@ -786,12 +860,18 @@ public class ClickFigureCalculations {
             ItemStack stack = new ItemStack(item);
             e.setHeldItemStack(stack);
             e.setRotation(newSwitchPiece.itemRotation);
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                e.setInvulnerable(true);
+            }
             w.spawnEntity(e);
 
             ItemFrameEntity e2 = new ItemFrameEntity(w,newPiece.pos,newPiece.directionWall);
             ItemStack stack2 = new ItemStack(item2);
             e2.setHeldItemStack(stack2);
             e2.setRotation(newPiece.itemRotation);
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                e2.setInvulnerable(true);
+            }
             w.spawnEntity(e2);
 
 

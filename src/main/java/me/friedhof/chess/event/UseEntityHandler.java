@@ -1,6 +1,7 @@
 package me.friedhof.chess.event;
 
 import me.friedhof.chess.Chess;
+import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.networking.ModMessages;
 import me.friedhof.chess.util.*;
 import me.friedhof.chess.item.ModItems;
@@ -54,6 +55,7 @@ public class UseEntityHandler implements UseEntityCallback {
     public ActionResult interact(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult) {
 
         boolean whitesTurn = false;
+
 
         if (player.getInventory().getMainHandStack().getItem() != ModItems.WHITE_ROD_OF_MOVING && player.getInventory().getMainHandStack().getItem() != ModItems.BLACK_ROD_OF_MOVING && player.getInventory().getMainHandStack().getItem() != ModItems.ROD_OF_ROTATION) {
             if (entity instanceof ItemFrameEntity) {

@@ -99,7 +99,7 @@ public class ModItems {
     public static final Item CASTLE_WHITE_KING = registerItem("castle_white_king",new CastleWhiteKingItem(new FabricItemSettings().group(ModItemGroup.SpaceChess).maxDamage(16)));
     public static final Item CASTLE_WHITE_TOWER = registerItem("castle_white_tower",new CastleWhiteTowerItem(new FabricItemSettings().group(ModItemGroup.SpaceChess).maxDamage(16)));
 
-
+    public static final Item CHESS_CORE = registerItem("chess_core",new Item(new FabricItemSettings().group(ModItemGroup.SpaceChess)));
 
     private static Item registerItem(String name, Item item){
         return Registry.register(Registry.ITEM,new Identifier(Chess.MOD_ID,name),item);

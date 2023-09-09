@@ -2,6 +2,7 @@ package me.friedhof.chess.util;
 
 import me.friedhof.chess.Chess;
 import me.friedhof.chess.event.UseEntityHandler;
+import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItems;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ItemFrameEntity;
@@ -37,7 +38,9 @@ public class FigureMovesCalculations {
             }else{
                 ItemFrameEntity e = MovementCalculations.dataToFigure(w,currentPosition, ModItems.MOVE_HIGHLIGHTER);
 
-
+                if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                    e.setInvulnerable(true);
+                }
                 w.spawnEntity(e);
             }
         }
@@ -96,7 +99,9 @@ public class FigureMovesCalculations {
             }else{
                 ItemFrameEntity e = MovementCalculations.dataToFigure(w,currentPosition, ModItems.MOVE_HIGHLIGHTER);
 
-
+                if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                    e.setInvulnerable(true);
+                }
                 w.spawnEntity(e);
             }
         }
@@ -124,7 +129,9 @@ public class FigureMovesCalculations {
         }else{
             ItemFrameEntity e = MovementCalculations.dataToFigure(w,currentPosition, ModItems.MOVE_HIGHLIGHTER);
 
-
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                e.setInvulnerable(true);
+            }
             w.spawnEntity(e);
         }
 
@@ -153,7 +160,9 @@ public class FigureMovesCalculations {
             }else{
                 ItemFrameEntity e = MovementCalculations.dataToFigure(w,currentPosition, ModItems.MOVE_HIGHLIGHTER);
 
-
+                if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                    e.setInvulnerable(true);
+                }
                 w.spawnEntity(e);
             }
         }
@@ -183,7 +192,9 @@ public class FigureMovesCalculations {
         }else{
             ItemFrameEntity e = MovementCalculations.dataToFigure(w,currentPosition, ModItems.MOVE_HIGHLIGHTER);
 
-
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                e.setInvulnerable(true);
+            }
             w.spawnEntity(e);
         }
 
@@ -203,7 +214,9 @@ public class FigureMovesCalculations {
             if (!MovementCalculations.isItemFrame(w, currentPosition.pos, currentPosition.directionWall)) {
                 ItemFrameEntity e = MovementCalculations.dataToFigure(w, currentPosition, ModItems.MOVE_HIGHLIGHTER);
 
-
+                if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                    e.setInvulnerable(true);
+                }
                 w.spawnEntity(e);
             }
         }
@@ -267,7 +280,9 @@ public class FigureMovesCalculations {
             if (!MovementCalculations.isItemFrame(w, currentPosition.pos, currentPosition.directionWall)) {
                 ItemFrameEntity e = MovementCalculations.dataToFigure(w, currentPosition, ModItems.MOVE_HIGHLIGHTER);
 
-
+                if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                    e.setInvulnerable(true);
+                }
                 w.spawnEntity(e);
             }
         }
@@ -323,7 +338,9 @@ public class FigureMovesCalculations {
 
             }
             ItemFrameEntity newEntity = MovementCalculations.dataToFigureWithDamage(w,currentPosition, ModItems.CASTLE_SWITCH_WHITE_TOWER,rotation );
-
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newEntity.setInvulnerable(true);
+            }
             w.getEntityById(id).kill();
             w.spawnEntity(newEntity);
 
@@ -349,7 +366,9 @@ public class FigureMovesCalculations {
 
             }
             ItemFrameEntity newEntity = MovementCalculations.dataToFigureWithDamage(w,currentPosition, ModItems.CASTLE_SWITCH_BLACK_TOWER,rotation );
-
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newEntity.setInvulnerable(true);
+            }
             w.getEntityById(id).kill();
             w.spawnEntity(newEntity);
         }
@@ -387,7 +406,9 @@ public class FigureMovesCalculations {
 
             }
             ItemFrameEntity newEntity = MovementCalculations.dataToFigureWithDamage(w,currentPosition, exchangeItems(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem(),true),rotation );
-
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newEntity.setInvulnerable(true);
+            }
             w.getEntityById(id).kill();
             w.spawnEntity(newEntity);
 
@@ -413,7 +434,9 @@ public class FigureMovesCalculations {
 
             }
             ItemFrameEntity newEntity = MovementCalculations.dataToFigureWithDamage(w,currentPosition, exchangeItems(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem(),true),rotation );
-
+            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                newEntity.setInvulnerable(true);
+            }
             w.getEntityById(id).kill();
             w.spawnEntity(newEntity);
         }

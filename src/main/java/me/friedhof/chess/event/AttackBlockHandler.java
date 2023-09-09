@@ -1,6 +1,7 @@
 package me.friedhof.chess.event;
 
 import me.friedhof.chess.Chess;
+import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItems;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.entity.EntityType;
@@ -33,6 +34,15 @@ public class AttackBlockHandler implements AttackBlockCallback {
 
     @Override
     public ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction) {
+
+        if(world.isClient()) {
+            return ActionResult.SUCCESS;
+        }
+        if (world.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+            return ActionResult.PASS;
+        }
+
+
         if(player.getInventory().getMainHandStack().getItem() == ModItems.ROD_OF_REMOVAL) {
             return ActionResult.PASS;
         }

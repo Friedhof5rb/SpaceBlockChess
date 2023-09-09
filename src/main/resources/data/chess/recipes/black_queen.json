@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RRR",
+    "RWR",
+    "RRR"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:black_concrete"
+    },
+    "R": {
+      "item": "chess:chess_core"
+    }
+  },
+  "result": {
+    "item": "chess:black_queen",
+    "count": 1
+  }
+}
+

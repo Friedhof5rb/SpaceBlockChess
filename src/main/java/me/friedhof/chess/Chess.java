@@ -3,6 +3,7 @@ package me.friedhof.chess;
 import me.friedhof.chess.event.AttackBlockHandler;
 import me.friedhof.chess.event.AttackEntityHandler;
 import me.friedhof.chess.event.UseEntityHandler;
+import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItems;
 import me.friedhof.chess.networking.ModMessages;
 import net.fabricmc.api.ModInitializer;
@@ -25,6 +26,7 @@ public class Chess implements ModInitializer {
     public void onInitialize() {
 
         ModMessages.registerC2SPackets();
+        ModGamerules.registerGamerules();
         ModItems.registerModItems();
         AttackBlockCallback.EVENT.register(new AttackBlockHandler());
         AttackEntityCallback.EVENT.register(new AttackEntityHandler());
