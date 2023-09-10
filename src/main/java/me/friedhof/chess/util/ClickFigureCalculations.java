@@ -707,7 +707,7 @@ public class ClickFigureCalculations {
                     w.spawnEntity(e);
 
                 }else{
-                    rotation = entity.getHeldItemStack().getDamage();
+                    rotation = entity.getHeldItemStack().getNbt().getInt("rotation");
 
 
 
@@ -761,7 +761,7 @@ public class ClickFigureCalculations {
                 e.setHeldItemStack(stack);
 
 
-                e.setRotation(rotation-1);
+                e.setRotation(rotation);
                 if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                     e.setInvulnerable(true);
                 }
@@ -793,7 +793,6 @@ public class ClickFigureCalculations {
 
     public static void switchFigure( World w, ItemFrameEntity frame){
 
-        int rotation = 0;
         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
         List<ItemFrameEntity> list = w.getEntitiesByType(EntityType.ITEM_FRAME,new Box(currentPosition.pos.getX()-UseEntityHandler.searchRadius,currentPosition.pos.getY()-UseEntityHandler.searchRadius,currentPosition.pos.getZ()-UseEntityHandler.searchRadius,currentPosition.pos.getX()+UseEntityHandler.searchRadius,currentPosition.pos.getY()+UseEntityHandler.searchRadius,currentPosition.pos.getZ()+UseEntityHandler.searchRadius),EntityPredicates.VALID_ENTITY);
 

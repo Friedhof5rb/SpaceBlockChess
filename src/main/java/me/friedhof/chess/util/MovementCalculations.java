@@ -4,6 +4,7 @@ import net.minecraft.block.Material;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -68,11 +69,13 @@ public class MovementCalculations {
 
     }
 
-    public static ItemFrameEntity dataToFigureWithDamage(World w, GlobalChessData data, Item item, int damage){
+    public static ItemFrameEntity dataToFigureWithDamage(World w, GlobalChessData data, Item item, int rotation){
 
         ItemFrameEntity frame = new ItemFrameEntity(w,data.pos,data.directionWall);
         ItemStack stack = new ItemStack(item);
-        stack.setDamage(damage+1);
+        NbtCompound nbt = new NbtCompound();
+        nbt.putInt("rotation",rotation);
+        stack.setNbt(nbt);
         frame.setHeldItemStack(stack);
         frame.setRotation(data.itemRotation);
         return frame;
