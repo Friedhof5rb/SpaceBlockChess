@@ -8,11 +8,16 @@ import me.friedhof.chess.networking.ModMessages;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.decoration.ItemFrameEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.text.LiteralText;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -681,8 +686,13 @@ public class ClickFigureCalculations {
                 Item item = FigureMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(), true);
 
 
+                if (w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
 
+                    ItemStack stack3 = new ItemStack(item);
+                    ItemEntity e3 = new ItemEntity(w, currentPosition.pos.getX(), currentPosition.pos.getY(), currentPosition.pos.getZ(), stack3);
+                    w.spawnEntity(e3);
 
+                }
                 ItemFrameEntity e = new ItemFrameEntity(w, entity.getBlockPos(), entity.getHorizontalFacing());
                 ItemStack stack = new ItemStack(item);
                 e.setHeldItemStack(stack);
@@ -698,19 +708,22 @@ public class ClickFigureCalculations {
 
                 }else{
                     rotation = entity.getHeldItemStack().getDamage();
-                    if(e.getHeldItemStack().getItem() == ModItems.WHITE_KING){
 
 
-                        PacketByteBuf buffer = PacketByteBufs.create();
-                        buffer.writeString("The White King is Dead!");
-                        ClientPlayNetworking.send(ModMessages.SEND_CHAT, buffer);
+
+
+
+                    if(e.getHeldItemStack().getItem() == ModItems.WHITE_KING || e.getHeldItemStack().getItem() == ModItems.CASTLE_WHITE_KING){
+
+
+                        String dead = "The White King is Dead!";
+                        sendKingDeadMessage(w,dead,15,currentPosition.pos);
 
 
                     }
-                    if(e.getHeldItemStack().getItem() == ModItems.BLACK_KING){
-                        PacketByteBuf buffer = PacketByteBufs.create();
-                        buffer.writeString("The Black King is Dead!");
-                        ClientPlayNetworking.send(ModMessages.SEND_CHAT, buffer);
+                    if(e.getHeldItemStack().getItem() == ModItems.BLACK_KING || e.getHeldItemStack().getItem() == ModItems.CASTLE_BLACK_KING){
+                        String dead = "The Black King is Dead!";
+                        sendKingDeadMessage(w,dead,15,currentPosition.pos);
                     }
                 }
 
@@ -759,6 +772,24 @@ public class ClickFigureCalculations {
 
         }
     }
+
+    private static void sendKingDeadMessage(World w, String s, int radius, BlockPos currentPosition){
+
+      List<PlayerEntity> list = w.getEntitiesByType(EntityType.PLAYER,new Box(currentPosition.getX()-radius,currentPosition.getY()-radius,currentPosition.getZ()-radius,currentPosition.getX()+radius,currentPosition.getY()+radius,currentPosition.getZ()+radius),EntityPredicates.VALID_ENTITY);
+      for(PlayerEntity p : list){
+
+          p.sendMessage(new LiteralText(s),false);
+
+      }
+
+
+    }
+
+
+
+
+
+
 
     public static void switchFigure( World w, ItemFrameEntity frame){
 
