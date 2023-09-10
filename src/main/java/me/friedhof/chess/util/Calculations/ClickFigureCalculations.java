@@ -1,22 +1,18 @@
-package me.friedhof.chess.util;
+package me.friedhof.chess.util.Calculations;
 
 import me.friedhof.chess.Chess;
 import me.friedhof.chess.event.UseEntityHandler;
 import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItems;
-import me.friedhof.chess.networking.ModMessages;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import me.friedhof.chess.util.GlobalChessData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.text.LiteralText;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;

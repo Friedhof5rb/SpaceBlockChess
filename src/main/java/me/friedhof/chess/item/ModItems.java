@@ -100,6 +100,9 @@ public class ModItems {
     public static final Item CASTLE_WHITE_TOWER = registerItem("castle_white_tower",new CastleWhiteTowerItem(new FabricItemSettings().group(ModItemGroup.SpaceChess).maxCount(64)));
 
     public static final Item CHESS_CORE = registerItem("chess_core",new Item(new FabricItemSettings().group(ModItemGroup.SpaceChess)));
+    public static final Item CHESS_POS1 = registerItem("chesspos1",new ChessPos1Item(new FabricItemSettings().group(ModItemGroup.SpaceChess)));
+    public static final Item CHESS_POS2 = registerItem("chesspos2",new ChessPos2Item(new FabricItemSettings().group(ModItemGroup.SpaceChess)));
+
 
     private static Item registerItem(String name, Item item){
         return Registry.register(Registry.ITEM,new Identifier(Chess.MOD_ID,name),item);

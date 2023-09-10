@@ -1,5 +1,6 @@
-package me.friedhof.chess.util;
+package me.friedhof.chess.util.Calculations;
 
+import me.friedhof.chess.util.GlobalChessData;
 import net.minecraft.util.math.Direction;
 
 public class RotationCalculations {

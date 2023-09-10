@@ -1,5 +1,6 @@
-package me.friedhof.chess.util;
+package me.friedhof.chess.util.Calculations;
 
+import me.friedhof.chess.util.GlobalChessData;
 import net.minecraft.block.Material;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.item.Item;

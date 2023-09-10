@@ -1,36 +1,18 @@
 package me.friedhof.chess.event;
 
 import me.friedhof.chess.Chess;
-import me.friedhof.chess.gamerule.ModGamerules;
-import me.friedhof.chess.networking.ModMessages;
-import me.friedhof.chess.util.*;
 import me.friedhof.chess.item.ModItems;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import me.friedhof.chess.util.Calculations.ClickFigureCalculations;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.minecraft.block.Material;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.decoration.AbstractDecorationEntity;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.MessageType;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class UseEntityHandler implements UseEntityCallback {
 

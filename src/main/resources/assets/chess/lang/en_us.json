@@ -81,5 +81,8 @@
   "item.chess.rod_of_removal": "Rod of Removal",
   "itemGroup.chess.space_chess": "Space Chess Tab",
 
-  "item.chess.chess_core": "Chess Core"
+  "item.chess.chess_core": "Chess Core",
+  "item.chess.chesspos1": "Chess Pos1",
+  "item.chess.chesspos2": "Chess Pos2"
+
 }

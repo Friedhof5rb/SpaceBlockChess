@@ -1,9 +1,10 @@
-package me.friedhof.chess.util;
+package me.friedhof.chess.util.Calculations;
 
 import me.friedhof.chess.Chess;
 import me.friedhof.chess.event.UseEntityHandler;
 import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItems;
+import me.friedhof.chess.util.GlobalChessData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.item.Item;
