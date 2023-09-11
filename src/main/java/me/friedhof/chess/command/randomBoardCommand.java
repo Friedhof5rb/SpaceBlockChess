@@ -1,0 +1,141 @@
+package me.friedhof.chess.command;
+
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import me.friedhof.chess.Chess;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.LiteralText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import org.spongepowered.noise.NoiseQuality;
+import org.spongepowered.noise.module.source.Perlin;
+
+import java.util.Random;
+
+import static net.minecraft.util.math.MathHelper.abs;
+
+public class randomBoardCommand {
+
+    public static void register (CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
+        dispatcher.register(CommandManager.literal("randomBoard").executes(randomBoardCommand::run));
+    }
+
+    private static double offset = 0.00000001f;
+    private static double noiseScale = 0.005f;
+    private static int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+
+        if (!context.getSource().getPlayer().isCreative()) {
+            context.getSource().getPlayer().sendMessage(new LiteralText("You can only use this Command in Creative."), false);
+            return -1;
+        }
+        String uuid = context.getSource().getPlayer().getUuidAsString();
+        World w = context.getSource().getWorld();
+
+        if(!Chess.pos1.containsKey(uuid) || !Chess.pos2.containsKey(uuid)){
+            context.getSource().getPlayer().sendMessage(new LiteralText("Pos1 or Pos2 is not defined"), false);
+            return -1;
+        }
+
+        int lowx = 0;
+        int highx = 0;
+        if(Chess.pos1.get(uuid).getX() > Chess.pos2.get(uuid).getX()){
+            highx =   Chess.pos1.get(uuid).getX();
+            lowx =  Chess.pos2.get(uuid).getX();
+
+        }else{
+            lowx =   Chess.pos1.get(uuid).getX();
+            highx =  Chess.pos2.get(uuid).getX();
+        }
+
+
+
+        int lowy = 0;
+        int highy = 0;
+        if(Chess.pos1.get(uuid).getY() > Chess.pos2.get(uuid).getY()){
+            highy =   Chess.pos1.get(uuid).getY();
+            lowy =  Chess.pos2.get(uuid).getY();
+
+        }else{
+            lowy =   Chess.pos1.get(uuid).getY();
+            highy =  Chess.pos2.get(uuid).getY();
+        }
+
+
+
+        int lowz = 0;
+        int highz = 0;
+        if(Chess.pos1.get(uuid).getZ() > Chess.pos2.get(uuid).getZ()){
+            highz =   Chess.pos1.get(uuid).getZ();
+            lowz =  Chess.pos2.get(uuid).getZ();
+
+        }else{
+            lowz =   Chess.pos1.get(uuid).getZ();
+            highz =  Chess.pos2.get(uuid).getZ();
+        }
+        Perlin perlin = new Perlin();
+        Random r = new Random();
+        perlin.setSeed(r.nextInt(10000));
+        perlin.setLacunarity(2);
+        perlin.setPersistence(0.5);
+        perlin.setFrequency(10);
+        perlin.setOctaveCount(1);
+        perlin.setNoiseQuality(NoiseQuality.BEST);
+
+
+        for(int x = lowx; x<= highx;x++){
+            for(int y = lowy; y<= highy;y++){
+                for(int z = lowz; z<= highz;z++){
+
+                    //System.out.println(perlin.get((abs(x)+offset)*noiseScale,(abs(y)+offset)*noiseScale,(abs(z)+offset)*noiseScale));
+                    if(perlin.get((abs(x)+offset)*noiseScale,(abs(y)+offset)*noiseScale,(abs(z)+offset)*noiseScale) >= 0.5){
+                        BlockState state = getTileColour(x,y,z).getDefaultState();
+                        w.setBlockState(new BlockPos(x,y,z),state);
+                    }else{
+                        BlockState state = Blocks.AIR.getDefaultState();
+                        w.setBlockState(new BlockPos(x,y,z),state);
+                    }
+
+                }
+            }
+        }
+
+        return 1;
+    }
+
+
+    private static Block getTileColour(int x, int y, int z){
+
+        boolean white = false;
+        if(x%2 == 0 && y %2 == 0 && z%2 == 0){
+            white = true;
+        }
+
+        if(x%2 != 0 && y %2 != 0 && z%2 == 0){
+            white = true;
+        }
+
+        if(x%2 != 0 && y %2 == 0 && z%2 != 0){
+            white = true;
+        }
+
+        if(x%2 == 0 && y %2 != 0 && z%2 != 0){
+            white = true;
+        }
+
+        if(white){
+            return  Blocks.WHITE_CONCRETE;
+        }else{
+           return  Blocks.BLACK_CONCRETE;
+        }
+    }
+
+
+
+
+
+}

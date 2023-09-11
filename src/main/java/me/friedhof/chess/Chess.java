@@ -15,6 +15,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +64,7 @@ public class Chess implements ModInitializer {
         StringBuilder text = new StringBuilder();
         String uuid = p.getUuidAsString();
         for(int i = 0; i < Chess.pool.get(uuid).size();i++){
-            text.append(Chess.pool.get(uuid).get(i).getCount()).append(" * ").append(Chess.pool.get(uuid).get(i).getName().getString()).append(",  \n");
+            text.append(Chess.pool.get(uuid).get(i).getCount()).append(" * ").append(Chess.pool.get(uuid).get(i).getTranslationKey()).append(",  \n");
 
         }
         p.sendMessage(new LiteralText(text.toString()),false);
