@@ -20,6 +20,8 @@ public class ModRegistries {
         CommandRegistrationCallback.EVENT.register(pos2Command::register);
         CommandRegistrationCallback.EVENT.register(randomChessFigures::register);
         CommandRegistrationCallback.EVENT.register(clearChessCommand::register);
+        CommandRegistrationCallback.EVENT.register(chessCubeCommand::register);
+
     }
 
 
