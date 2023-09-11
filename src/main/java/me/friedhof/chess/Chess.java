@@ -64,7 +64,7 @@ public class Chess implements ModInitializer {
         StringBuilder text = new StringBuilder();
         String uuid = p.getUuidAsString();
         for(int i = 0; i < Chess.pool.get(uuid).size();i++){
-            text.append(Chess.pool.get(uuid).get(i).getCount()).append(" * ").append(Chess.pool.get(uuid).get(i).getTranslationKey()).append(",  \n");
+            text.append(Chess.pool.get(uuid).get(i).getCount()).append(" * ").append(new TranslatableText(Chess.pool.get(uuid).get(i).getTranslationKey()).getString()).append(",  \n");
 
         }
         p.sendMessage(new LiteralText(text.toString()),false);

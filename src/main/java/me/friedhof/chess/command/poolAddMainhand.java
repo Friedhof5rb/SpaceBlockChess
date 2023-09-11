@@ -36,7 +36,7 @@ public class poolAddMainhand {
         }
 
         String uuid = context.getSource().getPlayer().getUuidAsString();
-        ItemStack current = context.getSource().getPlayer().getInventory().getMainHandStack();
+        ItemStack current = context.getSource().getPlayer().getInventory().getMainHandStack().copy();
         if(!Chess.arrayContains(items,current.getItem())){
             return -1;
         }
