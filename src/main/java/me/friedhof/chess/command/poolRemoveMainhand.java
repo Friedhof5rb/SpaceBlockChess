@@ -15,8 +15,7 @@ import java.util.ArrayList;
 
 public class poolRemoveMainhand {
 
-    private static Item[] items = {ModItems.WHITE_TOWER,ModItems.WHITE_KING,ModItems.CASTLE_WHITE_KING,ModItems.WHITE_QUEEN,ModItems.WHITE_KNIGHT,ModItems.WHITE_BISHOP,ModItems.WHITE_PAWN,ModItems.START_WHITE_PAWN, ModItems.CASTLE_WHITE_TOWER,
-            ModItems.BLACK_TOWER,ModItems.BLACK_KING,ModItems.CASTLE_BLACK_KING,ModItems.BLACK_QUEEN,ModItems.BLACK_KNIGHT,ModItems.BLACK_BISHOP,ModItems.BLACK_PAWN,ModItems.START_BLACK_PAWN, ModItems.CASTLE_BLACK_TOWER};
+
 
 
 
@@ -36,7 +35,7 @@ public class poolRemoveMainhand {
         String uuid = context.getSource().getPlayer().getUuidAsString();
         ItemStack current = context.getSource().getPlayer().getInventory().getMainHandStack().copy();
 
-        if(!Chess.arrayContains(items,current.getItem())){
+        if(!Chess.arrayContains(Chess.poolAndPlace,current.getItem())){
             return -1;
         }
         if(!Chess.pool.containsKey(uuid)) {

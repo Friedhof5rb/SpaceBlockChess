@@ -37,6 +37,16 @@ public class Chess implements ModInitializer {
     public static HashMap<String, BlockPos> pos2 = new HashMap<>();
 
 
+    //the order of Items matters
+    public static Item[] poolAndPlace = {ModItems.BLACK_BISHOP,ModItems.BLACK_KING,ModItems.BLACK_KNIGHT,ModItems.BLACK_PAWN, ModItems.BLACK_QUEEN, ModItems.BLACK_TOWER,
+            ModItems.WHITE_BISHOP,ModItems.WHITE_KING,ModItems.WHITE_KNIGHT,ModItems.WHITE_PAWN,ModItems.WHITE_QUEEN,ModItems.WHITE_TOWER,ModItems.START_WHITE_PAWN,ModItems.START_BLACK_PAWN,
+            ModItems.CASTLE_BLACK_KING,ModItems.CASTLE_BLACK_TOWER,ModItems.CASTLE_WHITE_KING,ModItems.CASTLE_WHITE_TOWER,
+            ModItems.YELLOW_BISHOP,ModItems.YELLOW_KING,ModItems.YELLOW_KNIGHT,ModItems.YELLOW_PAWN,ModItems.YELLOW_QUEEN, ModItems.YELLOW_TOWER, ModItems.CASTLE_YELLOW_KING,ModItems.CASTLE_YELLOW_TOWER,ModItems.START_YELLOW_PAWN,
+            ModItems.PINK_BISHOP, ModItems.PINK_KING, ModItems.PINK_KNIGHT, ModItems.PINK_PAWN, ModItems.PINK_QUEEN, ModItems.PINK_TOWER, ModItems.CASTLE_PINK_KING, ModItems.CASTLE_PINK_TOWER, ModItems.START_PINK_PAWN };
+
+
+
+
     @Override
     public void onInitialize() {
 
@@ -72,4 +82,54 @@ public class Chess implements ModInitializer {
 
 
     }
+
+    public static Item[] combineLists(){
+       ArrayList<Item> items1 = new ArrayList<>();
+       for(Item i : UseEntityHandler.whitePieces){
+           items1.add(i);
+       }
+        for(Item i : UseEntityHandler.blackPieces){
+            items1.add(i);
+        }
+        for(Item i : UseEntityHandler.yellowPieces){
+            items1.add(i);
+        }
+        for(Item i : UseEntityHandler.pinkPieces){
+            items1.add(i);
+        }
+        for(Item i : UseEntityHandler.whiteCapturePieces){
+            items1.add(i);
+        }
+        for(Item i : UseEntityHandler.blackCapturePieces){
+            items1.add(i);
+        }
+        for(Item i : UseEntityHandler.yellowCapturePieces){
+            items1.add(i);
+        }
+        for(Item i : UseEntityHandler.pinkCapturePieces){
+            items1.add(i);
+        }
+        for(Item i : UseEntityHandler.whiteSelectedPieces){
+            items1.add(i);
+        }
+        for(Item i : UseEntityHandler.blackSelectedPieces){
+            items1.add(i);
+        }
+        for(Item i : UseEntityHandler.yellowSelectedPieces){
+            items1.add(i);
+        }
+        for(Item i : UseEntityHandler.pinkSelectedPieces){
+            items1.add(i);
+        }
+        for(Item i : UseEntityHandler.switchPieces){
+            items1.add(i);
+        }
+        Item[] list = new Item[items1.size()];
+        for(int i = 0; i< items1.size();i++){
+            list[i] = items1.get(i);
+        }
+        return list;
+
+    }
+
 }

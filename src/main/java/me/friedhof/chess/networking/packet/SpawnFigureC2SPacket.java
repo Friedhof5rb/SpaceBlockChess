@@ -1,5 +1,6 @@
 package me.friedhof.chess.networking.packet;
 
+import me.friedhof.chess.Chess;
 import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItemGroup;
 import me.friedhof.chess.item.ModItems;
@@ -16,9 +17,7 @@ import net.minecraft.world.World;
 
 public class SpawnFigureC2SPacket {
 
-    private static Item[] items = {ModItems.BLACK_BISHOP,ModItems.BLACK_KING,ModItems.BLACK_KNIGHT,ModItems.BLACK_PAWN, ModItems.BLACK_QUEEN, ModItems.BLACK_TOWER,
-            ModItems.WHITE_BISHOP,ModItems.WHITE_KING,ModItems.WHITE_KNIGHT,ModItems.WHITE_PAWN,ModItems.WHITE_QUEEN,ModItems.WHITE_TOWER,ModItems.START_WHITE_PAWN,ModItems.START_BLACK_PAWN,
-    ModItems.CASTLE_BLACK_KING,ModItems.CASTLE_BLACK_TOWER,ModItems.CASTLE_WHITE_KING,ModItems.CASTLE_WHITE_TOWER};
+
 
     public static void receive(MinecraftServer server, ServerPlayerEntity player,
                                ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
@@ -56,7 +55,7 @@ public class SpawnFigureC2SPacket {
         }
 
         ItemFrameEntity e = new ItemFrameEntity(w, pos, d);
-        ItemStack stack = new ItemStack(items[figureIndex]);
+        ItemStack stack = new ItemStack(Chess.poolAndPlace[figureIndex]);
         e.setHeldItemStack(stack);
 
 

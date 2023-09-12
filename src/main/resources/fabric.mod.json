@@ -17,6 +17,8 @@
     ],
     "main": [
       "me.friedhof.chess.Chess"
+    ],"fabric-datagen": [
+      "me.friedhof.chess.DataGeneration"
     ]
   },
   "mixins": [
