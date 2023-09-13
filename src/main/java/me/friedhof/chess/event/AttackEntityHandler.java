@@ -21,13 +21,17 @@ public class AttackEntityHandler implements AttackEntityCallback {
 
     @Override
     public ActionResult interact(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult) {
-        Item[] items = Chess.combineLists();
+
+        if(player.isSpectator()){
+            return ActionResult.PASS;
+        }
+
 
 
 
 
         if(world.isClient()) {
-            return ActionResult.SUCCESS;
+            return ActionResult.PASS;
         }
 
         if(entity instanceof ZombieEntity && world.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)){
@@ -47,6 +51,7 @@ public class AttackEntityHandler implements AttackEntityCallback {
         if(player.getInventory().getMainHandStack().getItem() == ModItems.ROD_OF_REMOVAL){
             return ActionResult.PASS;
         }
+        Item[] items = Chess.combineLists();
         if(entity instanceof ItemFrameEntity){
             ItemFrameEntity e = (ItemFrameEntity) entity;
             if(Chess.arrayContains(items, e.getHeldItemStack().getItem() )){
