@@ -24,11 +24,15 @@ public class AttackBlockHandler implements AttackBlockCallback {
     @Override
     public ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction) {
 
-        Item[] items = Chess.combineLists();
+
+
+        if(player.isSpectator()){
+            return ActionResult.PASS;
+        }
 
 
         if(world.isClient()) {
-            return ActionResult.SUCCESS;
+            return ActionResult.PASS;
         }
         if (world.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
             return ActionResult.PASS;
@@ -40,7 +44,7 @@ public class AttackBlockHandler implements AttackBlockCallback {
         }
 
         List list = world.getEntitiesByType(EntityType.ITEM_FRAME,new Box(pos.getX()-2,pos.getY()-2, pos.getZ()-2,pos.getX()+2,pos.getY()+2, pos.getZ()+2), EntityPredicates.VALID_ENTITY);
-
+        Item[] items = Chess.combineLists();
         for(Object object : list){
             if(object instanceof ItemFrameEntity){
                 ItemFrameEntity entity = (ItemFrameEntity) object;
