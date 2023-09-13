@@ -1221,13 +1221,13 @@ public class ClickFigureCalculations {
 
 
                         String dead = "The White King is Dead!";
-                        sendKingDeadMessage(w,dead,15,currentPosition.pos);
+                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true);
 
 
                     }
                     if(e.getHeldItemStack().getItem() == ModItems.BLACK_KING || e.getHeldItemStack().getItem() == ModItems.CASTLE_BLACK_KING){
                         String dead = "The Black King is Dead!";
-                        sendKingDeadMessage(w,dead,15,currentPosition.pos);
+                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true);
                     }
 
 
@@ -1235,13 +1235,13 @@ public class ClickFigureCalculations {
 
 
                         String dead = "The Yellow King is Dead!";
-                        sendKingDeadMessage(w,dead,15,currentPosition.pos);
+                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true);
 
 
                     }
                     if(e.getHeldItemStack().getItem() == ModItems.PINK_KING || e.getHeldItemStack().getItem() == ModItems.CASTLE_PINK_KING){
                         String dead = "The Pink King is Dead!";
-                        sendKingDeadMessage(w,dead,15,currentPosition.pos);
+                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true);
                     }
 
 
@@ -1315,19 +1315,21 @@ public class ClickFigureCalculations {
         }
     }
 
-    private static void sendKingDeadMessage(World w, String s, int radius, BlockPos currentPosition){
 
-      List<PlayerEntity> list = w.getEntitiesByType(EntityType.PLAYER,new Box(currentPosition.getX()-radius,currentPosition.getY()-radius,currentPosition.getZ()-radius,currentPosition.getX()+radius,currentPosition.getY()+radius,currentPosition.getZ()+radius),EntityPredicates.VALID_ENTITY);
-      for(PlayerEntity p : list){
 
-          p.sendMessage(new LiteralText(s),false);
+    public static void sendMessageToClosePlayers(World w, String s, int radius, BlockPos currentPosition, boolean alsoActionbar){
 
-      }
+        List<PlayerEntity> list = w.getEntitiesByType(EntityType.PLAYER,new Box(currentPosition.getX()-radius,currentPosition.getY()-radius,currentPosition.getZ()-radius,currentPosition.getX()+radius,currentPosition.getY()+radius,currentPosition.getZ()+radius),EntityPredicates.VALID_ENTITY);
+        for(PlayerEntity p : list){
+
+            p.sendMessage(new LiteralText(s),false);
+            if(alsoActionbar){
+                p.sendMessage(new LiteralText(s),true);
+            }
+        }
 
 
     }
-
-
 
 
 
