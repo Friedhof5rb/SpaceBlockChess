@@ -4,6 +4,7 @@ import me.friedhof.chess.event.AttackBlockHandler;
 import me.friedhof.chess.event.AttackEntityHandler;
 import me.friedhof.chess.event.UseEntityHandler;
 import me.friedhof.chess.gamerule.ModGamerules;
+import me.friedhof.chess.item.ModItemGroup;
 import me.friedhof.chess.item.ModItems;
 import me.friedhof.chess.networking.ModMessages;
 import me.friedhof.chess.util.ModRegistries;
@@ -14,8 +15,9 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.LiteralTextContent;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +55,7 @@ public class Chess implements ModInitializer {
         ModMessages.registerC2SPackets();
         ModGamerules.registerGamerules();
         ModItems.registerModItems();
+        ModItemGroup.registerItemGroups();
         AttackBlockCallback.EVENT.register(new AttackBlockHandler());
         AttackEntityCallback.EVENT.register(new AttackEntityHandler());
         UseEntityCallback.EVENT.register(new UseEntityHandler());
@@ -74,11 +77,11 @@ public class Chess implements ModInitializer {
         StringBuilder text = new StringBuilder();
         String uuid = p.getUuidAsString();
         for(int i = 0; i < Chess.pool.get(uuid).size();i++){
-            text.append(Chess.pool.get(uuid).get(i).getCount()).append(" * ").append(new TranslatableText(Chess.pool.get(uuid).get(i).getTranslationKey()).getString()).append(",  \n");
+            text.append(Chess.pool.get(uuid).get(i).getCount()).append(" * ").append(Text.translatable(Chess.pool.get(uuid).get(i).getTranslationKey()).getString()).append(",  \n");
 
         }
-        p.sendMessage(new LiteralText(text.toString()),false);
 
+        p.sendMessage(Text.literal(text.toString()),false);
 
 
     }

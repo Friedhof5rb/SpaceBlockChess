@@ -98,7 +98,7 @@ public class UseEntityHandler implements UseEntityCallback {
             whosturn = "pink";
         }
 
-        String playerName = player.getDisplayName().asString();
+        String playerName = player.getDisplayName().getString();
 
         if (world.isClient()) {
             return ActionResult.SUCCESS;

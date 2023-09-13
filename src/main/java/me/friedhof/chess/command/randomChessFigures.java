@@ -6,6 +6,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.friedhof.chess.Chess;
 import me.friedhof.chess.gamerule.ModGamerules;
 import net.minecraft.block.Material;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.item.Item;
@@ -13,7 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -25,7 +26,7 @@ import java.util.Random;
 
 public class randomChessFigures {
 
-    public static void register (CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
+    public static void register (CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
         dispatcher.register(CommandManager.literal("randomChessFigures").executes(randomChessFigures::run));
     }
 
@@ -33,7 +34,7 @@ public class randomChessFigures {
     private static int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 
         if (!context.getSource().getPlayer().isCreative()) {
-            context.getSource().getPlayer().sendMessage(new LiteralText("You can only use this Command in Creative."), false);
+            context.getSource().getPlayer().sendMessage(Text.literal("You can only use this Command in Creative."), false);
             return -1;
         }
 

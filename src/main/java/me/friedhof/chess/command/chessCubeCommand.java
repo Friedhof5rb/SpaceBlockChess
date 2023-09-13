@@ -7,15 +7,16 @@ import me.friedhof.chess.Chess;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class chessCubeCommand {
 
-    public static void register (CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
+    public static void register (CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
         dispatcher.register(CommandManager.literal("chessCube").executes(chessCubeCommand::run));
     }
 
@@ -23,14 +24,14 @@ public class chessCubeCommand {
     private static int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 
         if (!context.getSource().getPlayer().isCreative()) {
-            context.getSource().getPlayer().sendMessage(new LiteralText("You can only use this Command in Creative."), false);
+            context.getSource().getPlayer().sendMessage(Text.literal("You can only use this Command in Creative."), false);
             return -1;
         }
         String uuid = context.getSource().getPlayer().getUuidAsString();
         World w = context.getSource().getWorld();
 
         if(!Chess.pos1.containsKey(uuid) || !Chess.pos2.containsKey(uuid)){
-            context.getSource().getPlayer().sendMessage(new LiteralText("Pos1 or Pos2 is not defined"), false);
+            context.getSource().getPlayer().sendMessage(Text.literal("Pos1 or Pos2 is not defined"), false);
             return -1;
         }
 

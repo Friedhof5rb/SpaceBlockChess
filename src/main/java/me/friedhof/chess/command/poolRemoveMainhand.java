@@ -5,11 +5,12 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.friedhof.chess.Chess;
 import me.friedhof.chess.item.ModItems;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 
@@ -20,7 +21,7 @@ public class poolRemoveMainhand {
 
 
 
-    public static void register (CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
+    public static void register (CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
         dispatcher.register(CommandManager.literal("removeFromPool").executes(poolRemoveMainhand::run));
     }
 
@@ -28,7 +29,7 @@ public class poolRemoveMainhand {
     private static int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 
         if(!context.getSource().getPlayer().isCreative()){
-            context.getSource().getPlayer().sendMessage(new LiteralText("You can only use this Command in Creative."), false);
+            context.getSource().getPlayer().sendMessage(Text.literal("You can only use this Command in Creative."), false);
             return -1;
         }
 

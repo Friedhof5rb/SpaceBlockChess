@@ -2,7 +2,8 @@ package me.friedhof.chess.util;
 
 import me.friedhof.chess.Chess;
 import me.friedhof.chess.command.*;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+
 
 public class ModRegistries {
 
@@ -13,6 +14,7 @@ public class ModRegistries {
     }
 
     private static void registerCommands(){
+
         CommandRegistrationCallback.EVENT.register(poolAddMainhand::register);
         CommandRegistrationCallback.EVENT.register(poolRemoveMainhand::register);
         CommandRegistrationCallback.EVENT.register(printPool::register);

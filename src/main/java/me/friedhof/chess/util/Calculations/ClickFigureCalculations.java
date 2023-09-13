@@ -12,7 +12,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -1322,9 +1322,9 @@ public class ClickFigureCalculations {
         List<PlayerEntity> list = w.getEntitiesByType(EntityType.PLAYER,new Box(currentPosition.getX()-radius,currentPosition.getY()-radius,currentPosition.getZ()-radius,currentPosition.getX()+radius,currentPosition.getY()+radius,currentPosition.getZ()+radius),EntityPredicates.VALID_ENTITY);
         for(PlayerEntity p : list){
 
-            p.sendMessage(new LiteralText(s),false);
+            p.sendMessage(Text.literal(s),false);
             if(alsoActionbar){
-                p.sendMessage(new LiteralText(s),true);
+                p.sendMessage(Text.literal(s),true);
             }
         }
 
