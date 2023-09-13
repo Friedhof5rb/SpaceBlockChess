@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    " R ",
+    "   "
+  ],
+  "key": {
+    "R": {
+      "item": "chess:pink_king"
+    }
+  },
+  "result": {
+    "item": "chess:castle_pink_king",
+    "count": 1
+  }
+}
+

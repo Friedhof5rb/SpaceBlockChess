@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    " R ",
+    "   "
+  ],
+  "key": {
+    "R": {
+      "item": "chess:pink_pawn"
+    }
+  },
+  "result": {
+    "item": "chess:start_pink_pawn",
+    "count": 1
+  }
+}
+

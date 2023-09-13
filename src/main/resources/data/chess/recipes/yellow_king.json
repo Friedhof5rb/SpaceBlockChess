@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " R ",
+    "RWR",
+    " R "
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:yellow_concrete"
+    },
+    "R": {
+      "item": "chess:chess_core"
+    }
+  },
+  "result": {
+    "item": "chess:yellow_king",
+    "count": 1
+  }
+}
+

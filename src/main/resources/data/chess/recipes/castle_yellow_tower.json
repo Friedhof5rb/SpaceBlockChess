@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    " R ",
+    "   "
+  ],
+  "key": {
+    "R": {
+      "item": "chess:yellow_tower"
+    }
+  },
+  "result": {
+    "item": "chess:castle_yellow_tower",
+    "count": 1
+  }
+}
+

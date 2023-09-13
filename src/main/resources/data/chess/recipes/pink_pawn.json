@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    " W ",
+    " R "
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:pink_concrete"
+    },
+    "R": {
+      "item": "chess:chess_core"
+    }
+  },
+  "result": {
+    "item": "chess:pink_pawn",
+    "count": 8
+  }
+}
+

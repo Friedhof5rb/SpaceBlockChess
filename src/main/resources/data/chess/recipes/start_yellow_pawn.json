@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    " R ",
+    "   "
+  ],
+  "key": {
+    "R": {
+      "item": "chess:yellow_pawn"
+    }
+  },
+  "result": {
+    "item": "chess:start_yellow_pawn",
+    "count": 1
+  }
+}
+
