@@ -318,17 +318,17 @@ public class FigureMovesCalculations {
 
     private static void replaceOldFigureForCastling(World w,GlobalChessData currentPosition, String team){
 
-        if(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem() == ModItems.CASTLE_WHITE_TOWER &&  team != "white"){
+        if(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem() == ModItems.CASTLE_WHITE_TOWER &&  team == "white"){
             replacementForColour(w,currentPosition, ModItems.CASTLE_SWITCH_WHITE_TOWER);
         }
-        if(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem() == ModItems.CASTLE_BLACK_TOWER && team != "black"){
+        if(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem() == ModItems.CASTLE_BLACK_TOWER && team == "black"){
            replacementForColour(w,currentPosition,ModItems.CASTLE_SWITCH_BLACK_TOWER);
         }
 
-        if(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem() == ModItems.CASTLE_YELLOW_TOWER &&  team != "yellow"){
+        if(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem() == ModItems.CASTLE_YELLOW_TOWER &&  team == "yellow"){
             replacementForColour(w,currentPosition, ModItems.CASTLE_SWITCH_YELLOW_TOWER);
         }
-        if(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem() == ModItems.CASTLE_PINK_TOWER &&  team != "pink"){
+        if(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem() == ModItems.CASTLE_PINK_TOWER &&  team == "pink"){
             replacementForColour(w,currentPosition,ModItems.CASTLE_SWITCH_PINK_TOWER);
         }
 
