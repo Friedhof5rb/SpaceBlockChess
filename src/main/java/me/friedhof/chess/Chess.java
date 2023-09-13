@@ -30,7 +30,7 @@ public class Chess implements ModInitializer {
      */
     public static final String MOD_ID = "chess";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    //test
+    //test 1.18.2
     public static HashMap<String,ArrayList<ItemStack> > pool = new HashMap<>();
 
     public static HashMap<String, BlockPos> pos1 = new HashMap<>();
