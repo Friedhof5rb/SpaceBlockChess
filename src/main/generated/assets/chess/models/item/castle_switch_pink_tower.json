@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "chess:item/castle_switch_pink_tower"
+  }
+}
