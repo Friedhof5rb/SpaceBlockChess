@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.GlassBlock;
 import net.minecraft.entity.decoration.ItemFrameEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -35,7 +36,7 @@ public class MovementCalculations {
         //innenkanten
         if(!(w.getBlockState(nextTo).getBlock() instanceof AirBlock)){
 
-            if(w.getBlockState(nextTo).getBlock() instanceof GlassBlock){
+            if(w.getBlockState(nextTo).getBlock() instanceof GlassBlock || w.getBlockState(nextTo).getFluidState() != Fluids.EMPTY.getDefaultState()){
                 return null;
             }
 
@@ -50,7 +51,7 @@ public class MovementCalculations {
 
             //glatt
         }else if(!(w.getBlockState(diagonal).getBlock() instanceof AirBlock)){
-            if( w.getBlockState(diagonal).getBlock() instanceof GlassBlock){
+            if( w.getBlockState(diagonal).getBlock() instanceof GlassBlock || w.getBlockState(diagonal).getFluidState() != Fluids.EMPTY.getDefaultState()){
                 return null;
             }
             GlobalChessData newPosition = new GlobalChessData(nextTo,data.directionWall, data.itemRotation, false);
