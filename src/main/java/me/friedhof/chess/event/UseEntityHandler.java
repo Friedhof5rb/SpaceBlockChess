@@ -3,18 +3,27 @@ package me.friedhof.chess.event;
 import me.friedhof.chess.Chess;
 import me.friedhof.chess.item.ModItems;
 import me.friedhof.chess.util.Calculations.ClickFigureCalculations;
+import me.friedhof.chess.util.Calculations.FigureMovesCalculations;
 import me.friedhof.chess.util.Calculations.MovementCalculations;
 import me.friedhof.chess.util.GlobalChessData;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Objects;
 
 public class UseEntityHandler implements UseEntityCallback {
 
@@ -115,29 +124,34 @@ public class UseEntityHandler implements UseEntityCallback {
                             Chess.arrayContains(yellowCapturePieces, frame.getHeldItemStack().getItem()) ||
                             Chess.arrayContains(pinkCapturePieces, frame.getHeldItemStack().getItem())) {
 
-                        ClickFigureCalculations.takeWithFigure(world, frame);
+
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        String message = playerName + " moved a white Piece.";
-                        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false);
+                        sendMovement(world, whosturn, playerName, currentPosition);
+                        ClickFigureCalculations.takeWithFigure(world, frame);
+
+
 
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(whiteSelectedPieces, frame.getHeldItemStack().getItem())) {
                         ClickFigureCalculations.deselectFigure(world, frame);
                         return ActionResult.SUCCESS;
                     } else if (frame.getHeldItemStack().getItem() == ModItems.MOVE_HIGHLIGHTER) {
+
+
+                        GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
+                        sendMovement(world, whosturn, playerName, currentPosition);
                         ClickFigureCalculations.moveFigure(world, frame);
 
-                        GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        String message = playerName + " moved a white Piece.";
-                        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false);
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(switchPieces, frame.getHeldItemStack().getItem())) {
-                        ClickFigureCalculations.switchFigure(world, frame);
+
+
+
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        String message = playerName + " moved a white Piece.";
-                        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false);
+                        sendMovement(world, whosturn, playerName, currentPosition);
+                        ClickFigureCalculations.switchFigure(world, frame);
                         return ActionResult.SUCCESS;
                     }
 
@@ -152,28 +166,30 @@ public class UseEntityHandler implements UseEntityCallback {
                     } else if (Chess.arrayContains(yellowCapturePieces, frame.getHeldItemStack().getItem()) ||
                             Chess.arrayContains(whiteCapturePieces, frame.getHeldItemStack().getItem()) ||
                             Chess.arrayContains(pinkCapturePieces, frame.getHeldItemStack().getItem())) {
-                        ClickFigureCalculations.takeWithFigure(world, frame);
+
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        String message = playerName + " moved a black Piece.";
-                        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false);
+
+                        sendMovement(world, whosturn, playerName, currentPosition);
+                        ClickFigureCalculations.takeWithFigure(world, frame);
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(blackSelectedPieces, frame.getHeldItemStack().getItem())) {
                         ClickFigureCalculations.deselectFigure(world, frame);
                         return ActionResult.SUCCESS;
                     } else if (frame.getHeldItemStack().getItem() == ModItems.MOVE_HIGHLIGHTER) {
-                        ClickFigureCalculations.moveFigure(world, frame);
+
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        String message = playerName + " moved a black Piece.";
-                        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false);
+                        sendMovement(world, whosturn, playerName, currentPosition);
+                        ClickFigureCalculations.moveFigure(world, frame);
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(switchPieces, frame.getHeldItemStack().getItem())) {
-                        ClickFigureCalculations.switchFigure(world, frame);
+
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        String message = playerName + " moved a black Piece.";
-                        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false);
+                        sendMovement(world, whosturn, playerName, currentPosition);
+                        ClickFigureCalculations.switchFigure(world, frame);
+
                         return ActionResult.SUCCESS;
 
                     }
@@ -188,28 +204,31 @@ public class UseEntityHandler implements UseEntityCallback {
                     } else if (Chess.arrayContains(whiteCapturePieces, frame.getHeldItemStack().getItem()) ||
                             Chess.arrayContains(blackCapturePieces, frame.getHeldItemStack().getItem()) ||
                     Chess.arrayContains(pinkCapturePieces, frame.getHeldItemStack().getItem())){
-                        ClickFigureCalculations.takeWithFigure(world, frame);
+
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        String message = playerName + " moved a yellow Piece.";
-                        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false);
+                        sendMovement(world, whosturn, playerName, currentPosition);
+                        ClickFigureCalculations.takeWithFigure(world, frame);
+
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(yellowSelectedPieces, frame.getHeldItemStack().getItem())) {
                         ClickFigureCalculations.deselectFigure(world, frame);
                         return ActionResult.SUCCESS;
                     } else if (frame.getHeldItemStack().getItem() == ModItems.MOVE_HIGHLIGHTER) {
-                        ClickFigureCalculations.moveFigure(world, frame);
+
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        String message = playerName + " moved a yellow Piece.";
-                        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false);
+                        sendMovement(world, whosturn, playerName, currentPosition);
+                       ClickFigureCalculations.moveFigure(world, frame);
+
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(switchPieces, frame.getHeldItemStack().getItem())) {
-                        ClickFigureCalculations.switchFigure(world, frame);
+
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        String message = playerName + " moved a yellow Piece.";
-                        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false);
+                        sendMovement(world, whosturn, playerName, currentPosition);
+                        ClickFigureCalculations.switchFigure(world, frame);
+
                         return ActionResult.SUCCESS;
                     }
 
@@ -223,28 +242,30 @@ public class UseEntityHandler implements UseEntityCallback {
                     } else if (Chess.arrayContains(whiteCapturePieces, frame.getHeldItemStack().getItem()) ||
                             Chess.arrayContains(blackCapturePieces, frame.getHeldItemStack().getItem()) ||
                     Chess.arrayContains(yellowCapturePieces, frame.getHeldItemStack().getItem())){
-                        ClickFigureCalculations.takeWithFigure(world, frame);
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        String message = playerName + " moved a pink Piece.";
-                        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false);
+                        sendMovement(world, whosturn, playerName, currentPosition);
+                        ClickFigureCalculations.takeWithFigure(world, frame);
+
+
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(pinkSelectedPieces, frame.getHeldItemStack().getItem())) {
                         ClickFigureCalculations.deselectFigure(world, frame);
                         return ActionResult.SUCCESS;
                     } else if (frame.getHeldItemStack().getItem() == ModItems.MOVE_HIGHLIGHTER) {
+
+
+                        GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
+                        sendMovement(world, whosturn, playerName, currentPosition);
                         ClickFigureCalculations.moveFigure(world, frame);
 
-                        GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        String message = playerName + " moved a pink Piece.";
-                        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false);
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(switchPieces, frame.getHeldItemStack().getItem())) {
-                        ClickFigureCalculations.switchFigure(world, frame);
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        String message = playerName + " moved a pink Piece.";
-                        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false);
+                        sendMovement(world, whosturn, playerName, currentPosition);
+                        ClickFigureCalculations.switchFigure(world, frame);
+
                         return ActionResult.SUCCESS;
                     }
 
@@ -258,6 +279,32 @@ public class UseEntityHandler implements UseEntityCallback {
 
         return ActionResult.SUCCESS;
     }
+
+    private static void sendMovement(World world, String colour, String playerName, GlobalChessData currentPosition){
+
+        int r = 20;
+        GlobalChessData originPosition = currentPosition;
+        String piece = colour + "Piece";
+        List<ItemFrameEntity> list = world.getEntitiesByType(EntityType.ITEM_FRAME,new Box(currentPosition.pos.getX()-r,currentPosition.pos.getY()-r,currentPosition.pos.getZ()-r,currentPosition.pos.getX()+r,currentPosition.pos.getY()+r,currentPosition.pos.getZ()+r), EntityPredicates.VALID_ENTITY);
+        for(ItemFrameEntity e : list){
+            if((Chess.arrayContains(whiteSelectedPieces,e.getHeldItemStack().getItem()) && Objects.equals(colour, "white"))|| (Chess.arrayContains(blackSelectedPieces,e.getHeldItemStack().getItem()) && Objects.equals(colour, "black")) ||
+                    (Chess.arrayContains(yellowSelectedPieces,e.getHeldItemStack().getItem()) && Objects.equals(colour, "yellow")) || (Chess.arrayContains(pinkSelectedPieces,e.getHeldItemStack().getItem()) && Objects.equals(colour, "pink"))){
+                    originPosition = MovementCalculations.figureToData(e);
+                    piece = Text.translatable(FigureMovesCalculations.exchangeItems(e.getHeldItemStack().getItem(),false).getTranslationKey()).getString();
+                    break;
+            }
+        }
+
+
+        String message = playerName + " moved a " +piece + " from: [" + originPosition.pos.getX() + ", " +  originPosition.pos.getY() + ", " + originPosition.pos.getZ() + ", " +originPosition.directionWall.name() + "]\n" +
+                " to: [" + currentPosition.pos.getX() + ", " +  currentPosition.pos.getY() + ", " + currentPosition.pos.getZ() + ", " +currentPosition.directionWall.name() + "]";
+        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false);
+
+
+
+    }
+
+
 
 
 

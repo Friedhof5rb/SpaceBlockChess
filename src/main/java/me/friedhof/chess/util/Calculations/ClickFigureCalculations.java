@@ -1057,7 +1057,8 @@ public class ClickFigureCalculations {
 
 
 
-    public static void moveFigure(World w, ItemFrameEntity frame) {
+    public static GlobalChessData moveFigure(World w, ItemFrameEntity frame) {
+        GlobalChessData result = MovementCalculations.figureToData(frame);
         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
         List list = w.getEntitiesByType(EntityType.ITEM_FRAME,new Box(currentPosition.pos.getX()- UseEntityHandler.searchRadius,currentPosition.pos.getY()-UseEntityHandler.searchRadius,currentPosition.pos.getZ()-UseEntityHandler.searchRadius,currentPosition.pos.getX()+UseEntityHandler.searchRadius,currentPosition.pos.getY()+UseEntityHandler.searchRadius,currentPosition.pos.getZ()+UseEntityHandler.searchRadius),EntityPredicates.VALID_ENTITY);
         for(int j = 0; j < list.size();j++) {
@@ -1140,7 +1141,7 @@ public class ClickFigureCalculations {
                         item = ModItems.PINK_TOWER;
                     }
 
-
+                    result = currentPosition;
                     ItemFrameEntity e = new ItemFrameEntity(w,currentPosition.pos,currentPosition.directionWall);
                     ItemStack stack = new ItemStack(item);
                     e.setHeldItemStack(stack);
@@ -1156,10 +1157,11 @@ public class ClickFigureCalculations {
 
             }
         }
+        return result;
     }
 
-    public static void takeWithFigure( World w, ItemFrameEntity frame) {
-
+    public static GlobalChessData takeWithFigure( World w, ItemFrameEntity frame) {
+        GlobalChessData result = MovementCalculations.figureToData(frame);
         int rotation = 0;
         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
         List<ItemFrameEntity> list = w.getEntitiesByType(EntityType.ITEM_FRAME,new Box(currentPosition.pos.getX()-UseEntityHandler.searchRadius,currentPosition.pos.getY()-UseEntityHandler.searchRadius,currentPosition.pos.getZ()-UseEntityHandler.searchRadius,currentPosition.pos.getX()+UseEntityHandler.searchRadius,currentPosition.pos.getY()+UseEntityHandler.searchRadius,currentPosition.pos.getZ()+UseEntityHandler.searchRadius),EntityPredicates.VALID_ENTITY);
@@ -1297,7 +1299,7 @@ public class ClickFigureCalculations {
                     item = ModItems.PINK_TOWER;
                 }
                 
-
+                result = currentPosition;
                 ItemFrameEntity e = new ItemFrameEntity(w,currentPosition.pos,currentPosition.directionWall);
                 ItemStack stack = new ItemStack(item);
                 e.setHeldItemStack(stack);
@@ -1313,6 +1315,7 @@ public class ClickFigureCalculations {
 
 
         }
+        return result;
     }
 
 
@@ -1335,8 +1338,8 @@ public class ClickFigureCalculations {
 
 
 
-    public static void switchFigure( World w, ItemFrameEntity frame){
-
+    public static GlobalChessData switchFigure( World w, ItemFrameEntity frame){
+        GlobalChessData result1 = MovementCalculations.figureToData(frame);
         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
         List<ItemFrameEntity> list = w.getEntitiesByType(EntityType.ITEM_FRAME,new Box(currentPosition.pos.getX()-UseEntityHandler.searchRadius,currentPosition.pos.getY()-UseEntityHandler.searchRadius,currentPosition.pos.getZ()-UseEntityHandler.searchRadius,currentPosition.pos.getX()+UseEntityHandler.searchRadius,currentPosition.pos.getY()+UseEntityHandler.searchRadius,currentPosition.pos.getZ()+UseEntityHandler.searchRadius),EntityPredicates.VALID_ENTITY);
 
@@ -1455,7 +1458,7 @@ public class ClickFigureCalculations {
                 e.setInvulnerable(true);
             }
             w.spawnEntity(e);
-
+            result1 = newPiece;
             ItemFrameEntity e2 = new ItemFrameEntity(w,newPiece.pos,newPiece.directionWall);
             ItemStack stack2 = new ItemStack(item2);
             e2.setHeldItemStack(stack2);
@@ -1470,7 +1473,7 @@ public class ClickFigureCalculations {
             }
 
         }
-
+    return result1;
     }
 
     private static boolean isSwitchPiece(World w, Direction direction,GlobalChessData selectedPiece, GlobalChessData switchPiece) {
