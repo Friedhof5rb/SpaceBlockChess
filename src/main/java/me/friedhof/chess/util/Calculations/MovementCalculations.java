@@ -37,7 +37,7 @@ public class MovementCalculations {
             }
 
             int newItemRotation = RotationCalculations.correctRotations(data.itemRotation,data.directionWall,absolute);
-            if(data.directionWall == Direction.UP || data.directionWall == Direction.DOWN){
+            if(data.directionWall == Direction.UP || data.directionWall == Direction.DOWN  || data.directionWall == Direction.EAST ||  data.directionWall == Direction.WEST){
                 newItemRotation = (newItemRotation + 4) % 8;
             }
 
