@@ -1,7 +1,10 @@
 package me.friedhof.chess.util.Calculations;
 
 import me.friedhof.chess.util.GlobalChessData;
-import net.minecraft.block.Material;
+import net.minecraft.block.AirBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.GlassBlock;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -30,9 +33,9 @@ public class MovementCalculations {
         BlockPos diagonal = new BlockPos(attachedBlock.getX(), attachedBlock.getY(), attachedBlock.getZ()).offset(absolute,1);
 
         //innenkanten
-        if(w.getBlockState(nextTo).getMaterial() != Material.AIR){
+        if(!(w.getBlockState(nextTo).getBlock() instanceof AirBlock)){
 
-            if(w.getBlockState(nextTo).getMaterial() == Material.WATER || w.getBlockState(nextTo).getMaterial() == Material.LAVA || w.getBlockState(nextTo).getMaterial() == Material.GLASS){
+            if(w.getBlockState(nextTo).getBlock() instanceof GlassBlock){
                 return null;
             }
 
@@ -46,8 +49,8 @@ public class MovementCalculations {
             return newPosition;
 
             //glatt
-        }else if(w.getBlockState(diagonal).getMaterial() != Material.AIR){
-            if(w.getBlockState(diagonal).getMaterial() == Material.WATER || w.getBlockState(diagonal).getMaterial() == Material.LAVA|| w.getBlockState(diagonal).getMaterial() == Material.GLASS){
+        }else if(!(w.getBlockState(diagonal).getBlock() instanceof AirBlock)){
+            if( w.getBlockState(diagonal).getBlock() instanceof GlassBlock){
                 return null;
             }
             GlobalChessData newPosition = new GlobalChessData(nextTo,data.directionWall, data.itemRotation, false);

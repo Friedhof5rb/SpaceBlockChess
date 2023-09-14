@@ -5,23 +5,22 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+
 import net.fabricmc.fabric.impl.itemgroup.FabricItemGroupBuilderImpl;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class ModItemGroup {
 
-    public static ItemGroup SpaceChess;
-
-    public static void registerItemGroups(){
-
-        SpaceChess = FabricItemGroup.builder(new Identifier(Chess.MOD_ID, "space_chess"))
+    public static ItemGroup SpaceChess = Registry.register(Registries.ITEM_GROUP,new Identifier(Chess.MOD_ID, "space_chess"),
+                FabricItemGroup.builder().displayName(Text.translatable("itemgroup.chess.space_chess"))
                 .icon(() -> new ItemStack(ModItems.WHITE_KNIGHT))
-                .entries((context, entries) -> {
+                .entries((displayContext, entries) -> {
                     entries.add(ModItems.ROD_OF_REMOVAL);
                     entries.add(ModItems.ROD_OF_ROTATION);
                     entries.add(ModItems.CHESS_CORE);
@@ -74,10 +73,13 @@ public class ModItemGroup {
 
 
                 })
-                .build();
-
+                .build());
+    public static void registerItemGroups(){
 
     }
+
+
+
 
 
 

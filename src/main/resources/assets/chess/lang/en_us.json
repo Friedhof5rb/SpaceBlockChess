@@ -51,7 +51,7 @@
   "item.chess.rod_of_rotation": "Rod of Rotation",
   "item.chess.move_highlighter": "Move Highlighter - DO NOT USE!",
   "item.chess.rod_of_removal": "Rod of Removal",
-  "itemGroup.chess.space_chess": "Space Chess Tab",
+  "itemgroup.chess.space_chess": "Space Chess Tab",
 
   "item.chess.chess_core": "Chess Core",
   "item.chess.chesspos1": "Chess Pos1",

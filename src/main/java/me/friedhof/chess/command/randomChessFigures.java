@@ -5,7 +5,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.friedhof.chess.Chess;
 import me.friedhof.chess.gamerule.ModGamerules;
-import net.minecraft.block.Material;
+import net.minecraft.block.GlassBlock;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ItemFrameEntity;
@@ -63,7 +63,7 @@ public class randomChessFigures {
         }
 
         BlockPos pos = randomPos(uuid);
-        if(!w.getBlockState(pos).isAir() && w.getBlockState(pos).getMaterial() != Material.WATER &&  w.getBlockState(pos).getMaterial() != Material.LAVA && w.getBlockState(pos).getMaterial() != Material.GLASS){
+        if(!w.getBlockState(pos).isAir()  && !(w.getBlockState(pos).getBlock() instanceof GlassBlock)){
 
             ArrayList<BlockPos> sides = new ArrayList<>();
             ArrayList<Direction> direc = new ArrayList<>();
