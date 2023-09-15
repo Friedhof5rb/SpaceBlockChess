@@ -23,7 +23,7 @@ public class ModRegistries {
         CommandRegistrationCallback.EVENT.register(randomChessFigures::register);
         CommandRegistrationCallback.EVENT.register(clearChessCommand::register);
         CommandRegistrationCallback.EVENT.register(chessCubeCommand::register);
-
+        CommandRegistrationCallback.EVENT.register(switchChessNotationVisbility::register);
     }
 
 

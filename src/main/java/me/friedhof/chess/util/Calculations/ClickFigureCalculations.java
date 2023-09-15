@@ -1223,13 +1223,13 @@ public class ClickFigureCalculations {
 
 
                         String dead = "The White King is Dead!";
-                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true);
+                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true,false);
 
 
                     }
                     if(e.getHeldItemStack().getItem() == ModItems.BLACK_KING || e.getHeldItemStack().getItem() == ModItems.CASTLE_BLACK_KING){
                         String dead = "The Black King is Dead!";
-                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true);
+                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true,false);
                     }
 
 
@@ -1237,13 +1237,13 @@ public class ClickFigureCalculations {
 
 
                         String dead = "The Yellow King is Dead!";
-                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true);
+                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true,false);
 
 
                     }
                     if(e.getHeldItemStack().getItem() == ModItems.PINK_KING || e.getHeldItemStack().getItem() == ModItems.CASTLE_PINK_KING){
                         String dead = "The Pink King is Dead!";
-                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true);
+                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true,false);
                     }
 
 
@@ -1320,10 +1320,18 @@ public class ClickFigureCalculations {
 
 
 
-    public static void sendMessageToClosePlayers(World w, String s, int radius, BlockPos currentPosition, boolean alsoActionbar){
+    public static void sendMessageToClosePlayers(World w, String s, int radius, BlockPos currentPosition, boolean alsoActionbar,boolean ChessNotation){
 
         List<PlayerEntity> list = w.getEntitiesByType(EntityType.PLAYER,new Box(currentPosition.getX()-radius,currentPosition.getY()-radius,currentPosition.getZ()-radius,currentPosition.getX()+radius,currentPosition.getY()+radius,currentPosition.getZ()+radius),EntityPredicates.VALID_ENTITY);
         for(PlayerEntity p : list){
+            String uuid = p.getUuidAsString();
+
+            if(Chess.canSeeChessNotation.containsKey(uuid) && ChessNotation){
+                if(!Chess.canSeeChessNotation.get(uuid)){
+                    continue;
+                }
+            }
+
 
             p.sendMessage(Text.literal(s),false);
             if(alsoActionbar){

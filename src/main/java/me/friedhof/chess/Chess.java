@@ -38,6 +38,7 @@ public class Chess implements ModInitializer {
     public static HashMap<String, BlockPos> pos1 = new HashMap<>();
     public static HashMap<String, BlockPos> pos2 = new HashMap<>();
 
+    public static HashMap<String, Boolean> canSeeChessNotation = new HashMap<>();
 
     //the order of Items matters
     public static Item[] poolAndPlace = {ModItems.BLACK_BISHOP,ModItems.BLACK_KING,ModItems.BLACK_KNIGHT,ModItems.BLACK_PAWN, ModItems.BLACK_QUEEN, ModItems.BLACK_TOWER,

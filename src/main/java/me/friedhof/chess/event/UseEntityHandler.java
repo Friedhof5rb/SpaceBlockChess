@@ -298,7 +298,11 @@ public class UseEntityHandler implements UseEntityCallback {
 
         String message = playerName + " moved a " +piece + " from: [" + originPosition.pos.getX() + ", " +  originPosition.pos.getY() + ", " + originPosition.pos.getZ() + ", " +originPosition.directionWall.name() + "]\n" +
                 " to: [" + currentPosition.pos.getX() + ", " +  currentPosition.pos.getY() + ", " + currentPosition.pos.getZ() + ", " +currentPosition.directionWall.name() + "]";
-        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false);
+
+
+
+
+        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false,true);
 
 
 
