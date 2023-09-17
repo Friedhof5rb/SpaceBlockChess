@@ -38,7 +38,7 @@ public class FigureMovesCalculations {
                 }
             }else{
                 ItemFrameEntity e = MovementCalculations.dataToFigure(w,currentPosition, ModItems.MOVE_HIGHLIGHTER);
-
+                e.setInvisible(true);
                 if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                     e.setInvulnerable(true);
                 }
@@ -99,7 +99,7 @@ public class FigureMovesCalculations {
                 }
             }else{
                 ItemFrameEntity e = MovementCalculations.dataToFigure(w,currentPosition, ModItems.MOVE_HIGHLIGHTER);
-
+                e.setInvisible(true);
                 if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                     e.setInvulnerable(true);
                 }
@@ -129,7 +129,7 @@ public class FigureMovesCalculations {
             }
         }else{
             ItemFrameEntity e = MovementCalculations.dataToFigure(w,currentPosition, ModItems.MOVE_HIGHLIGHTER);
-
+            e.setInvisible(true);
             if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                 e.setInvulnerable(true);
             }
@@ -160,7 +160,7 @@ public class FigureMovesCalculations {
                 }
             }else{
                 ItemFrameEntity e = MovementCalculations.dataToFigure(w,currentPosition, ModItems.MOVE_HIGHLIGHTER);
-
+                e.setInvisible(true);
                 if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                     e.setInvulnerable(true);
                 }
@@ -192,7 +192,7 @@ public class FigureMovesCalculations {
             }
         }else{
             ItemFrameEntity e = MovementCalculations.dataToFigure(w,currentPosition, ModItems.MOVE_HIGHLIGHTER);
-
+            e.setInvisible(true);
             if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                 e.setInvulnerable(true);
             }
@@ -214,7 +214,7 @@ public class FigureMovesCalculations {
         if (currentPosition != null) {
             if (!MovementCalculations.isItemFrame(w, currentPosition.pos, currentPosition.directionWall)) {
                 ItemFrameEntity e = MovementCalculations.dataToFigure(w, currentPosition, ModItems.MOVE_HIGHLIGHTER);
-
+                e.setInvisible(true);
                 if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                     e.setInvulnerable(true);
                 }
@@ -280,7 +280,7 @@ public class FigureMovesCalculations {
         if(currentPosition != null) {
             if (!MovementCalculations.isItemFrame(w, currentPosition.pos, currentPosition.directionWall)) {
                 ItemFrameEntity e = MovementCalculations.dataToFigure(w, currentPosition, ModItems.MOVE_HIGHLIGHTER);
-
+                e.setInvisible(true);
                 if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                     e.setInvulnerable(true);
                 }
@@ -382,6 +382,7 @@ public class FigureMovesCalculations {
 
         }
         ItemFrameEntity newEntity = MovementCalculations.dataToFigureWithDamage(w,currentPosition, newItem,rotation );
+        newEntity.setInvisible(true);
         if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
             newEntity.setInvulnerable(true);
         }

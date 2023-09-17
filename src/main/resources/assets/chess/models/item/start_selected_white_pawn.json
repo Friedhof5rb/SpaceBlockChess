@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "chess:item/start_selected_white_pawn"
-  }
-}

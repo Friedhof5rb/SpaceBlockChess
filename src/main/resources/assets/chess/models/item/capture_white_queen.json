@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "chess:item/capture_white_queen"
-  }
-}

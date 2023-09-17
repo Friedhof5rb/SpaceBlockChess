@@ -57,7 +57,7 @@ public class SpawnFigureC2SPacket {
         ItemFrameEntity e = new ItemFrameEntity(w, pos, d);
         ItemStack stack = new ItemStack(Chess.poolAndPlace[figureIndex]);
         e.setHeldItemStack(stack);
-
+        e.setInvisible(true);
 
         w.spawnEntity(e);
 

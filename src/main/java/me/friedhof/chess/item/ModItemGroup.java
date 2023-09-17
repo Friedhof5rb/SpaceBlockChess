@@ -76,6 +76,7 @@ public class ModItemGroup {
                 .build());
     public static void registerItemGroups(){
 
+        Chess.LOGGER.info("Registering Itemgroups for " + Chess.MOD_ID);
     }
 
 

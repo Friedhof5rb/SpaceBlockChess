@@ -11,6 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.AirBlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.text.Text;
@@ -66,6 +67,13 @@ public class UseEntityHandler implements UseEntityCallback {
     public ActionResult interact(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult) {
 
         String whosturn = "";
+
+        if (entity instanceof ItemFrameEntity) {
+            ItemFrameEntity e5 = (ItemFrameEntity) entity;
+            if(Chess.arrayContains(Chess.combineLists(),player.getInventory().getMainHandStack().getItem()) || (player.getInventory().getMainHandStack().getItem() instanceof AirBlockItem && Chess.arrayContains(Chess.combineLists(),player.getOffHandStack().getItem()))){
+                e5.setInvisible(true);
+            }
+        }
 
 
         if (player.getInventory().getMainHandStack().getItem() != ModItems.WHITE_ROD_OF_MOVING && player.getInventory().getMainHandStack().getItem() != ModItems.BLACK_ROD_OF_MOVING && player.getInventory().getMainHandStack().getItem() != ModItems.ROD_OF_ROTATION && player.getInventory().getMainHandStack().getItem() != ModItems.YELLOW_ROD_OF_MOVING && player.getInventory().getMainHandStack().getItem() != ModItems.PINK_ROD_OF_MOVING) {

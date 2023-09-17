@@ -3,6 +3,8 @@ package me.friedhof.chess.util;
 import me.friedhof.chess.Chess;
 import me.friedhof.chess.command.*;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 
 public class ModRegistries {
@@ -26,6 +28,11 @@ public class ModRegistries {
         CommandRegistrationCallback.EVENT.register(switchChessNotationVisbility::register);
     }
 
+
+    private static void  registerModels(){
+
+
+    }
 
 
 }

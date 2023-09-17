@@ -27,12 +27,17 @@ public class AttackEntityHandler implements AttackEntityCallback {
         }
 
 
-
-
-
         if(world.isClient()) {
             return ActionResult.PASS;
         }
+
+        if (entity instanceof ItemFrameEntity  && world.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+            ItemFrameEntity e5 = (ItemFrameEntity) entity;
+            if(Chess.arrayContains(Chess.combineLists(),e5.getHeldItemStack().getItem()) ){
+                e5.setInvisible(false);
+            }
+        }
+
 
         if(entity instanceof ZombieEntity && world.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)){
           if(((ZombieEntity) entity).getHealth() < 1) {
@@ -49,12 +54,13 @@ public class AttackEntityHandler implements AttackEntityCallback {
             return ActionResult.PASS;
         }
         if(player.getInventory().getMainHandStack().getItem() == ModItems.ROD_OF_REMOVAL){
+            entity.kill();
             return ActionResult.PASS;
         }
         Item[] items = Chess.combineLists();
         if(entity instanceof ItemFrameEntity){
             ItemFrameEntity e = (ItemFrameEntity) entity;
-            if(Chess.arrayContains(items, e.getHeldItemStack().getItem() )){
+            if(Chess.arrayContains(items, e.getHeldItemStack().getItem() ) || e.getHeldItemStack().getItem() == ModItems.MOVE_HIGHLIGHTER){
                 return ActionResult.FAIL;
             }
         }

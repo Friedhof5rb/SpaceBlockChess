@@ -2,5 +2,10 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "chess:item/move_highlighter"
+  },
+  "display": {
+    "fixed": {
+      "scale": [2,2,2]
+    }
   }
 }
