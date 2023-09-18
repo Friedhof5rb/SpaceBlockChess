@@ -13,7 +13,7 @@ import net.minecraft.text.Text;
 public class pos1Command {
 
     public static void register (CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
-        dispatcher.register(CommandManager.literal("chessPos1").executes(pos1Command::run));
+        dispatcher.register(CommandManager.literal("chess").then(CommandManager.literal("pos1").executes(pos1Command::run)));
     }
 
 

@@ -20,7 +20,7 @@ public class clearChessCommand {
 
 
     public static void register (CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
-        dispatcher.register(CommandManager.literal("clearChess").executes(clearChessCommand::run));
+        dispatcher.register(CommandManager.literal("chess").then(CommandManager.literal("clearFigures").executes(clearChessCommand::run)));
     }
 
 

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class printPool {
     public static void register (CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
-        dispatcher.register(CommandManager.literal("printPool").executes(printPool::run));
+        dispatcher.register(CommandManager.literal("chess").then(CommandManager.literal("printPool").executes(printPool::run)));
     }
 
 

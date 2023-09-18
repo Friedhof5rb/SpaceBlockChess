@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.friedhof.chess.Chess;
+import me.friedhof.chess.util.ChessBotCalculations.Boardstate;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -13,7 +14,7 @@ import net.minecraft.world.World;
 public class switchChessNotationVisbility {
 
     public static void register (CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
-        dispatcher.register(CommandManager.literal("switchChessNotationVisibility").executes(switchChessNotationVisbility::run));
+        dispatcher.register(CommandManager.literal("chess").then(CommandManager.literal("toggleNotationVisibility").executes(switchChessNotationVisbility::run)));
     }
 
 
@@ -34,8 +35,6 @@ public class switchChessNotationVisbility {
                 context.getSource().getPlayer().sendMessage(Text.literal("Toggled Visibility to true"), false);
             }
         }
-
-
         return 1;
     }
 }

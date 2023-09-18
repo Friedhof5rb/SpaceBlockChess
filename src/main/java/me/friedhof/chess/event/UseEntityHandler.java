@@ -290,6 +290,7 @@ public class UseEntityHandler implements UseEntityCallback {
 
     private static void sendMovement(World world, String colour, String playerName, GlobalChessData currentPosition){
 
+
         int r = 20;
         GlobalChessData originPosition = currentPosition;
         String piece = colour + "Piece";
@@ -308,7 +309,7 @@ public class UseEntityHandler implements UseEntityCallback {
                 " to: [" + currentPosition.pos.getX() + ", " +  currentPosition.pos.getY() + ", " + currentPosition.pos.getZ() + ", " +currentPosition.directionWall.name() + "]";
 
 
-
+        Chess.lastMove = currentPosition;
 
         ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false,true);
 

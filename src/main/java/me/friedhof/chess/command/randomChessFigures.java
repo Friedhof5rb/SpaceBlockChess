@@ -31,7 +31,7 @@ import java.util.Random;
 public class randomChessFigures {
 
     public static void register (CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
-        dispatcher.register(CommandManager.literal("randomChessFigures").executes(randomChessFigures::run));
+        dispatcher.register(CommandManager.literal("chess").then(CommandManager.literal("randomFigures").executes(randomChessFigures::run)));
     }
 
 
@@ -121,6 +121,7 @@ public class randomChessFigures {
             ItemStack stack = new ItemStack(item);
             e.setHeldItemStack(stack);
             e.setRotation(rotation*2);
+            e.setInvisible(true);
             e.setInvulnerable(true);
             w.spawnEntity(e);
 

@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 public class chessCubeCommand {
 
     public static void register (CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
-        dispatcher.register(CommandManager.literal("chessCube").executes(chessCubeCommand::run));
+        dispatcher.register(CommandManager.literal("chess").then(CommandManager.literal("cube").executes(chessCubeCommand::run)));
     }
 
 

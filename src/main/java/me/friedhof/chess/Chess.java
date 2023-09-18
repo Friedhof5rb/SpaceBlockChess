@@ -7,6 +7,7 @@ import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItemGroup;
 import me.friedhof.chess.item.ModItems;
 import me.friedhof.chess.networking.ModMessages;
+import me.friedhof.chess.util.GlobalChessData;
 import me.friedhof.chess.util.ModRegistries;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -41,6 +42,14 @@ public class Chess implements ModInitializer {
     public static HashMap<String, BlockPos> pos2 = new HashMap<>();
 
     public static HashMap<String, Boolean> canSeeChessNotation = new HashMap<>();
+
+
+    public static GlobalChessData lastMove;
+
+    String[] turnOrder = {"white","black"};
+
+
+
 
     //the order of Items matters
     public static Item[] poolAndPlace = {ModItems.BLACK_BISHOP,ModItems.BLACK_KING,ModItems.BLACK_KNIGHT,ModItems.BLACK_PAWN, ModItems.BLACK_QUEEN, ModItems.BLACK_TOWER,
@@ -137,5 +146,39 @@ public class Chess implements ModInitializer {
         return list;
 
     }
+
+    public static String ItemToColour(Item item){
+
+        if(arrayContains(UseEntityHandler.whitePieces,item) || arrayContains(UseEntityHandler.whiteCapturePieces,item) ||arrayContains(UseEntityHandler.whiteSelectedPieces,item) ) {
+            return "white";
+        }
+        if(arrayContains(UseEntityHandler.blackPieces,item) || arrayContains(UseEntityHandler.blackCapturePieces,item) ||arrayContains(UseEntityHandler.blackSelectedPieces,item) ){
+            return "black";
+        }
+        if(arrayContains(UseEntityHandler.yellowPieces,item) || arrayContains(UseEntityHandler.yellowCapturePieces,item) ||arrayContains(UseEntityHandler.yellowSelectedPieces,item) ){
+            return "yellow";
+        }
+        if(arrayContains(UseEntityHandler.pinkPieces,item) || arrayContains(UseEntityHandler.pinkCapturePieces,item) ||arrayContains(UseEntityHandler.pinkSelectedPieces,item) ) {
+            return "pink";
+        }
+
+        if(item == ModItems.CASTLE_SWITCH_WHITE_TOWER){
+            return "white";
+        }
+        if(item == ModItems.CASTLE_SWITCH_BLACK_TOWER){
+            return "black";
+        }
+        if(item == ModItems.CASTLE_SWITCH_YELLOW_TOWER){
+            return "yellow";
+        }
+        if(item == ModItems.CASTLE_SWITCH_PINK_TOWER){
+            return "pink";
+        }
+
+        return "";
+
+    }
+
+
 
 }
