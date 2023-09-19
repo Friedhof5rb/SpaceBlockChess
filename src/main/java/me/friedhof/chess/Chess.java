@@ -17,6 +17,7 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.client.report.ReporterEnvironment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralTextContent;
 import net.minecraft.text.Text;
@@ -72,7 +73,10 @@ public class Chess implements ModInitializer {
         AttackEntityCallback.EVENT.register(new AttackEntityHandler());
         UseEntityCallback.EVENT.register(new UseEntityHandler());
         ModRegistries.registerModStuffs();
-        LOGGER.info("spaceChessMod loaded.");
+        LOGGER.info("SpaceBlockChessMod loaded.");
+
+
+
     }
 
 
