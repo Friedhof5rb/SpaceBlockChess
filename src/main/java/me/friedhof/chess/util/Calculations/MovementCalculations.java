@@ -41,12 +41,10 @@ public class MovementCalculations {
             }
 
 
-            int newItemRotation = RotationCalculations.correctRotations(data.itemRotation,data.directionWall,absolute);
+            int newItemRotation = RotationCalculations.correctRotationsInnerEdges(data.itemRotation,data.directionWall,absolute.getOpposite());
 
 
-            if(data.directionWall == Direction.UP || data.directionWall == Direction.DOWN ||  data.directionWall == Direction.EAST ||  data.directionWall == Direction.WEST){
-                newItemRotation = (newItemRotation + 4) % 8;
-            }
+
 
             GlobalChessData newPosition = new GlobalChessData(sameBlock,absolute.getOpposite(),newItemRotation,false);
 
@@ -66,7 +64,7 @@ public class MovementCalculations {
 
 
 
-            GlobalChessData newPosition = new GlobalChessData(diagonal,absolute,RotationCalculations.correctRotations(data.itemRotation,data.directionWall, absolute),false);
+            GlobalChessData newPosition = new GlobalChessData(diagonal,absolute,RotationCalculations.correctRotationsOuterEdges(data.itemRotation,data.directionWall, absolute),false);
 
             return newPosition;
         }

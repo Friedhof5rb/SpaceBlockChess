@@ -13,6 +13,7 @@ import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AirBlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -309,13 +310,19 @@ public class UseEntityHandler implements UseEntityCallback {
                 " to: [" + currentPosition.pos.getX() + ", " +  currentPosition.pos.getY() + ", " + currentPosition.pos.getZ() + ", " +currentPosition.directionWall.name() + "]";
 
 
-        Chess.lastMove = currentPosition;
-
+        Chess.lastMoveFrom = originPosition;
+        Chess.lastMoveTo = currentPosition;
         ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false,true);
 
 
 
     }
+
+
+
+
+
+
 
 
 

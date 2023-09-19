@@ -363,6 +363,7 @@ public class ClickFigureCalculations {
             newFrame.setRotation(frame.getRotation());
             ItemStack stack = new ItemStack(ModItems.START_SELECTED_WHITE_PAWN);
             newFrame.setHeldItemStack(stack);
+            newFrame.setInvisible(true);
             if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                 newFrame.setInvulnerable(true);
             }

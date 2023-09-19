@@ -8,15 +8,24 @@ public class RotationCalculations {
 
 
 
-    public static int correctRotations(int itemRotation, Direction from, Direction to){
+    public static int correctRotationsOuterEdges(int itemRotation, Direction from, Direction to){
 
-        return (itemRotation + correctRotationsToAdd(from, to)) % 8;
+        return (itemRotation + correctRotationsToAddOuterEdges(from, to)) % 8;
 
     }
 
 
+    public static int correctRotationsInnerEdges(int itemRotation, Direction from, Direction to){
+
+        return (itemRotation + correctRotationsToAddInnerEdges(from, to)) % 8;
+
+    }
+
+
+
+
     //für außenkanten
-    private static int correctRotationsToAdd(Direction from, Direction to){
+    private static int correctRotationsToAddOuterEdges(Direction from, Direction to){
 
         int[][] mapping = new int[6][6];
 
@@ -52,6 +61,43 @@ public class RotationCalculations {
 
     }
 
+
+
+    private static int correctRotationsToAddInnerEdges(Direction from, Direction to){
+
+        int[][] mapping = new int[6][6];
+
+        mapping[0][2] = 4;
+        mapping[2][0] = 4;
+        mapping[0][3]= 0;
+        mapping[3][0] = 0;
+        mapping[1][2] = 4;
+        mapping[2][1]= 4;
+        mapping[1][3]= 0;
+        mapping[3][1] = 0;
+
+        mapping[2][5] = 0;
+        mapping[5][2] = 0;
+        mapping[2][4]= 0;
+        mapping[4][2] = 0;
+        mapping[3][4] = 0;
+        mapping[4][3] = 0;
+        mapping[3][5] = 0;
+        mapping[5][3]= 0;
+
+        mapping[5][0] = 2;
+        mapping[0][5] = 6;
+        mapping[5][1] = 6;
+        mapping[1][5] = 2;
+
+        mapping[4][0] = 6;
+        mapping[0][4] = 2;
+        mapping[4][1] = 2;
+        mapping[1][4] = 6;
+
+        return mapping[from.getId()][to.getId()];
+
+    }
     public static Direction relativeToAbsolute(GlobalChessData data, Direction forwardNorth){
         Direction n = Direction.NORTH;
         switch (data.directionWall) {

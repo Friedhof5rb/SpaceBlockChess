@@ -2,6 +2,7 @@ package me.friedhof.chess;
 
 import me.friedhof.chess.event.AttackBlockHandler;
 import me.friedhof.chess.event.AttackEntityHandler;
+import me.friedhof.chess.event.StartServerTickHandler;
 import me.friedhof.chess.event.UseEntityHandler;
 import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItemGroup;
@@ -14,6 +15,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.minecraft.client.report.ReporterEnvironment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -45,9 +47,8 @@ public class Chess implements ModInitializer {
     public static HashMap<String, Boolean> canSeeChessNotation = new HashMap<>();
 
 
-    public static GlobalChessData lastMove;
-
-    String[] turnOrder = {"white","black"};
+    public static GlobalChessData lastMoveFrom = null;
+    public static GlobalChessData lastMoveTo = null;
 
 
 
@@ -72,8 +73,9 @@ public class Chess implements ModInitializer {
         AttackBlockCallback.EVENT.register(new AttackBlockHandler());
         AttackEntityCallback.EVENT.register(new AttackEntityHandler());
         UseEntityCallback.EVENT.register(new UseEntityHandler());
+        ServerTickEvents.START_SERVER_TICK.register(new StartServerTickHandler());
         ModRegistries.registerModStuffs();
-        LOGGER.info("SpaceBlockChessMod loaded.");
+        LOGGER.info("Escher's Gambit loaded.");
 
 
 
