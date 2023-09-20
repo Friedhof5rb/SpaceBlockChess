@@ -17,19 +17,10 @@ import net.minecraft.util.Identifier;
 
 public class ModItemGroup {
 
-    public static ItemGroup SpaceChess = Registry.register(Registries.ITEM_GROUP,new Identifier(Chess.MOD_ID, "space_chess"),
-                FabricItemGroup.builder().displayName(Text.translatable("itemgroup.chess.space_chess"))
-                .icon(() -> new ItemStack(ModItems.WHITE_KNIGHT))
+    public static ItemGroup Figures = Registry.register(Registries.ITEM_GROUP,new Identifier(Chess.MOD_ID, "figures"),
+                FabricItemGroup.builder().displayName(Text.translatable("itemgroup.chess.figures"))
+                .icon(() -> new ItemStack(ModItems.WHITE_KING))
                 .entries((displayContext, entries) -> {
-                    entries.add(ModItems.ROD_OF_REMOVAL);
-                    entries.add(ModItems.ROD_OF_ROTATION);
-                    entries.add(ModItems.CHESS_CORE);
-                    entries.add(ModItems.CHESS_POS1);
-                    entries.add(ModItems.CHESS_POS2);
-                    entries.add(ModItems.WHITE_ROD_OF_MOVING);
-                    entries.add(ModItems.BLACK_ROD_OF_MOVING);
-                    entries.add(ModItems.YELLOW_ROD_OF_MOVING);
-                    entries.add(ModItems.PINK_ROD_OF_MOVING);
 
                     entries.add(ModItems.WHITE_PAWN);
                     entries.add(ModItems.WHITE_TOWER);
@@ -74,6 +65,35 @@ public class ModItemGroup {
 
                 })
                 .build());
+
+    public static ItemGroup ChessTools = Registry.register(Registries.ITEM_GROUP,new Identifier(Chess.MOD_ID, "chess_tools"),
+            FabricItemGroup.builder().displayName(Text.translatable("itemgroup.chess.chess_tools"))
+                    .icon(() -> new ItemStack(ModItems.WHITE_ROD_OF_MOVING))
+                    .entries((displayContext, entries) -> {
+
+                        entries.add(ModItems.WHITE_ROD_OF_MOVING);
+                        entries.add(ModItems.BLACK_ROD_OF_MOVING);
+                        entries.add(ModItems.YELLOW_ROD_OF_MOVING);
+                        entries.add(ModItems.PINK_ROD_OF_MOVING);
+
+                        entries.add(ModItems.ROD_OF_REMOVAL);
+                        entries.add(ModItems.ROD_OF_ROTATION);
+                        entries.add(ModItems.CHESS_POS1);
+                        entries.add(ModItems.CHESS_POS2);
+
+                        entries.add(ModItems.CHESS_CORE);
+
+                        entries.add(ModItems.WHITE_TORCH);
+                        entries.add(ModItems.BLACK_TORCH);
+                        entries.add(ModItems.YELLOW_TORCH);
+                        entries.add(ModItems.PINK_TORCH);
+
+
+                    })
+                    .build());
+
+
+
     public static void registerItemGroups(){
 
         Chess.LOGGER.info("Registering Itemgroups for " + Chess.MOD_ID);

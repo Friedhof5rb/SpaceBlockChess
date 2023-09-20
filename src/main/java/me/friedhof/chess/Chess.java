@@ -47,8 +47,8 @@ public class Chess implements ModInitializer {
     public static HashMap<String, Boolean> canSeeChessNotation = new HashMap<>();
 
 
-    public static GlobalChessData lastMoveFrom = null;
-    public static GlobalChessData lastMoveTo = null;
+    public static HashMap<String,GlobalChessData> lastMoveFrom = new HashMap<>();
+    public static HashMap<String,GlobalChessData> lastMoveTo = new HashMap<>();
 
 
 

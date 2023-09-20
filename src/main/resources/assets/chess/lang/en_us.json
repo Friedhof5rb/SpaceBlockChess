@@ -51,7 +51,14 @@
   "item.chess.rod_of_rotation": "Rod of Rotation",
   "item.chess.move_highlighter": "Move Highlighter - DO NOT USE!",
   "item.chess.rod_of_removal": "Rod of Removal",
-  "itemgroup.chess.space_chess": "Space Chess Tab",
+  "itemgroup.chess.figures": "Figures Tab",
+  "itemgroup.chess.chess_tools": "Tools Tab",
+
+  "item.chess.white_torch": "White Torch",
+  "item.chess.black_torch": "Black Torch",
+  "item.chess.yellow_torch": "Yellow Torch",
+  "item.chess.pink_torch": "Pink Torch",
+
 
   "item.chess.chess_core": "Chess Core",
   "item.chess.chesspos1": "Chess Pos1",

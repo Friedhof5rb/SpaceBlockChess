@@ -13,9 +13,17 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class FigureMovesCalculations {
+public class FigurePotentialMovesCalculations {
+
+
+    public static ArrayList<GlobalChessData> whitePotentialMoves = new ArrayList<>();
+    public static ArrayList<GlobalChessData> blackPotentialMoves = new ArrayList<>();
+    public static ArrayList<GlobalChessData> yellowPotentialMoves = new ArrayList<>();
+    public static ArrayList<GlobalChessData> pinkPotentialMoves = new ArrayList<>();
+
 
 
 
@@ -30,20 +38,36 @@ public class FigureMovesCalculations {
 
 
             if(MovementCalculations.isItemFrame(w,currentPosition.pos,currentPosition.directionWall)){
-                if(!(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem() == ModItems.MOVE_HIGHLIGHTER)){
 
-                    //stop at enemy figure
-                    replaceOldFigure(w,currentPosition,team);
-                    break;
-                }
+                //stop at enemy figure
+                replaceOldFigure(w,currentPosition,team);
+                break;
+
             }else{
                 //go on
-                ItemFrameEntity e = MovementCalculations.dataToFigure(w,currentPosition, ModItems.MOVE_HIGHLIGHTER);
-                e.setInvisible(true);
-                if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                    e.setInvulnerable(true);
+               switch(team){
+                   case "white":{
+                       whitePotentialMoves.add(currentPosition);
+
+                   }
+                   case "black":{
+                       blackPotentialMoves.add(currentPosition);
+
+                   }
+                   case "yellow":{
+                       yellowPotentialMoves.add(currentPosition);
+
+                   }
+                   case "pink":{
+                      pinkPotentialMoves.add(currentPosition);
+
+                   }
                 }
-                w.spawnEntity(e);
+
+
+
+
+
             }
         }
     }
@@ -99,12 +123,24 @@ public class FigureMovesCalculations {
                     break;
                 }
             }else{
-                ItemFrameEntity e = MovementCalculations.dataToFigure(w,currentPosition, ModItems.MOVE_HIGHLIGHTER);
-                e.setInvisible(true);
-                if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                    e.setInvulnerable(true);
+                switch(team){
+                    case "white":{
+                        whitePotentialMoves.add(currentPosition);
+
+                    }
+                    case "black":{
+                        blackPotentialMoves.add(currentPosition);
+
+                    }
+                    case "yellow":{
+                        yellowPotentialMoves.add(currentPosition);
+
+                    }
+                    case "pink":{
+                        pinkPotentialMoves.add(currentPosition);
+
+                    }
                 }
-                w.spawnEntity(e);
             }
         }
     }
@@ -129,12 +165,24 @@ public class FigureMovesCalculations {
 
             }
         }else{
-            ItemFrameEntity e = MovementCalculations.dataToFigure(w,currentPosition, ModItems.MOVE_HIGHLIGHTER);
-            e.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                e.setInvulnerable(true);
+            switch(team){
+                case "white":{
+                    whitePotentialMoves.add(currentPosition);
+
+                }
+                case "black":{
+                    blackPotentialMoves.add(currentPosition);
+
+                }
+                case "yellow":{
+                    yellowPotentialMoves.add(currentPosition);
+
+                }
+                case "pink":{
+                    pinkPotentialMoves.add(currentPosition);
+
+                }
             }
-            w.spawnEntity(e);
         }
 
     }
@@ -160,12 +208,24 @@ public class FigureMovesCalculations {
                     break;
                 }
             }else{
-                ItemFrameEntity e = MovementCalculations.dataToFigure(w,currentPosition, ModItems.MOVE_HIGHLIGHTER);
-                e.setInvisible(true);
-                if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                    e.setInvulnerable(true);
+                switch(team){
+                    case "white":{
+                        whitePotentialMoves.add(currentPosition);
+
+                    }
+                    case "black":{
+                        blackPotentialMoves.add(currentPosition);
+
+                    }
+                    case "yellow":{
+                        yellowPotentialMoves.add(currentPosition);
+
+                    }
+                    case "pink":{
+                        pinkPotentialMoves.add(currentPosition);
+
+                    }
                 }
-                w.spawnEntity(e);
             }
         }
     }
@@ -192,12 +252,24 @@ public class FigureMovesCalculations {
 
             }
         }else{
-            ItemFrameEntity e = MovementCalculations.dataToFigure(w,currentPosition, ModItems.MOVE_HIGHLIGHTER);
-            e.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                e.setInvulnerable(true);
+            switch(team){
+                case "white":{
+                    whitePotentialMoves.add(currentPosition);
+
+                }
+                case "black":{
+                    blackPotentialMoves.add(currentPosition);
+
+                }
+                case "yellow":{
+                    yellowPotentialMoves.add(currentPosition);
+
+                }
+                case "pink":{
+                    pinkPotentialMoves.add(currentPosition);
+
+                }
             }
-            w.spawnEntity(e);
         }
 
     }
@@ -214,12 +286,24 @@ public class FigureMovesCalculations {
 
         if (currentPosition != null) {
             if (!MovementCalculations.isItemFrame(w, currentPosition.pos, currentPosition.directionWall)) {
-                ItemFrameEntity e = MovementCalculations.dataToFigure(w, currentPosition, ModItems.MOVE_HIGHLIGHTER);
-                e.setInvisible(true);
-                if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                    e.setInvulnerable(true);
+                switch(team){
+                    case "white":{
+                        whitePotentialMoves.add(currentPosition);
+
+                    }
+                    case "black":{
+                        blackPotentialMoves.add(currentPosition);
+
+                    }
+                    case "yellow":{
+                        yellowPotentialMoves.add(currentPosition);
+
+                    }
+                    case "pink":{
+                        pinkPotentialMoves.add(currentPosition);
+
+                    }
                 }
-                w.spawnEntity(e);
             }
         }
 
@@ -280,12 +364,24 @@ public class FigureMovesCalculations {
 
         if(currentPosition != null) {
             if (!MovementCalculations.isItemFrame(w, currentPosition.pos, currentPosition.directionWall)) {
-                ItemFrameEntity e = MovementCalculations.dataToFigure(w, currentPosition, ModItems.MOVE_HIGHLIGHTER);
-                e.setInvisible(true);
-                if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                    e.setInvulnerable(true);
+                switch(team){
+                    case "white":{
+                        whitePotentialMoves.add(currentPosition);
+
+                    }
+                    case "black":{
+                        blackPotentialMoves.add(currentPosition);
+
+                    }
+                    case "yellow":{
+                        yellowPotentialMoves.add(currentPosition);
+
+                    }
+                    case "pink":{
+                        pinkPotentialMoves.add(currentPosition);
+
+                    }
                 }
-                w.spawnEntity(e);
             }
         }
         //1
@@ -320,17 +416,17 @@ public class FigureMovesCalculations {
     private static void replaceOldFigureForCastling(World w,GlobalChessData currentPosition, String team){
 
         if(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem() == ModItems.CASTLE_WHITE_TOWER &&  team == "white"){
-            replacementForColour(w,currentPosition, ModItems.CASTLE_SWITCH_WHITE_TOWER);
+            whitePotentialMoves.add(currentPosition);
         }
         if(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem() == ModItems.CASTLE_BLACK_TOWER && team == "black"){
-           replacementForColour(w,currentPosition,ModItems.CASTLE_SWITCH_BLACK_TOWER);
+            blackPotentialMoves.add(currentPosition);
         }
 
         if(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem() == ModItems.CASTLE_YELLOW_TOWER &&  team == "yellow"){
-            replacementForColour(w,currentPosition, ModItems.CASTLE_SWITCH_YELLOW_TOWER);
+            yellowPotentialMoves.add(currentPosition);
         }
         if(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem() == ModItems.CASTLE_PINK_TOWER &&  team == "pink"){
-            replacementForColour(w,currentPosition,ModItems.CASTLE_SWITCH_PINK_TOWER);
+            pinkPotentialMoves.add(currentPosition);
         }
 
     }
@@ -342,19 +438,22 @@ public class FigureMovesCalculations {
 
     private static void replaceOldFigure(World w,GlobalChessData currentPosition, String team){
 
-        if(Chess.arrayContains(UseEntityHandler.whitePieces,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem()) &&  team != "white"){
-          replacementForColour(w,currentPosition,exchangeItems(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem(),true));
+        if(!Chess.arrayContains(UseEntityHandler.whitePieces,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem()) &&  team == "white"){
+            whitePotentialMoves.add(currentPosition);
 
         }
-        if(Chess.arrayContains(UseEntityHandler.blackPieces,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem()) &&   team != "black"){
-            replacementForColour(w,currentPosition,exchangeItems(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem(),true));
-        }
-        if(Chess.arrayContains(UseEntityHandler.yellowPieces,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem()) &&   team != "yellow"){
-            replacementForColour(w,currentPosition,exchangeItems(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem(),true));
+        if(!Chess.arrayContains(UseEntityHandler.blackPieces,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem()) &&   team == "black"){
+           blackPotentialMoves.add(currentPosition);
 
         }
-        if(Chess.arrayContains(UseEntityHandler.pinkPieces,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem()) &&   team != "pink"){
-            replacementForColour(w,currentPosition,exchangeItems(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem(),true));
+        if(!Chess.arrayContains(UseEntityHandler.yellowPieces,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem()) &&   team == "yellow"){
+            yellowPotentialMoves.add(currentPosition);
+
+
+        }
+        if(!Chess.arrayContains(UseEntityHandler.pinkPieces,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem()) &&   team == "pink"){
+           pinkPotentialMoves.add(currentPosition);
+
         }
 
 

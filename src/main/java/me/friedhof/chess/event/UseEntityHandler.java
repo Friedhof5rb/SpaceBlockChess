@@ -310,8 +310,18 @@ public class UseEntityHandler implements UseEntityCallback {
                 " to: [" + currentPosition.pos.getX() + ", " +  currentPosition.pos.getY() + ", " + currentPosition.pos.getZ() + ", " +currentPosition.directionWall.name() + "]";
 
 
-        Chess.lastMoveFrom = originPosition;
-        Chess.lastMoveTo = currentPosition;
+        int radius = 50;
+        List<PlayerEntity> list2 = world.getEntitiesByType(EntityType.PLAYER,new Box(currentPosition.pos.getX()-radius,currentPosition.pos.getY()-radius,currentPosition.pos.getZ()-radius,currentPosition.pos.getX()+radius,currentPosition.pos.getY()+radius,currentPosition.pos.getZ()+radius),EntityPredicates.VALID_ENTITY);
+
+        for(PlayerEntity p : list2) {
+            String uuid = p.getUuidAsString();
+
+            Chess.lastMoveFrom.put(uuid, originPosition);
+            Chess.lastMoveTo.put(uuid, currentPosition);
+
+        }
+
+
         ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false,true);
 
 
