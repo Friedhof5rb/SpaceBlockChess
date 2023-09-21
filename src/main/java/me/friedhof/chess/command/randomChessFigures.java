@@ -37,33 +37,48 @@ public class randomChessFigures {
 
     private static int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 
-        if (!context.getSource().getPlayer().isCreative()) {
-            context.getSource().getPlayer().sendMessage(Text.literal("You can only use this Command in Creative."), false);
+        if (!context.getSource().hasPermissionLevel(3)) {
+            context.getSource().getPlayer().sendMessage(Text.literal("You must have Permission Level 3."), false);
             return -1;
         }
 
         String uuid = context.getSource().getPlayer().getUuidAsString();
         World w = context.getSource().getWorld();
 
+        if(!Chess.pool.containsKey(uuid)) {
+            context.getSource().getPlayer().sendMessage(Text.literal("Your Pool is empty."), false);
+            return -1;
+        }
+
+        if(!Chess.pos1.containsKey(uuid) || !Chess.pos2.containsKey(uuid)){
+            context.getSource().getPlayer().sendMessage(Text.literal("Pos1 or Pos2 is not defined"), false);
+            return -1;
+        }
+
         ArrayList<ItemStack> list = Chess.pool.get(uuid);
 
+
+
+
+        int how_many_Spawned = 0;
         for(int i = list.size()-1; i >= 0; --i){
 
             while(list.get(i).getCount() > 1){
-                spawnItemFrame(w,uuid,list.get(i).getItem(),0);
+                how_many_Spawned += spawnItemFrame(w,uuid,list.get(i).getItem(),0);
                 list.get(i).setCount(list.get(i).getCount()-1);
             }
-            spawnItemFrame(w,uuid,list.get(i).getItem(),0);
+            how_many_Spawned += spawnItemFrame(w,uuid,list.get(i).getItem(),0);
             list.remove(list.get(i));
         }
         Chess.pool.remove(uuid);
+        context.getSource().getPlayer().sendMessage(Text.literal("Spawend " + how_many_Spawned + " Figures in the Area."), false);
         return 1;
     }
 
-    private static void spawnItemFrame(World w, String uuid, Item item, int counter){
+    private static int spawnItemFrame(World w, String uuid, Item item, int counter){
 
         if(counter > 100){
-            return;
+            return 0;
         }
 
         BlockPos pos = randomPos(uuid);
@@ -107,8 +122,7 @@ public class randomChessFigures {
             }
 
             if(sides.isEmpty()){
-                spawnItemFrame(w, uuid, item,counter+1);
-                return;
+                return spawnItemFrame(w, uuid, item,counter+1);
             }
 
             Random r = new Random();
@@ -125,10 +139,10 @@ public class randomChessFigures {
             e.setInvulnerable(true);
             w.spawnEntity(e);
 
-            return;
+            return 1;
         }
 
-        spawnItemFrame(w, uuid, item, counter+1);
+        return spawnItemFrame(w, uuid, item, counter+1);
 
 
     }

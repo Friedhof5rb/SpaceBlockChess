@@ -21,6 +21,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.LiteralTextContent;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
@@ -44,9 +45,6 @@ public class Chess implements ModInitializer {
     public static HashMap<String, BlockPos> pos1 = new HashMap<>();
     public static HashMap<String, BlockPos> pos2 = new HashMap<>();
 
-    public static HashMap<String, Boolean> canSeeChessNotation = new HashMap<>();
-
-
     public static HashMap<String,GlobalChessData> lastMoveFrom = new HashMap<>();
     public static HashMap<String,GlobalChessData> lastMoveTo = new HashMap<>();
 
@@ -65,6 +63,7 @@ public class Chess implements ModInitializer {
 
     @Override
     public void onInitialize() {
+
 
         ModMessages.registerC2SPackets();
         ModGamerules.registerGamerules();

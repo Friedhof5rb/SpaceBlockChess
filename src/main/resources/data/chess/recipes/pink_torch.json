@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    " R ",
+    " W "
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:pink_concrete"
+    },
+    "R": {
+      "item": "minecraft:torch"
+    },
+    "S": {
+      "item": "chess:chess_core"
+    }
+  },
+  "result": {
+    "item": "chess:pink_torch",
+    "count": 1
+  }
+}
+

@@ -26,9 +26,9 @@ public class CustomModel extends Model {
         JsonObject object =  super.createJson(id, textures);
 
         JsonArray array = new JsonArray(3);
-        array.add(2);
-        array.add(2);
-        array.add(2);
+        array.add(1.9);
+        array.add(1.9);
+        array.add(1.9);
         JsonObject object3 = new JsonObject();
         object3.add("scale",array);
         JsonObject object2 = new JsonObject();

@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.friedhof.chess.Chess;
+import me.friedhof.chess.util.IEntityDataSaver;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -21,16 +22,19 @@ public class switchChessNotationVisbility {
 
         String uuid = context.getSource().getPlayer().getUuidAsString();
         World w = context.getSource().getWorld();
-        if(!Chess.canSeeChessNotation.containsKey(uuid) ){
-           Chess.canSeeChessNotation.put(uuid,false);
+
+        IEntityDataSaver saver = (IEntityDataSaver) context.getSource().getPlayer();
+
+
+        if(!saver.getPersistentData().contains("canSeeChessNotation")){
+            saver.getPersistentData().putBoolean("canSeeChessNotation", false);
             context.getSource().getPlayer().sendMessage(Text.literal("Toggled Visibility to false"), false);
         }else{
-            if(Chess.canSeeChessNotation.get(uuid)){
-                Chess.canSeeChessNotation.put(uuid,false);
+            if(saver.getPersistentData().getBoolean("canSeeChessNotation")){
+                saver.getPersistentData().putBoolean("canSeeChessNotation", false);
                 context.getSource().getPlayer().sendMessage(Text.literal("Toggled Visibility to false"), false);
-
             }else{
-                Chess.canSeeChessNotation.put(uuid,true);
+                saver.getPersistentData().putBoolean("canSeeChessNotation", true);
                 context.getSource().getPlayer().sendMessage(Text.literal("Toggled Visibility to true"), false);
             }
         }

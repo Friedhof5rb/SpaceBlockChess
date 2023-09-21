@@ -28,8 +28,8 @@ public class poolRemoveMainhand {
 
     private static int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 
-        if(!context.getSource().getPlayer().isCreative()){
-            context.getSource().getPlayer().sendMessage(Text.literal("You can only use this Command in Creative."), false);
+        if (!context.getSource().hasPermissionLevel(3)) {
+            context.getSource().getPlayer().sendMessage(Text.literal("You must have Permission Level 3."), false);
             return -1;
         }
 
@@ -37,9 +37,11 @@ public class poolRemoveMainhand {
         ItemStack current = context.getSource().getPlayer().getInventory().getMainHandStack().copy();
 
         if(!Chess.arrayContains(Chess.poolAndPlace,current.getItem())){
+            context.getSource().getPlayer().sendMessage(Text.literal("You can't remove this Item from the Pool."), false);
             return -1;
         }
         if(!Chess.pool.containsKey(uuid)) {
+            context.getSource().getPlayer().sendMessage(Text.literal("Your Pool is empty."), false);
             return -1;
         }
         boolean valid = false;
@@ -49,6 +51,7 @@ public class poolRemoveMainhand {
             }
         }
         if(!valid){
+            context.getSource().getPlayer().sendMessage(Text.literal("This Item is not contained in the Pool."), false);
             return -1;
         }
         ArrayList<ItemStack>  items = Chess.pool.get(uuid);

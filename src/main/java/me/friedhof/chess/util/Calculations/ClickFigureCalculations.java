@@ -5,6 +5,7 @@ import me.friedhof.chess.event.UseEntityHandler;
 import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItems;
 import me.friedhof.chess.util.GlobalChessData;
+import me.friedhof.chess.util.IEntityDataSaver;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.decoration.ItemFrameEntity;
@@ -1366,9 +1367,9 @@ public class ClickFigureCalculations {
 
         for(PlayerEntity p : list){
             String uuid = p.getUuidAsString();
-
-            if(Chess.canSeeChessNotation.containsKey(uuid) && ChessNotation){
-                if(!Chess.canSeeChessNotation.get(uuid)){
+            IEntityDataSaver saver = (IEntityDataSaver) p;
+            if(saver.getPersistentData().contains("canSeeChessNotation") && ChessNotation){
+                if(!(saver.getPersistentData().getBoolean("canSeeChessNotation"))){
                     continue;
                 }
             }

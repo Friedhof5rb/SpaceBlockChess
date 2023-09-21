@@ -20,8 +20,8 @@ public class printPool {
 
     private static int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 
-        if(!context.getSource().getPlayer().isCreative()){
-            context.getSource().getPlayer().sendMessage(Text.literal("You can only use this Command in Creative."), false);
+        if (!context.getSource().hasPermissionLevel(3)) {
+            context.getSource().getPlayer().sendMessage(Text.literal("You must have Permission Level 3."), false);
             return -1;
         }
 
