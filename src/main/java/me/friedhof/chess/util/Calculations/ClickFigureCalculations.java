@@ -14,6 +14,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -1199,6 +1201,7 @@ public class ClickFigureCalculations {
 
             }
         }
+        checkForCheck(w,currentPosition);
         return result;
     }
 
@@ -1262,28 +1265,28 @@ public class ClickFigureCalculations {
                     if(e.getHeldItemStack().getItem() == ModItems.WHITE_KING || e.getHeldItemStack().getItem() == ModItems.CASTLE_WHITE_KING){
 
 
-                        String dead = "The White King is Dead!";
-                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true,false);
+                        String dead = "The White King is defeated!";
+                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true,false,Formatting.RED);
 
 
                     }
                     if(e.getHeldItemStack().getItem() == ModItems.BLACK_KING || e.getHeldItemStack().getItem() == ModItems.CASTLE_BLACK_KING){
-                        String dead = "The Black King is Dead!";
-                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true,false);
+                        String dead = "The Black King is defeated!";
+                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true,false,Formatting.RED);
                     }
 
 
                     if(e.getHeldItemStack().getItem() == ModItems.YELLOW_KING || e.getHeldItemStack().getItem() == ModItems.CASTLE_YELLOW_KING){
 
 
-                        String dead = "The Yellow King is Dead!";
-                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true,false);
+                        String dead = "The Yellow King is defeated!";
+                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true,false,Formatting.RED);
 
 
                     }
                     if(e.getHeldItemStack().getItem() == ModItems.PINK_KING || e.getHeldItemStack().getItem() == ModItems.CASTLE_PINK_KING){
-                        String dead = "The Pink King is Dead!";
-                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true,false);
+                        String dead = "The Pink King is defeated!";
+                        sendMessageToClosePlayers(w,dead,50,currentPosition.pos,true,false,Formatting.RED);
                     }
 
 
@@ -1355,12 +1358,13 @@ public class ClickFigureCalculations {
 
 
         }
+        checkForCheck(w,currentPosition);
         return result;
     }
 
 
 
-    public static void sendMessageToClosePlayers(World w, String s, int radius, BlockPos currentPosition, boolean alsoActionbar,boolean ChessNotation){
+    public static void sendMessageToClosePlayers(World w, String s, int radius, BlockPos currentPosition, boolean alsoActionbar,boolean ChessNotation, Formatting textcolour){
 
 
         List<PlayerEntity> list = w.getEntitiesByType(EntityType.PLAYER,new Box(currentPosition.getX()-radius,currentPosition.getY()-radius,currentPosition.getZ()-radius,currentPosition.getX()+radius,currentPosition.getY()+radius,currentPosition.getZ()+radius),EntityPredicates.VALID_ENTITY);
@@ -1373,8 +1377,8 @@ public class ClickFigureCalculations {
                     continue;
                 }
             }
-            
-            p.sendMessage(Text.literal(s),false);
+
+            p.sendMessage(Text.literal(s).formatted(textcolour),false);
             if(alsoActionbar){
                 p.sendMessage(Text.literal(s),true);
             }
@@ -1525,6 +1529,7 @@ public class ClickFigureCalculations {
             }
 
         }
+        checkForCheck(w,currentPosition);
     return result1;
     }
 
@@ -1543,6 +1548,36 @@ public class ClickFigureCalculations {
         }
         return false;
     }
+
+    private static void checkForCheck(World w, GlobalChessData currentPosition){
+
+        checkCheckForColour("white",w,currentPosition);
+        checkCheckForColour("black",w,currentPosition);
+        checkCheckForColour("yellow",w,currentPosition);
+        checkCheckForColour("pink",w,currentPosition);
+
+    }
+
+    private static void checkCheckForColour(String team, World w, GlobalChessData currentPosition){
+
+
+        boolean check = checkCalculations.isKingOfColourInCheck(w,team,currentPosition,checkCalculations.getCurrentBoardState(w,currentPosition));
+        boolean potentialCheck = checkCalculations.isKingOfColourInPotentialCheck(w,team,currentPosition,checkCalculations.getCurrentBoardState(w,currentPosition));
+
+        if(check && !potentialCheck){
+
+            sendMessageToClosePlayers(w, team+" is in Check!!!",50,currentPosition.pos,false,false,Formatting.YELLOW);
+        }
+        if(check && potentialCheck){
+            sendMessageToClosePlayers(w, team+" is in Checkmate!!!",50,currentPosition.pos,false,false,Formatting.RED);
+        }
+        if(!check && potentialCheck) {
+            sendMessageToClosePlayers(w, team+" is in Stalemate!!!",50,currentPosition.pos,false,false,Formatting.BLUE);
+        }
+
+
+    }
+
 
 
 

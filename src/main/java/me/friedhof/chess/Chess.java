@@ -59,11 +59,8 @@ public class Chess implements ModInitializer {
             ModItems.PINK_BISHOP, ModItems.PINK_KING, ModItems.PINK_KNIGHT, ModItems.PINK_PAWN, ModItems.PINK_QUEEN, ModItems.PINK_TOWER, ModItems.CASTLE_PINK_KING, ModItems.CASTLE_PINK_TOWER, ModItems.START_PINK_PAWN };
 
 
-
-
     @Override
     public void onInitialize() {
-
 
         ModMessages.registerC2SPackets();
         ModGamerules.registerGamerules();
@@ -76,8 +73,7 @@ public class Chess implements ModInitializer {
         ModRegistries.registerModStuffs();
         LOGGER.info("Escher's Gambit loaded.");
 
-
-
+        
     }
 
 

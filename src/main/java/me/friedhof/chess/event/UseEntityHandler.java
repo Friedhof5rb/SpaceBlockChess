@@ -17,6 +17,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.Box;
@@ -136,7 +137,7 @@ public class UseEntityHandler implements UseEntityCallback {
 
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        sendMovement(world, whosturn, playerName, currentPosition);
+                        sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.takeWithFigure(world, frame);
 
 
@@ -149,7 +150,7 @@ public class UseEntityHandler implements UseEntityCallback {
 
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        sendMovement(world, whosturn, playerName, currentPosition);
+                        sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.moveFigure(world, frame);
 
                         return ActionResult.SUCCESS;
@@ -159,7 +160,7 @@ public class UseEntityHandler implements UseEntityCallback {
 
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        sendMovement(world, whosturn, playerName, currentPosition);
+                        sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.switchFigure(world, frame);
                         return ActionResult.SUCCESS;
                     }
@@ -179,7 +180,7 @@ public class UseEntityHandler implements UseEntityCallback {
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
 
-                        sendMovement(world, whosturn, playerName, currentPosition);
+                        sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.takeWithFigure(world, frame);
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(blackSelectedPieces, frame.getHeldItemStack().getItem())) {
@@ -189,14 +190,14 @@ public class UseEntityHandler implements UseEntityCallback {
 
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        sendMovement(world, whosturn, playerName, currentPosition);
+                        sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.moveFigure(world, frame);
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(switchPieces, frame.getHeldItemStack().getItem())) {
 
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        sendMovement(world, whosturn, playerName, currentPosition);
+                        sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.switchFigure(world, frame);
 
                         return ActionResult.SUCCESS;
@@ -216,7 +217,7 @@ public class UseEntityHandler implements UseEntityCallback {
 
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        sendMovement(world, whosturn, playerName, currentPosition);
+                        sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.takeWithFigure(world, frame);
 
                         return ActionResult.SUCCESS;
@@ -227,7 +228,7 @@ public class UseEntityHandler implements UseEntityCallback {
 
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        sendMovement(world, whosturn, playerName, currentPosition);
+                        sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                        ClickFigureCalculations.moveFigure(world, frame);
 
                         return ActionResult.SUCCESS;
@@ -235,7 +236,7 @@ public class UseEntityHandler implements UseEntityCallback {
 
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        sendMovement(world, whosturn, playerName, currentPosition);
+                        sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.switchFigure(world, frame);
 
                         return ActionResult.SUCCESS;
@@ -253,7 +254,7 @@ public class UseEntityHandler implements UseEntityCallback {
                     Chess.arrayContains(yellowCapturePieces, frame.getHeldItemStack().getItem())){
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        sendMovement(world, whosturn, playerName, currentPosition);
+                        sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.takeWithFigure(world, frame);
 
 
@@ -265,14 +266,14 @@ public class UseEntityHandler implements UseEntityCallback {
 
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        sendMovement(world, whosturn, playerName, currentPosition);
+                        sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.moveFigure(world, frame);
 
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(switchPieces, frame.getHeldItemStack().getItem())) {
 
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-                        sendMovement(world, whosturn, playerName, currentPosition);
+                        sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.switchFigure(world, frame);
 
                         return ActionResult.SUCCESS;
@@ -289,7 +290,7 @@ public class UseEntityHandler implements UseEntityCallback {
         return ActionResult.SUCCESS;
     }
 
-    private static void sendMovement(World world, String colour, String playerName, GlobalChessData currentPosition){
+    private static void sendMovement(World world, String colour, String playerName, GlobalChessData currentPosition, Formatting textColour){
 
 
         int r = 20;
@@ -322,7 +323,7 @@ public class UseEntityHandler implements UseEntityCallback {
         }
 
 
-        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false,true);
+        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false,true, textColour);
 
 
 
