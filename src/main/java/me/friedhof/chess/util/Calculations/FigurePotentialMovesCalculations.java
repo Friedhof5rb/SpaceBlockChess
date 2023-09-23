@@ -476,21 +476,11 @@ public class FigurePotentialMovesCalculations {
 ///////////////////////////////////////////////////
     public static void calculateAllMovesForColour(World w, String colour, List<FigureOnBoard> list, BoardState b){
 
-        if (colour.equals("white")) {
-
-            whitePotentialMoves.clear();
-        }
-        if (colour.equals("black")) {
-
-            blackPotentialMoves.clear();
-        }
-        if (colour.equals("yellow")) {
-
-            yellowPotentialMoves.clear();
-        }
-        if (colour.equals("pink")) {
-
-            pinkPotentialMoves.clear();
+        switch (colour) {
+            case "white" -> whitePotentialMoves.clear();
+            case "black" -> blackPotentialMoves.clear();
+            case "yellow" -> yellowPotentialMoves.clear();
+            case "pink" -> pinkPotentialMoves.clear();
         }
 
 
@@ -499,42 +489,33 @@ public class FigurePotentialMovesCalculations {
             GlobalChessData data = figure.data;
 
 
-            if (item2 == colourAndFigureTypeToItem(colour, "tower")) {
-
-                calculateAllMovesForTower(w,data,colour,b);
-
+            if(!Chess.itemMap.containsKey(item2)) {
+                continue;
             }
-            if (item2 == colourAndFigureTypeToItem(colour, "bishop")) {
-                calculateAllMovesForBishop(w,data,colour,b);
 
+            if(!Chess.ItemToColour(item2).equals(colour)) {
+                continue;
             }
-            if (item2 ==colourAndFigureTypeToItem(colour, "knight")) {
-                calculateAllMovesForKnight(w,data,colour,b);
 
-            }
-            if (item2 ==colourAndFigureTypeToItem(colour, "queen")) {
-
-                calculateAllMovesForQueen(w,data,colour,b);
-            }
-            if (item2 == colourAndFigureTypeToItem(colour, "king")) {
-                calculateAllMovesForKing(w,data,colour,b);
-
-            }
-            if (item2 == colourAndFigureTypeToItem(colour, "pawn")) {
-                calculateAllMovesForPawn(w,data,colour,b);
-
-            }
-            if (item2 ==colourAndFigureTypeToItem(colour, "start_pawn")) {
-                calculateAllMovesForStartPawn(w,data,colour,b);
-
-            }
-            if (item2 == colourAndFigureTypeToItem(colour, "castle_king")) {
-                calculateAllMovesForCastleKing(w,data,colour,b);
-
-            }
-            if (item2 == colourAndFigureTypeToItem(colour, "castle_tower")) {
-                calculateAllMovesForCastleTower(w,data,colour,  b);
-
+            switch (Chess.itemMap.get(item2)) {
+                case "white tower", "black tower", "yellow tower", "pink tower" ->
+                        calculateAllMovesForTower(w, data, colour, b);
+                case "white bishop", "black bishop", "yellow bishop", "pink bishop" ->
+                        calculateAllMovesForBishop(w, data, colour, b);
+                case "white king", "black king", "yellow king", "pink king" ->
+                        calculateAllMovesForKing(w, data, colour, b);
+                case "white queen", "black queen", "yellow queen", "pink queen" ->
+                        calculateAllMovesForQueen(w, data, colour, b);
+                case "white knight", "black knight", "yellow knight", "pink knight" ->
+                        calculateAllMovesForKnight(w, data, colour, b);
+                case "white pawn", "black pawn", "yellow pawn", "pink pawn" ->
+                        calculateAllMovesForPawn(w, data, colour, b);
+                case "white start_pawn", "black start_pawn", "yellow start_pawn", "pink start_pawn" ->
+                        calculateAllMovesForStartPawn(w, data, colour, b);
+                case "white castle_king", "black castle_king", "yellow castle_king", "pink castle_king" ->
+                        calculateAllMovesForCastleKing(w, data, colour, b);
+                case "white castle_tower", "black castle_tower", "yellow castle_tower", "pink castle_tower" ->
+                        calculateAllMovesForCastleTower(w, data, colour, b);
             }
 
 
@@ -646,147 +627,7 @@ public class FigurePotentialMovesCalculations {
         towerMoveScheme(w, data, Direction.EAST, team,b);
     }
 
-    public static Item colourAndFigureTypeToItem(String colour, String figureType){
 
-        switch(colour){
-
-            case "white":
-              switch (figureType){
-
-                  case "king":
-                      return ModItems.WHITE_KING;
-                  case "queen":
-
-                      return ModItems.WHITE_QUEEN;
-                  case "tower":
-
-                      return ModItems.WHITE_TOWER;
-                  case "knight":
-                      return ModItems.WHITE_KNIGHT;
-                    
-                  case "bishop":
-
-                      return ModItems.WHITE_BISHOP;
-                  case "pawn":
-
-                      return ModItems.WHITE_PAWN;
-                  case "castle_king":
-
-                      return ModItems.CASTLE_WHITE_KING;
-                  case "castle_tower":
-
-                      return ModItems.CASTLE_WHITE_TOWER;
-                  case "start_pawn":
-
-                      return ModItems.START_WHITE_PAWN;
-                  default:
-                      return Items.AIR;
-              }
-            case "black":
-                switch (figureType){
-
-                    case "king":
-                        return ModItems.BLACK_KING;
-                    case "queen":
-
-                        return ModItems.BLACK_QUEEN;
-                    case "tower":
-
-                        return ModItems.BLACK_TOWER;
-                    case "knight":
-                        return ModItems.BLACK_KNIGHT;
-
-                    case "bishop":
-
-                        return ModItems.BLACK_BISHOP;
-                    case "pawn":
-
-                        return ModItems.BLACK_PAWN;
-                    case "castle_king":
-
-                        return ModItems.CASTLE_BLACK_KING;
-                    case "castle_tower":
-
-                        return ModItems.CASTLE_BLACK_TOWER;
-                    case "start_pawn":
-
-                        return ModItems.START_BLACK_PAWN;
-                    default:
-                        return Items.AIR;
-                }
-            case "yellow":
-
-                switch (figureType){
-
-                    case "king":
-                        return ModItems.YELLOW_KING;
-                    case "queen":
-
-                        return ModItems.YELLOW_QUEEN;
-                    case "tower":
-
-                        return ModItems.YELLOW_TOWER;
-                    case "knight":
-                        return ModItems.YELLOW_KNIGHT;
-
-                    case "bishop":
-
-                        return ModItems.YELLOW_BISHOP;
-                    case "pawn":
-
-                        return ModItems.YELLOW_PAWN;
-                    case "castle_king":
-
-                        return ModItems.CASTLE_YELLOW_KING;
-                    case "castle_tower":
-
-                        return ModItems.CASTLE_YELLOW_TOWER;
-                    case "start_pawn":
-
-                        return ModItems.START_YELLOW_PAWN;
-                    default:
-                        return Items.AIR;
-                }
-            case "pink":
-                switch (figureType){
-
-                    case "king":
-                        return ModItems.PINK_KING;
-                    case "queen":
-
-                        return ModItems.PINK_QUEEN;
-                    case "tower":
-
-                        return ModItems.PINK_TOWER;
-                    case "knight":
-                        return ModItems.PINK_KNIGHT;
-
-                    case "bishop":
-
-                        return ModItems.PINK_BISHOP;
-                    case "pawn":
-
-                        return ModItems.PINK_PAWN;
-                    case "castle_king":
-
-                        return ModItems.CASTLE_PINK_KING;
-                    case "castle_tower":
-
-                        return ModItems.CASTLE_PINK_TOWER;
-                    case "start_pawn":
-
-                        return ModItems.START_PINK_PAWN;
-                    default:
-                        return Items.AIR;
-                }
-            default:
-                return Items.AIR;
-
-
-        }
-
-
-    }
 
 
 

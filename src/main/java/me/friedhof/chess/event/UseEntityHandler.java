@@ -79,8 +79,7 @@ public class UseEntityHandler implements UseEntityCallback {
 
 
         if (player.getInventory().getMainHandStack().getItem() != ModItems.WHITE_ROD_OF_MOVING && player.getInventory().getMainHandStack().getItem() != ModItems.BLACK_ROD_OF_MOVING && player.getInventory().getMainHandStack().getItem() != ModItems.ROD_OF_ROTATION && player.getInventory().getMainHandStack().getItem() != ModItems.YELLOW_ROD_OF_MOVING && player.getInventory().getMainHandStack().getItem() != ModItems.PINK_ROD_OF_MOVING) {
-            if (entity instanceof ItemFrameEntity) {
-                ItemFrameEntity frame = (ItemFrameEntity) entity;
+            if (entity instanceof ItemFrameEntity frame) {
                 if (Chess.arrayContains(whitePieces, frame.getHeldItemStack().getItem()) || Chess.arrayContains(whiteCapturePieces, frame.getHeldItemStack().getItem())
                         || Chess.arrayContains(blackPieces, frame.getHeldItemStack().getItem()) || Chess.arrayContains(blackCapturePieces, frame.getHeldItemStack().getItem())
                         || frame.getHeldItemStack().getItem() == ModItems.MOVE_HIGHLIGHTER || Chess.arrayContains(blackSelectedPieces, frame.getHeldItemStack().getItem()) ||
@@ -103,16 +102,16 @@ public class UseEntityHandler implements UseEntityCallback {
         if (player.getInventory().getMainHandStack().getItem() == ModItems.ROD_OF_ROTATION) {
             return ActionResult.PASS;
         }
-
+        else
         if (player.getInventory().getMainHandStack().getItem() == ModItems.WHITE_ROD_OF_MOVING) {
             whosturn = "white";
-        }
+        }else
         if (player.getInventory().getMainHandStack().getItem() == ModItems.BLACK_ROD_OF_MOVING) {
             whosturn = "black";
-        }
+        }else
         if (player.getInventory().getMainHandStack().getItem() == ModItems.YELLOW_ROD_OF_MOVING) {
             whosturn = "yellow";
-        }
+        }else
         if (player.getInventory().getMainHandStack().getItem() == ModItems.PINK_ROD_OF_MOVING) {
             whosturn = "pink";
         }
@@ -125,8 +124,7 @@ public class UseEntityHandler implements UseEntityCallback {
 
         switch (whosturn) {
             case "white" -> {
-                if (entity instanceof ItemFrameEntity) {
-                    ItemFrameEntity frame = (ItemFrameEntity) entity;
+                if (entity instanceof ItemFrameEntity frame) {
                     if (Chess.arrayContains(whitePieces, frame.getHeldItemStack().getItem())) {
                         ClickFigureCalculations.selectFigure(world, frame);
                         return ActionResult.SUCCESS;
@@ -168,8 +166,7 @@ public class UseEntityHandler implements UseEntityCallback {
                 }
             }
             case "black" -> {
-                if (entity instanceof ItemFrameEntity) {
-                    ItemFrameEntity frame = (ItemFrameEntity) entity;
+                if (entity instanceof ItemFrameEntity frame) {
                     if (Chess.arrayContains(blackPieces, frame.getHeldItemStack().getItem())) {
                         ClickFigureCalculations.selectFigure(world, frame);
                         return ActionResult.SUCCESS;
@@ -206,8 +203,7 @@ public class UseEntityHandler implements UseEntityCallback {
                 }
             }
             case "yellow" -> {
-                if (entity instanceof ItemFrameEntity) {
-                    ItemFrameEntity frame = (ItemFrameEntity) entity;
+                if (entity instanceof ItemFrameEntity frame) {
                     if (Chess.arrayContains(yellowPieces, frame.getHeldItemStack().getItem())) {
                         ClickFigureCalculations.selectFigure(world, frame);
                         return ActionResult.SUCCESS;
@@ -244,8 +240,7 @@ public class UseEntityHandler implements UseEntityCallback {
 
                 }
             } case "pink" -> {
-                if (entity instanceof ItemFrameEntity) {
-                    ItemFrameEntity frame = (ItemFrameEntity) entity;
+                if (entity instanceof ItemFrameEntity frame) {
                     if (Chess.arrayContains(pinkPieces, frame.getHeldItemStack().getItem())) {
                         ClickFigureCalculations.selectFigure(world, frame);
                         return ActionResult.SUCCESS;

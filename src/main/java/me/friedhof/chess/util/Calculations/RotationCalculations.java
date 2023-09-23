@@ -101,156 +101,72 @@ public class RotationCalculations {
     public static Direction relativeToAbsolute(GlobalChessData data, Direction forwardNorth){
         Direction n = Direction.NORTH;
         switch (data.directionWall) {
-            case UP:
-
-                n = alignRotationToItem(forwardNorth,data.itemRotation,true);
-
-                break;
-            case DOWN:
-
-                n = alignRotationToItem(forwardNorth,data.itemRotation,true);
-
-                switch(n){
-                    case NORTH:
-                        n = Direction.SOUTH;
-                        break;
-                    case SOUTH:
-                        n = Direction.NORTH;
-                        break;
-                    case WEST:
-                        n = Direction.WEST;
-                        break;
-                    case EAST:
-                        n = Direction.EAST;
-                        break;
-                    default:
-                        break;
-
-
+            case UP -> n = alignRotationToItem(forwardNorth, data.itemRotation);
+            case DOWN -> {
+                n = alignRotationToItem(forwardNorth, data.itemRotation);
+                switch (n) {
+                    case NORTH -> n = Direction.SOUTH;
+                    case SOUTH -> n = Direction.NORTH;
+                    case WEST -> n = Direction.WEST;
+                    case EAST -> n = Direction.EAST;
+                    default -> {
+                    }
                 }
-
-
-
-
-                break;
-            case NORTH:
-                n = alignRotationToItem(forwardNorth,data.itemRotation,true);
-
-                switch(n){
-                    case NORTH:
-                        n = Direction.UP;
-                        break;
-                    case SOUTH:
-                        n = Direction.DOWN;
-                        break;
-                    case WEST:
-                        n = Direction.EAST;
-                        break;
-                    case EAST:
-                        n = Direction.WEST;
-                        break;
-                    default:
-                        break;
-
-
+            }
+            case NORTH -> {
+                n = alignRotationToItem(forwardNorth, data.itemRotation);
+                switch (n) {
+                    case NORTH -> n = Direction.UP;
+                    case SOUTH -> n = Direction.DOWN;
+                    case WEST -> n = Direction.EAST;
+                    case EAST -> n = Direction.WEST;
+                    default -> {
+                    }
                 }
-
-
-                break;
-            case SOUTH:
-                n = alignRotationToItem(forwardNorth,data.itemRotation,true);
-
-                switch(n){
-                    case NORTH:
-                        n = Direction.UP;
-                        break;
-                    case SOUTH:
-                        n = Direction.DOWN;
-                        break;
-                    case WEST:
-                        n = Direction.WEST;
-                        break;
-                    case EAST:
-                        n = Direction.EAST;
-                        break;
-                    default:
-                        break;
-
-
+            }
+            case SOUTH -> {
+                n = alignRotationToItem(forwardNorth, data.itemRotation);
+                switch (n) {
+                    case NORTH -> n = Direction.UP;
+                    case SOUTH -> n = Direction.DOWN;
+                    case WEST -> n = Direction.WEST;
+                    case EAST -> n = Direction.EAST;
+                    default -> {
+                    }
                 }
-
-
-
-                break;
-            case EAST:
-                n = alignRotationToItem(forwardNorth, data.itemRotation,true);
-
-                switch(n){
-                    case NORTH:
-                        n = Direction.UP;
-                        break;
-                    case SOUTH:
-                        n = Direction.DOWN;
-                        break;
-                    case WEST:
-                        n = Direction.SOUTH;
-                        break;
-                    case EAST:
-                        n = Direction.NORTH;
-                        break;
-                    default:
-                        break;
-
-
+            }
+            case EAST -> {
+                n = alignRotationToItem(forwardNorth, data.itemRotation);
+                switch (n) {
+                    case NORTH -> n = Direction.UP;
+                    case SOUTH -> n = Direction.DOWN;
+                    case WEST -> n = Direction.SOUTH;
+                    case EAST -> n = Direction.NORTH;
+                    default -> {
+                    }
                 }
-
-
-
-                break;
-            case WEST:
-                n = alignRotationToItem(forwardNorth, data.itemRotation,true);
-
-                switch(n){
-                    case NORTH:
-                        n = Direction.UP;
-                        break;
-                    case SOUTH:
-                        n = Direction.DOWN;
-                        break;
-                    case WEST:
-                        n = Direction.NORTH;
-                        break;
-                    case EAST:
-                        n = Direction.SOUTH;
-                        break;
-                    default:
-                        break;
-
+            }
+            case WEST -> {
+                n = alignRotationToItem(forwardNorth, data.itemRotation);
+                switch (n) {
+                    case NORTH -> n = Direction.UP;
+                    case SOUTH -> n = Direction.DOWN;
+                    case WEST -> n = Direction.NORTH;
+                    case EAST -> n = Direction.SOUTH;
+                    default -> {
+                    }
                 }
-
-                break;
-            default:
-                System.out.println("Direction of Chesspiece not defined");
-
+            }
+            default -> System.out.println("Direction of Chesspiece not defined");
         }
         return n;
     }
 
-    private static Direction alignRotationToItem(Direction n, int itemRotation, boolean clockwise) {
+    private static Direction alignRotationToItem(Direction n, int itemRotation) {
 
-        if(clockwise) {
-            for (int i = 0; i < itemRotation / 2; i++) {
-                n = n.rotateClockwise(Direction.Axis.Y);
-            }
-        }else{
-            for (int i = 0; i < itemRotation / 2; i++) {
-                n = n.rotateCounterclockwise(Direction.Axis.Y);
-            }
+        for (int i = 0; i < itemRotation / 2; i++) {
+            n = n.rotateClockwise(Direction.Axis.Y);
         }
-
-
-
-
 
         return n;
     }

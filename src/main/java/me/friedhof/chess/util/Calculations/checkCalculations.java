@@ -1,5 +1,6 @@
 package me.friedhof.chess.util.Calculations;
 
+import me.friedhof.chess.Chess;
 import me.friedhof.chess.util.BoardState;
 import me.friedhof.chess.util.FigureOnBoard;
 import me.friedhof.chess.util.GlobalChessData;
@@ -11,6 +12,7 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class checkCalculations {
 
@@ -22,11 +24,13 @@ public class checkCalculations {
         ArrayList<FigureOnBoard> allFiguresList = new ArrayList<>(b.allFiguresList);
 
         for(FigureOnBoard f : b.allFiguresList){
-            if(f.item== FigurePotentialMovesCalculations.colourAndFigureTypeToItem(team, "king")){
+            StringBuilder sb = new StringBuilder();
+            if(Chess.itemMap.get(f.item).equals(sb.append(team).append( " king").toString())){
                 kingsList.add(f);
             }
 
         }
+
 
 
         switch (team) {
@@ -57,6 +61,8 @@ public class checkCalculations {
             }
         }
 
+
+
         for(FigureOnBoard king : kingsList){
             for(GlobalChessData data : FigurePotentialMovesCalculations.whitePotentialMoves){
                 if(data.pos.getX() == king.data.pos.getX() && data.pos.getY() == king.data.pos.getY() && data.pos.getZ() == king.data.pos.getZ()
@@ -84,7 +90,6 @@ public class checkCalculations {
             }
 
         }
-
         return false;
     }
 
@@ -93,15 +98,18 @@ public class checkCalculations {
 
 
         ArrayList<BoardState> possibleMoves = BoardState.allPossibleMoves(w,b,team);
+
         int length = possibleMoves.size();
         if(length == 0){
             return false;
         }
         int count = 0;
+       // System.out.println(length);
         for(BoardState move : possibleMoves){
             if(isKingOfColourInCheck(w,team,currentPosition,move)){
                 count += 1;
             }
+
         }
         return count == length;
     }

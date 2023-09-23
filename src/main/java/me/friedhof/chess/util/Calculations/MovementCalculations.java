@@ -25,15 +25,13 @@ public class MovementCalculations {
         if(data == null){
             return null;
         }
-
-
         Direction absolute = RotationCalculations.relativeToAbsolute(data, forwardNorth);
         BlockPos sameBlock = new BlockPos(data.pos.getX(), data.pos.getY(), data.pos.getZ());
         BlockPos attachedBlock = new BlockPos(data.pos.getX(), data.pos.getY(), data.pos.getZ()).offset(data.directionWall.getOpposite(), 1);
         BlockPos nextTo = new BlockPos(data.pos.getX(), data.pos.getY(), data.pos.getZ()).offset(absolute,1);
         BlockPos diagonal = new BlockPos(attachedBlock.getX(), attachedBlock.getY(), attachedBlock.getZ()).offset(absolute,1);
 
-        //innenkanten
+        //inner edges
         if(!(w.getBlockState(nextTo).getBlock() instanceof AirBlock)){
 
             if(w.getBlockState(nextTo).getBlock() instanceof GlassBlock || w.getBlockState(nextTo).getFluidState() != Fluids.EMPTY.getDefaultState()){
@@ -43,30 +41,19 @@ public class MovementCalculations {
 
             int newItemRotation = RotationCalculations.correctRotationsInnerEdges(data.itemRotation,data.directionWall,absolute.getOpposite());
 
+            return new GlobalChessData(sameBlock,absolute.getOpposite(),newItemRotation,false);
 
-
-
-            GlobalChessData newPosition = new GlobalChessData(sameBlock,absolute.getOpposite(),newItemRotation,false);
-
-            return newPosition;
-
-            //glatt
+            //smooth
         }else if(!(w.getBlockState(diagonal).getBlock() instanceof AirBlock)){
             if( w.getBlockState(diagonal).getBlock() instanceof GlassBlock || w.getBlockState(diagonal).getFluidState() != Fluids.EMPTY.getDefaultState()){
                 return null;
             }
-            GlobalChessData newPosition = new GlobalChessData(nextTo,data.directionWall, data.itemRotation, false);
+            return new GlobalChessData(nextTo,data.directionWall, data.itemRotation, false);
 
-            return newPosition;
-
-            //außenkanten
+            //outer edges
         }else{
 
-
-
-            GlobalChessData newPosition = new GlobalChessData(diagonal,absolute,RotationCalculations.correctRotationsOuterEdges(data.itemRotation,data.directionWall, absolute),false);
-
-            return newPosition;
+            return new GlobalChessData(diagonal,absolute,RotationCalculations.correctRotationsOuterEdges(data.itemRotation,data.directionWall, absolute),false);
         }
 
 

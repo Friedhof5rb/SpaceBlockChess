@@ -1,9 +1,6 @@
 package me.friedhof.chess;
 
-import me.friedhof.chess.event.AttackBlockHandler;
-import me.friedhof.chess.event.AttackEntityHandler;
-import me.friedhof.chess.event.StartServerTickHandler;
-import me.friedhof.chess.event.UseEntityHandler;
+import me.friedhof.chess.event.*;
 import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItemGroup;
 import me.friedhof.chess.item.ModItems;
@@ -11,6 +8,7 @@ import me.friedhof.chess.networking.ModMessages;
 import me.friedhof.chess.util.GlobalChessData;
 import me.friedhof.chess.util.ModRegistries;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
@@ -21,6 +19,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.LiteralTextContent;
 import net.minecraft.text.Text;
@@ -30,7 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 
 
 public class Chess implements ModInitializer {
@@ -47,6 +48,29 @@ public class Chess implements ModInitializer {
 
     public static HashMap<String,GlobalChessData> lastMoveFrom = new HashMap<>();
     public static HashMap<String,GlobalChessData> lastMoveTo = new HashMap<>();
+
+    public static HashMap<Item, String> itemMap = new HashMap<>();
+
+
+    public static long start_time = 0;
+
+    public static long end_time = 0;
+
+    public static void setStart_time(){
+        start_time = System.nanoTime();;
+    }
+    public static void setEnd_time(){
+        end_time = System.nanoTime();;
+    }
+
+    public static void printDuration(){
+
+        long nanoseconds = end_time-start_time;
+        double milliseconds = nanoseconds/1000000.0;
+        System.out.println("nanoseconds: " + nanoseconds);
+        System.out.println("milliseconds: " + milliseconds);
+
+    }
 
 
 
@@ -66,11 +90,8 @@ public class Chess implements ModInitializer {
         ModGamerules.registerGamerules();
         ModItems.registerModItems();
         ModItemGroup.registerItemGroups();
-        AttackBlockCallback.EVENT.register(new AttackBlockHandler());
-        AttackEntityCallback.EVENT.register(new AttackEntityHandler());
-        UseEntityCallback.EVENT.register(new UseEntityHandler());
-        ServerTickEvents.START_SERVER_TICK.register(new StartServerTickHandler());
         ModRegistries.registerModStuffs();
+        initializeList();
         LOGGER.info("Escher's Gambit loaded.");
 
         
@@ -101,45 +122,19 @@ public class Chess implements ModInitializer {
 
     public static Item[] combineLists(){
        ArrayList<Item> items1 = new ArrayList<>();
-       for(Item i : UseEntityHandler.whitePieces){
-           items1.add(i);
-       }
-        for(Item i : UseEntityHandler.blackPieces){
-            items1.add(i);
-        }
-        for(Item i : UseEntityHandler.yellowPieces){
-            items1.add(i);
-        }
-        for(Item i : UseEntityHandler.pinkPieces){
-            items1.add(i);
-        }
-        for(Item i : UseEntityHandler.whiteCapturePieces){
-            items1.add(i);
-        }
-        for(Item i : UseEntityHandler.blackCapturePieces){
-            items1.add(i);
-        }
-        for(Item i : UseEntityHandler.yellowCapturePieces){
-            items1.add(i);
-        }
-        for(Item i : UseEntityHandler.pinkCapturePieces){
-            items1.add(i);
-        }
-        for(Item i : UseEntityHandler.whiteSelectedPieces){
-            items1.add(i);
-        }
-        for(Item i : UseEntityHandler.blackSelectedPieces){
-            items1.add(i);
-        }
-        for(Item i : UseEntityHandler.yellowSelectedPieces){
-            items1.add(i);
-        }
-        for(Item i : UseEntityHandler.pinkSelectedPieces){
-            items1.add(i);
-        }
-        for(Item i : UseEntityHandler.switchPieces){
-            items1.add(i);
-        }
+        items1.addAll(Arrays.asList(UseEntityHandler.whitePieces));
+        items1.addAll(Arrays.asList(UseEntityHandler.blackPieces));
+        items1.addAll(Arrays.asList(UseEntityHandler.yellowPieces));
+        items1.addAll(Arrays.asList(UseEntityHandler.pinkPieces));
+        items1.addAll(Arrays.asList(UseEntityHandler.whiteCapturePieces));
+        items1.addAll(Arrays.asList(UseEntityHandler.blackCapturePieces));
+        items1.addAll(Arrays.asList(UseEntityHandler.yellowCapturePieces));
+        items1.addAll(Arrays.asList(UseEntityHandler.pinkCapturePieces));
+        items1.addAll(Arrays.asList(UseEntityHandler.whiteSelectedPieces));
+        items1.addAll(Arrays.asList(UseEntityHandler.blackSelectedPieces));
+        items1.addAll(Arrays.asList(UseEntityHandler.yellowSelectedPieces));
+        items1.addAll(Arrays.asList(UseEntityHandler.pinkSelectedPieces));
+        items1.addAll(Arrays.asList(UseEntityHandler.switchPieces));
         Item[] list = new Item[items1.size()];
         for(int i = 0; i< items1.size();i++){
             list[i] = items1.get(i);
@@ -179,6 +174,60 @@ public class Chess implements ModInitializer {
         return "";
 
     }
+
+    public static void initializeList(){
+
+        itemMap.put(ModItems.WHITE_KING, "white king");
+        itemMap.put(ModItems.WHITE_QUEEN, "white queen");
+        itemMap.put(ModItems.WHITE_KNIGHT, "white knight");
+        itemMap.put(ModItems.WHITE_BISHOP, "white bishop");
+        itemMap.put(ModItems.WHITE_TOWER, "white tower");
+        itemMap.put(ModItems.WHITE_PAWN, "white pawn");
+        itemMap.put(ModItems.START_WHITE_PAWN, "white start_pawn");
+        itemMap.put(ModItems.CASTLE_WHITE_KING, "white castle_king");
+        itemMap.put(ModItems.CASTLE_WHITE_TOWER, "white castle_tower");
+
+        itemMap.put(ModItems.BLACK_KING, "black king");
+        itemMap.put(ModItems.BLACK_QUEEN, "black queen");
+        itemMap.put(ModItems.BLACK_KNIGHT, "black knight");
+        itemMap.put(ModItems.BLACK_BISHOP, "black bishop");
+        itemMap.put(ModItems.BLACK_TOWER, "black tower");
+        itemMap.put(ModItems.BLACK_PAWN, "black pawn");
+        itemMap.put(ModItems.START_BLACK_PAWN, "black start_pawn");
+        itemMap.put(ModItems.CASTLE_BLACK_KING, "black castle_king");
+        itemMap.put(ModItems.CASTLE_BLACK_TOWER, "black castle_tower");
+
+        itemMap.put(ModItems.YELLOW_KING, "yellow king");
+        itemMap.put(ModItems.YELLOW_QUEEN, "yellow queen");
+        itemMap.put(ModItems.YELLOW_KNIGHT, "yellow knight");
+        itemMap.put(ModItems.YELLOW_BISHOP, "yellow bishop");
+        itemMap.put(ModItems.YELLOW_TOWER, "yellow tower");
+        itemMap.put(ModItems.YELLOW_PAWN, "yellow pawn");
+        itemMap.put(ModItems.START_YELLOW_PAWN, "yellow start_pawn");
+        itemMap.put(ModItems.CASTLE_YELLOW_KING, "yellow castle_king");
+        itemMap.put(ModItems.CASTLE_YELLOW_TOWER, "yellow castle_tower");
+
+        itemMap.put(ModItems.PINK_KING, "pink king");
+        itemMap.put(ModItems.PINK_QUEEN, "pink queen");
+        itemMap.put(ModItems.PINK_KNIGHT, "pink knight");
+        itemMap.put(ModItems.PINK_BISHOP, "pink bishop");
+        itemMap.put(ModItems.PINK_TOWER, "pink tower");
+        itemMap.put(ModItems.PINK_PAWN, "pink pawn");
+        itemMap.put(ModItems.START_PINK_PAWN, "pink start_pawn");
+        itemMap.put(ModItems.CASTLE_PINK_KING, "pink castle_king");
+        itemMap.put(ModItems.CASTLE_PINK_TOWER, "pink castle_tower");
+
+
+
+    }
+
+
+
+
+
+
+
+
 
 
 

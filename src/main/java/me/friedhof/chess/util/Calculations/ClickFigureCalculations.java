@@ -22,6 +22,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ClickFigureCalculations {
 
@@ -1551,10 +1552,16 @@ public class ClickFigureCalculations {
 
     private static void checkForCheck(World w, GlobalChessData currentPosition){
 
+
+        Chess.setStart_time();
+
         checkCheckForColour("white",w,currentPosition);
         checkCheckForColour("black",w,currentPosition);
         checkCheckForColour("yellow",w,currentPosition);
         checkCheckForColour("pink",w,currentPosition);
+
+        Chess.setEnd_time();
+        Chess.printDuration();
 
     }
 
