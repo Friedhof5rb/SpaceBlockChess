@@ -45,7 +45,6 @@ public class StartServerTickHandler implements ServerTickEvents.StartTick{
 
                         if (item == ModItems.WHITE_TORCH) {
                             if (!(((TorchItem) item).justShowCheck)) {
-                                System.out.println("white");
                                 GlobalChessData data1 = new GlobalChessData(player.getBlockPos(),Direction.UP,0,false);
                                 BoardState b = checkCalculations.getCurrentBoardState(w,data1);
                                 FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w,"white",b);

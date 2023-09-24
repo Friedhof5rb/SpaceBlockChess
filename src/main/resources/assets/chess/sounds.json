@@ -1,0 +1,14 @@
+{
+  "chess_move_sound": {
+    "subtitle": "sounds.chess.chess_move_sound",
+    "sounds": [
+      "chess:chess_move_sound"
+    ]
+  },
+  "chess_take_sound": {
+    "subtitle": "sounds.chess.chess_take_sound",
+    "sounds": [
+      "chess:chess_take_sound"
+    ]
+  }
+}

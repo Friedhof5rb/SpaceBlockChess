@@ -5,6 +5,8 @@ import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItemGroup;
 import me.friedhof.chess.item.ModItems;
 import me.friedhof.chess.networking.ModMessages;
+import me.friedhof.chess.particle.ModParticles;
+import me.friedhof.chess.sound.ModSounds;
 import me.friedhof.chess.util.GlobalChessData;
 import me.friedhof.chess.util.ModRegistries;
 import net.fabricmc.api.ModInitializer;
@@ -91,6 +93,8 @@ public class Chess implements ModInitializer {
         ModItems.registerModItems();
         ModItemGroup.registerItemGroups();
         ModRegistries.registerModStuffs();
+        ModParticles.registerParticles();
+        ModSounds.registerSoundEvents();
         initializeList();
         LOGGER.info("Escher's Gambit loaded.");
 

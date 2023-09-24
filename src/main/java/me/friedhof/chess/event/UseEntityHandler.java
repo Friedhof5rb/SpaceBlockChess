@@ -2,6 +2,7 @@ package me.friedhof.chess.event;
 
 import me.friedhof.chess.Chess;
 import me.friedhof.chess.item.ModItems;
+import me.friedhof.chess.sound.ModSounds;
 import me.friedhof.chess.util.Calculations.ClickFigureCalculations;
 import me.friedhof.chess.util.Calculations.FigureMovesCalculations;
 import me.friedhof.chess.util.Calculations.MovementCalculations;
@@ -15,6 +16,7 @@ import net.minecraft.item.AirBlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
@@ -22,6 +24,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.GlobalPos;
+import net.minecraft.util.math.Position;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -138,6 +141,7 @@ public class UseEntityHandler implements UseEntityCallback {
                         sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.takeWithFigure(world, frame);
 
+                        world.playSound(null,currentPosition.pos, ModSounds.take, SoundCategory.BLOCKS,2f,1f);
 
 
                         return ActionResult.SUCCESS;
@@ -150,7 +154,7 @@ public class UseEntityHandler implements UseEntityCallback {
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
                         sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.moveFigure(world, frame);
-
+                        world.playSound(null,currentPosition.pos, ModSounds.move, SoundCategory.BLOCKS,2f,1f);
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(switchPieces, frame.getHeldItemStack().getItem())) {
 
@@ -179,6 +183,7 @@ public class UseEntityHandler implements UseEntityCallback {
 
                         sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.takeWithFigure(world, frame);
+                        world.playSound(null,currentPosition.pos, ModSounds.take, SoundCategory.BLOCKS,2f,1f);
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(blackSelectedPieces, frame.getHeldItemStack().getItem())) {
                         ClickFigureCalculations.deselectFigure(world, frame);
@@ -189,6 +194,7 @@ public class UseEntityHandler implements UseEntityCallback {
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
                         sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.moveFigure(world, frame);
+                        world.playSound(null,currentPosition.pos, ModSounds.move, SoundCategory.BLOCKS,2f,1f);
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(switchPieces, frame.getHeldItemStack().getItem())) {
 
@@ -215,7 +221,7 @@ public class UseEntityHandler implements UseEntityCallback {
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
                         sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.takeWithFigure(world, frame);
-
+                        world.playSound(null,currentPosition.pos, ModSounds.take, SoundCategory.BLOCKS,2f,1f);
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(yellowSelectedPieces, frame.getHeldItemStack().getItem())) {
                         ClickFigureCalculations.deselectFigure(world, frame);
@@ -226,7 +232,7 @@ public class UseEntityHandler implements UseEntityCallback {
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
                         sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                        ClickFigureCalculations.moveFigure(world, frame);
-
+                        world.playSound(null,currentPosition.pos, ModSounds.move, SoundCategory.BLOCKS,2f,1f);
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(switchPieces, frame.getHeldItemStack().getItem())) {
 
@@ -251,7 +257,7 @@ public class UseEntityHandler implements UseEntityCallback {
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
                         sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.takeWithFigure(world, frame);
-
+                        world.playSound(null,currentPosition.pos, ModSounds.take, SoundCategory.BLOCKS,2f,1f);
 
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(pinkSelectedPieces, frame.getHeldItemStack().getItem())) {
@@ -263,7 +269,7 @@ public class UseEntityHandler implements UseEntityCallback {
                         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
                         sendMovement(world, whosturn, playerName, currentPosition,Formatting.WHITE);
                         ClickFigureCalculations.moveFigure(world, frame);
-
+                        world.playSound(null,currentPosition.pos, ModSounds.move, SoundCategory.BLOCKS,2f,1f);
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(switchPieces, frame.getHeldItemStack().getItem())) {
 
@@ -284,6 +290,12 @@ public class UseEntityHandler implements UseEntityCallback {
 
         return ActionResult.SUCCESS;
     }
+
+
+
+
+
+
 
     private static void sendMovement(World world, String colour, String playerName, GlobalChessData currentPosition, Formatting textColour){
 

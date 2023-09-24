@@ -1,5 +1,6 @@
 package me.friedhof.chess.networking.packet;
 
+import me.friedhof.chess.particle.ModParticles;
 import me.friedhof.chess.util.GlobalChessData;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -31,26 +32,26 @@ public class SpawnParticleS2CPacket {
         if(colour == 0){
 
             assert minecraftClient.world != null;
-            minecraftClient.world.addParticle(ParticleTypes.CLOUD,array[0]+vec.x,array[1]+vec.y,array[2]+vec.z,0,0,0);
+            minecraftClient.world.addParticle(ModParticles.CHESS_PARTICLE,array[0]+vec.x,array[1]+vec.y,array[2]+vec.z,0,0,0);
         }
         if(colour == 1){
 
 
             assert minecraftClient.world != null;
-            minecraftClient.world.addParticle(ParticleTypes.SQUID_INK,array[0]+vec.x,array[1]+vec.y,array[2]+vec.z,0,0,0);
+            minecraftClient.world.addParticle(ModParticles.CHESS_PARTICLE,array[0]+vec.x,array[1]+vec.y,array[2]+vec.z,0,0,0);
 
         }
         if(colour == 2){
 
 
             assert minecraftClient.world != null;
-            minecraftClient.world.addParticle(ParticleTypes.ANGRY_VILLAGER,array[0]+vec.x,array[1]+vec.y,array[2]+vec.z,0,0,0);
+            minecraftClient.world.addParticle(ModParticles.CHESS_PARTICLE,array[0]+vec.x,array[1]+vec.y,array[2]+vec.z,0,0,0);
 
         }
         if(colour == 3){
 
             assert minecraftClient.world != null;
-            minecraftClient.world.addParticle(ParticleTypes.HEART,array[0]+vec.x,array[1]+vec.y,array[2]+vec.z,0,0,0);
+            minecraftClient.world.addParticle(ModParticles.CHESS_PARTICLE,array[0]+vec.x,array[1]+vec.y,array[2]+vec.z,0,0,0);
 
 
         }
