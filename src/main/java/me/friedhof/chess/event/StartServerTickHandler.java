@@ -3,15 +3,16 @@ package me.friedhof.chess.event;
 import me.friedhof.chess.Chess;
 import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItems;
+import me.friedhof.chess.item.custom.TorchItem;
 import me.friedhof.chess.networking.ModMessages;
-import me.friedhof.chess.util.Calculations.FigureMovesCalculations;
-import me.friedhof.chess.util.Calculations.FigurePotentialMovesCalculations;
-import me.friedhof.chess.util.Calculations.FigurePotentialMovesCalculationsForShow;
-import me.friedhof.chess.util.Calculations.MovementCalculations;
+import me.friedhof.chess.util.BoardState;
+import me.friedhof.chess.util.Calculations.*;
+import me.friedhof.chess.util.FigureOnBoard;
 import me.friedhof.chess.util.GlobalChessData;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,6 +29,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StartServerTickHandler implements ServerTickEvents.StartTick{
@@ -36,423 +38,162 @@ public class StartServerTickHandler implements ServerTickEvents.StartTick{
 
         World w = server.getOverworld();
         if(w.getGameRules().getBoolean(ModGamerules.canUseChessTorches)) {
+
             for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
                 Item item = player.getInventory().getMainHandStack().getItem();
-                if (item == ModItems.WHITE_TORCH) {
+                if (item instanceof TorchItem) {
 
-                    int radius = 50;
-                    List<ItemFrameEntity> list = w.getEntitiesByType(EntityType.ITEM_FRAME, new Box(player.getX() - radius, player.getY() - radius, player.getZ() - radius, player.getX() + radius, player.getY() + radius, player.getZ() + radius), EntityPredicates.VALID_ENTITY);
-                    FigurePotentialMovesCalculationsForShow.whitePotentialMoves.clear();
-                    for (ItemFrameEntity entity : list) {
-                        Item item2 = entity.getHeldItemStack().getItem();
-                        GlobalChessData data = MovementCalculations.figureToData(entity);
-                        if (item2 == ModItems.WHITE_TOWER) {
+                        if (item == ModItems.WHITE_TORCH) {
+                            if (!(((TorchItem) item).justShowCheck)) {
+                                System.out.println("white");
+                                GlobalChessData data1 = new GlobalChessData(player.getBlockPos(),Direction.UP,0,false);
+                                BoardState b = checkCalculations.getCurrentBoardState(w,data1);
+                                FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w,"white",b);
+
+                                ArrayList<GlobalChessData> potentialMoves = new ArrayList<>(FigurePotentialMovesCalculationsForShow.whitePotentialMoves);
+
+                                for (GlobalChessData data : potentialMoves) {
+                                    PacketByteBuf buffer = PacketByteBufs.create();
+                                    buffer.writeIntArray(new int[]{data.pos.getX(), data.pos.getY(), data.pos.getZ(), 0, data.directionWall.getId()});
+                                    ServerPlayNetworking.send(player, ModMessages.SPAWN_PARTICLE, buffer);
+
+                                }
 
 
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.NORTH, "white");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.SOUTH, "white");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.WEST, "white");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.EAST, "white");
+                            }else{
+                                GlobalChessData data1 = new GlobalChessData(player.getBlockPos(),Direction.UP,0,false);
+                                BoardState b = checkCalculations.getCurrentBoardState(w,data1);
 
+                                ArrayList<BoardState> list = BoardState.allPossibleMoves(w,b,"white",true);
+
+
+
+                                for (BoardState b2 : list) {
+                                    if(!checkCalculations.isKingOfColourInCheck(w,"white",b2,true)) {
+                                        for(FigureOnBoard f : checkCalculations.compareBoardStates(b,b2)) {
+                                            PacketByteBuf buffer = PacketByteBufs.create();
+                                            buffer.writeIntArray(new int[]{f.data.pos.getX(), f.data.pos.getY(), f.data.pos.getZ(), 0, f.data.directionWall.getId()});
+                                            ServerPlayNetworking.send(player, ModMessages.SPAWN_PARTICLE, buffer);
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    if (item == ModItems.BLACK_TORCH) {
+                        if (!(((TorchItem) item).justShowCheck)) {
+                            GlobalChessData data1 = new GlobalChessData(player.getBlockPos(),Direction.UP,0,false);
+                            BoardState b = checkCalculations.getCurrentBoardState(w,data1);
+                            FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w,"black",b);
+
+                            ArrayList<GlobalChessData> potentialMoves = new ArrayList<>(FigurePotentialMovesCalculationsForShow.blackPotentialMoves);
+
+                            for (GlobalChessData data : potentialMoves) {
+                                PacketByteBuf buffer = PacketByteBufs.create();
+                                buffer.writeIntArray(new int[]{data.pos.getX(), data.pos.getY(), data.pos.getZ(), 1, data.directionWall.getId()});
+                                ServerPlayNetworking.send(player, ModMessages.SPAWN_PARTICLE, buffer);
+
+                            }
+
+
+                        }else{
+                            GlobalChessData data1 = new GlobalChessData(player.getBlockPos(),Direction.UP,0,false);
+                            BoardState b = checkCalculations.getCurrentBoardState(w,data1);
+
+
+                            ArrayList<BoardState> list = BoardState.allPossibleMoves(w,b,"black",true);
+
+                            for (BoardState b2 : list) {
+                                if(!checkCalculations.isKingOfColourInCheck(w,"black",b2,true)) {
+                                    for(FigureOnBoard f : checkCalculations.compareBoardStates(b,b2)) {
+
+                                        PacketByteBuf buffer = PacketByteBufs.create();
+                                        buffer.writeIntArray(new int[]{f.data.pos.getX(), f.data.pos.getY(), f.data.pos.getZ(), 1, f.data.directionWall.getId()});
+                                        ServerPlayNetworking.send(player, ModMessages.SPAWN_PARTICLE, buffer);
+                                    }
+                                }
+                            }
 
                         }
-                        if (item2 == ModItems.WHITE_BISHOP) {
-                            FigurePotentialMovesCalculationsForShow.bishopMoveScheme(w, data, Direction.NORTH, Direction.EAST, "white");
-                            FigurePotentialMovesCalculationsForShow.bishopMoveScheme(w, data, Direction.NORTH, Direction.WEST, "white");
-                            FigurePotentialMovesCalculationsForShow.bishopMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "white");
-                            FigurePotentialMovesCalculationsForShow.bishopMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "white");
-
-                        }
-                        if (item2 == ModItems.WHITE_KNIGHT) {
-
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.NORTH, Direction.EAST, "white");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "white");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.EAST, Direction.NORTH, "white");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.WEST, Direction.NORTH, "white");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.NORTH, Direction.WEST, "white");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "white");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.EAST, Direction.SOUTH, "white");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.WEST, Direction.SOUTH, "white");
-                        }
-                        if (item2 == ModItems.WHITE_QUEEN) {
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.NORTH, Direction.UP, "white");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.SOUTH, Direction.UP, "white");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.EAST, Direction.UP, "white");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.WEST, Direction.UP, "white");
-
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.NORTH, Direction.EAST, "white");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.NORTH, Direction.WEST, "white");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "white");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "white");
-
-                        }
-                        if (item2 == ModItems.WHITE_KING) {
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.UP, "white");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.UP, "white");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.EAST, Direction.UP, "white");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.WEST, Direction.UP, "white");
-
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.EAST, "white");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.WEST, "white");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "white");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "white");
-
-                        }
-                        if (item2 == ModItems.WHITE_PAWN) {
-                            FigurePotentialMovesCalculationsForShow.pawnMoveScheme(w, data, Direction.NORTH, "white");
-
-                        }
-                        if (item2 == ModItems.START_WHITE_PAWN) {
-                            FigurePotentialMovesCalculationsForShow.startPawnMoveScheme(w, data, Direction.NORTH, Direction.UP, "white");
-                            FigurePotentialMovesCalculationsForShow.startPawnMoveScheme(w, data, Direction.NORTH, Direction.NORTH, "white");
-
-                        }
-                        if (item2 == ModItems.CASTLE_WHITE_KING) {
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.UP, "white");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.UP, "white");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.EAST, Direction.UP, "white");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.WEST, Direction.UP, "white");
-
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.EAST, "white");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.WEST, "white");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "white");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "white");
-
-
-                            FigurePotentialMovesCalculationsForShow.castlingScheme(w, data, Direction.NORTH, "white");
-                            FigurePotentialMovesCalculationsForShow.castlingScheme(w, data, Direction.SOUTH, "white");
-                            FigurePotentialMovesCalculationsForShow.castlingScheme(w, data, Direction.EAST, "white");
-                            FigurePotentialMovesCalculationsForShow.castlingScheme(w, data, Direction.WEST, "white");
-
-                        }
-                        if (item2 == ModItems.CASTLE_WHITE_TOWER) {
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.NORTH, "white");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.SOUTH, "white");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.WEST, "white");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.EAST, "white");
-
-                        }
-
-
                     }
+                    if (item == ModItems.YELLOW_TORCH) {
+                        if (!(((TorchItem) item).justShowCheck)) {
+                            GlobalChessData data1 = new GlobalChessData(player.getBlockPos(),Direction.UP,0,false);
+                            BoardState b = checkCalculations.getCurrentBoardState(w,data1);
+                            FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w,"yellow",b);
 
-                    for (GlobalChessData data : FigurePotentialMovesCalculationsForShow.whitePotentialMoves) {
-                        PacketByteBuf buffer = PacketByteBufs.create();
-                        buffer.writeIntArray(new int[]{data.pos.getX(), data.pos.getY(), data.pos.getZ(), 0, data.directionWall.getId()});
-                        ServerPlayNetworking.send(player, ModMessages.SPAWN_PARTICLE, buffer);
+                            ArrayList<GlobalChessData> potentialMoves = new ArrayList<>(FigurePotentialMovesCalculationsForShow.yellowPotentialMoves);
 
-                    }
+                            for (GlobalChessData data : potentialMoves) {
+                                PacketByteBuf buffer = PacketByteBufs.create();
+                                buffer.writeIntArray(new int[]{data.pos.getX(), data.pos.getY(), data.pos.getZ(), 2, data.directionWall.getId()});
+                                ServerPlayNetworking.send(player, ModMessages.SPAWN_PARTICLE, buffer);
 
-
-                }
-                if (item == ModItems.BLACK_TORCH) {
-                    int radius = 50;
-                    List<ItemFrameEntity> list = w.getEntitiesByType(EntityType.ITEM_FRAME, new Box(player.getX() - radius, player.getY() - radius, player.getZ() - radius, player.getX() + radius, player.getY() + radius, player.getZ() + radius), EntityPredicates.VALID_ENTITY);
-                    FigurePotentialMovesCalculationsForShow.blackPotentialMoves.clear();
-                    for (ItemFrameEntity entity : list) {
-                        Item item2 = entity.getHeldItemStack().getItem();
-                        GlobalChessData data = MovementCalculations.figureToData(entity);
-                        if (item2 == ModItems.BLACK_TOWER) {
+                            }
 
 
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.NORTH, "black");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.SOUTH, "black");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.WEST, "black");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.EAST, "black");
-
-                        }
-                        if (item2 == ModItems.BLACK_BISHOP) {
-                            FigurePotentialMovesCalculationsForShow.bishopMoveScheme(w, data, Direction.NORTH, Direction.EAST, "black");
-                            FigurePotentialMovesCalculationsForShow.bishopMoveScheme(w, data, Direction.NORTH, Direction.WEST, "black");
-                            FigurePotentialMovesCalculationsForShow.bishopMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "black");
-                            FigurePotentialMovesCalculationsForShow.bishopMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "black");
-
-                        }
-                        if (item2 == ModItems.BLACK_KNIGHT) {
-
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.NORTH, Direction.EAST, "black");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "black");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.EAST, Direction.NORTH, "black");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.WEST, Direction.NORTH, "black");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.NORTH, Direction.WEST, "black");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "black");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.EAST, Direction.SOUTH, "black");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.WEST, Direction.SOUTH, "black");
-                        }
-                        if (item2 == ModItems.BLACK_QUEEN) {
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.NORTH, Direction.UP, "black");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.SOUTH, Direction.UP, "black");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.EAST, Direction.UP, "black");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.WEST, Direction.UP, "black");
-
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.NORTH, Direction.EAST, "black");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.NORTH, Direction.WEST, "black");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "black");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "black");
-
-                        }
-                        if (item2 == ModItems.BLACK_KING) {
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.UP, "black");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.UP, "black");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.EAST, Direction.UP, "black");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.WEST, Direction.UP, "black");
-
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.EAST, "black");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.WEST, "black");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "black");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "black");
-
-                        }
-                        if (item2 == ModItems.BLACK_PAWN) {
-                            FigurePotentialMovesCalculationsForShow.pawnMoveScheme(w, data, Direction.NORTH, "black");
-
-                        }
-                        if (item2 == ModItems.START_BLACK_PAWN) {
-                            FigurePotentialMovesCalculationsForShow.startPawnMoveScheme(w, data, Direction.NORTH, Direction.UP, "black");
-                            FigurePotentialMovesCalculationsForShow.startPawnMoveScheme(w, data, Direction.NORTH, Direction.NORTH, "black");
-
-                        }
-                        if (item2 == ModItems.CASTLE_BLACK_KING) {
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.UP, "black");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.UP, "black");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.EAST, Direction.UP, "black");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.WEST, Direction.UP, "black");
-
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.EAST, "black");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.WEST, "black");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "black");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "black");
+                        }else{
+                            GlobalChessData data1 = new GlobalChessData(player.getBlockPos(),Direction.UP,0,false);
+                            BoardState b = checkCalculations.getCurrentBoardState(w,data1);
 
 
-                            FigurePotentialMovesCalculationsForShow.castlingScheme(w, data, Direction.NORTH, "black");
-                            FigurePotentialMovesCalculationsForShow.castlingScheme(w, data, Direction.SOUTH, "black");
-                            FigurePotentialMovesCalculationsForShow.castlingScheme(w, data, Direction.EAST, "black");
-                            FigurePotentialMovesCalculationsForShow.castlingScheme(w, data, Direction.WEST, "black");
+                            ArrayList<BoardState> list = BoardState.allPossibleMoves(w,b,"yellow",true);
 
-                        }
-                        if (item2 == ModItems.CASTLE_BLACK_TOWER) {
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.NORTH, "black");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.SOUTH, "black");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.WEST, "black");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.EAST, "black");
+                            for (BoardState b2 : list) {
+                                if(!checkCalculations.isKingOfColourInCheck(w,"yellow",b2,true)) {
+                                    for(FigureOnBoard f : checkCalculations.compareBoardStates(b,b2)) {
+                                        PacketByteBuf buffer = PacketByteBufs.create();
+                                        buffer.writeIntArray(new int[]{f.data.pos.getX(), f.data.pos.getY(), f.data.pos.getZ(), 2, f.data.directionWall.getId()});
+                                        ServerPlayNetworking.send(player, ModMessages.SPAWN_PARTICLE, buffer);
+                                    }
+                                }
+                            }
 
                         }
 
                     }
+                    if (item == ModItems.PINK_TORCH) {
+                        if (!(((TorchItem) item).justShowCheck)) {
+                            GlobalChessData data1 = new GlobalChessData(player.getBlockPos(),Direction.UP,0,false);
+                            BoardState b = checkCalculations.getCurrentBoardState(w,data1);
+                            FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w,"pink",b);
 
-                    for (GlobalChessData data : FigurePotentialMovesCalculationsForShow.blackPotentialMoves) {
-                        PacketByteBuf buffer = PacketByteBufs.create();
-                        buffer.writeIntArray(new int[]{data.pos.getX(), data.pos.getY(), data.pos.getZ(), 1, data.directionWall.getId()});
-                        ServerPlayNetworking.send(player, ModMessages.SPAWN_PARTICLE, buffer);
+                            ArrayList<GlobalChessData> potentialMoves = new ArrayList<>(FigurePotentialMovesCalculationsForShow.pinkPotentialMoves);
 
+                            for (GlobalChessData data : potentialMoves) {
+                                PacketByteBuf buffer = PacketByteBufs.create();
+                                buffer.writeIntArray(new int[]{data.pos.getX(), data.pos.getY(), data.pos.getZ(), 3, data.directionWall.getId()});
+                                ServerPlayNetworking.send(player, ModMessages.SPAWN_PARTICLE, buffer);
+
+                            }
+
+
+                        }else{
+                            GlobalChessData data1 = new GlobalChessData(player.getBlockPos(),Direction.UP,0,false);
+                            BoardState b = checkCalculations.getCurrentBoardState(w,data1);
+
+
+                            ArrayList<BoardState> list = BoardState.allPossibleMoves(w,b,"pink",true);
+
+                            for (BoardState b2 : list) {
+                                if(!checkCalculations.isKingOfColourInCheck(w,"pink",b2,true)) {
+                                    for(FigureOnBoard f : checkCalculations.compareBoardStates(b,b2)) {
+                                        PacketByteBuf buffer = PacketByteBufs.create();
+                                        buffer.writeIntArray(new int[]{f.data.pos.getX(), f.data.pos.getY(), f.data.pos.getZ(), 3, f.data.directionWall.getId()});
+                                        ServerPlayNetworking.send(player, ModMessages.SPAWN_PARTICLE, buffer);
+                                    }
+                                }
+                            }
+
+                        }
                     }
 
-
-                }
-                if (item == ModItems.YELLOW_TORCH) {
-                    int radius = 50;
-                    List<ItemFrameEntity> list = w.getEntitiesByType(EntityType.ITEM_FRAME, new Box(player.getX() - radius, player.getY() - radius, player.getZ() - radius, player.getX() + radius, player.getY() + radius, player.getZ() + radius), EntityPredicates.VALID_ENTITY);
-                    FigurePotentialMovesCalculationsForShow.yellowPotentialMoves.clear();
-                    for (ItemFrameEntity entity : list) {
-                        Item item2 = entity.getHeldItemStack().getItem();
-                        GlobalChessData data = MovementCalculations.figureToData(entity);
-                        if (item2 == ModItems.YELLOW_TOWER) {
-
-
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.NORTH, "yellow");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.SOUTH, "yellow");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.WEST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.EAST, "yellow");
-
-                        }
-                        if (item2 == ModItems.YELLOW_BISHOP) {
-                            FigurePotentialMovesCalculationsForShow.bishopMoveScheme(w, data, Direction.NORTH, Direction.EAST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.bishopMoveScheme(w, data, Direction.NORTH, Direction.WEST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.bishopMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.bishopMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "yellow");
-
-                        }
-                        if (item2 == ModItems.YELLOW_KNIGHT) {
-
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.NORTH, Direction.EAST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.EAST, Direction.NORTH, "yellow");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.WEST, Direction.NORTH, "yellow");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.NORTH, Direction.WEST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.EAST, Direction.SOUTH, "yellow");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.WEST, Direction.SOUTH, "yellow");
-                        }
-                        if (item2 == ModItems.YELLOW_QUEEN) {
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.NORTH, Direction.UP, "yellow");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.SOUTH, Direction.UP, "yellow");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.EAST, Direction.UP, "yellow");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.WEST, Direction.UP, "yellow");
-
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.NORTH, Direction.EAST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.NORTH, Direction.WEST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "yellow");
-
-                        }
-                        if (item2 == ModItems.YELLOW_KING) {
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.UP, "yellow");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.UP, "yellow");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.EAST, Direction.UP, "yellow");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.WEST, Direction.UP, "yellow");
-
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.EAST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.WEST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "yellow");
-
-                        }
-                        if (item2 == ModItems.YELLOW_PAWN) {
-                            FigurePotentialMovesCalculationsForShow.pawnMoveScheme(w, data, Direction.NORTH, "yellow");
-
-                        }
-                        if (item2 == ModItems.START_YELLOW_PAWN) {
-                            FigurePotentialMovesCalculationsForShow.startPawnMoveScheme(w, data, Direction.NORTH, Direction.UP, "yellow");
-                            FigurePotentialMovesCalculationsForShow.startPawnMoveScheme(w, data, Direction.NORTH, Direction.NORTH, "yellow");
-
-                        }
-                        if (item2 == ModItems.CASTLE_YELLOW_KING) {
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.UP, "yellow");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.UP, "yellow");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.EAST, Direction.UP, "yellow");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.WEST, Direction.UP, "yellow");
-
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.EAST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.WEST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "yellow");
-
-
-                            FigurePotentialMovesCalculationsForShow.castlingScheme(w, data, Direction.NORTH, "yellow");
-                            FigurePotentialMovesCalculationsForShow.castlingScheme(w, data, Direction.SOUTH, "yellow");
-                            FigurePotentialMovesCalculationsForShow.castlingScheme(w, data, Direction.EAST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.castlingScheme(w, data, Direction.WEST, "yellow");
-
-                        }
-                        if (item2 == ModItems.CASTLE_YELLOW_TOWER) {
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.NORTH, "yellow");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.SOUTH, "yellow");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.WEST, "yellow");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.EAST, "yellow");
-
-                        }
-
-                    }
-                    for (GlobalChessData data : FigurePotentialMovesCalculationsForShow.yellowPotentialMoves) {
-                        PacketByteBuf buffer = PacketByteBufs.create();
-                        buffer.writeIntArray(new int[]{data.pos.getX(), data.pos.getY(), data.pos.getZ(), 2, data.directionWall.getId()});
-                        ServerPlayNetworking.send(player, ModMessages.SPAWN_PARTICLE, buffer);
-
-                    }
-
-                }
-                if (item == ModItems.PINK_TORCH) {
-                    int radius = 50;
-                    List<ItemFrameEntity> list = w.getEntitiesByType(EntityType.ITEM_FRAME, new Box(player.getX() - radius, player.getY() - radius, player.getZ() - radius, player.getX() + radius, player.getY() + radius, player.getZ() + radius), EntityPredicates.VALID_ENTITY);
-                    FigurePotentialMovesCalculationsForShow.pinkPotentialMoves.clear();
-                    for (ItemFrameEntity entity : list) {
-                        Item item2 = entity.getHeldItemStack().getItem();
-                        GlobalChessData data = MovementCalculations.figureToData(entity);
-                        if (item2 == ModItems.PINK_TOWER) {
-
-
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.NORTH, "pink");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.SOUTH, "pink");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.WEST, "pink");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.EAST, "pink");
-                        }
-                        if (item2 == ModItems.PINK_BISHOP) {
-                            FigurePotentialMovesCalculationsForShow.bishopMoveScheme(w, data, Direction.NORTH, Direction.EAST, "pink");
-                            FigurePotentialMovesCalculationsForShow.bishopMoveScheme(w, data, Direction.NORTH, Direction.WEST, "pink");
-                            FigurePotentialMovesCalculationsForShow.bishopMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "pink");
-                            FigurePotentialMovesCalculationsForShow.bishopMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "pink");
-
-                        }
-                        if (item2 == ModItems.PINK_KNIGHT) {
-
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.NORTH, Direction.EAST, "pink");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "pink");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.EAST, Direction.NORTH, "pink");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.WEST, Direction.NORTH, "pink");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.NORTH, Direction.WEST, "pink");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "pink");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.EAST, Direction.SOUTH, "pink");
-                            FigurePotentialMovesCalculationsForShow.knightMoveScheme(w, data, Direction.WEST, Direction.SOUTH, "pink");
-                        }
-                        if (item2 == ModItems.PINK_QUEEN) {
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.NORTH, Direction.UP, "pink");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.SOUTH, Direction.UP, "pink");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.EAST, Direction.UP, "pink");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.WEST, Direction.UP, "pink");
-
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.NORTH, Direction.EAST, "pink");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.NORTH, Direction.WEST, "pink");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "pink");
-                            FigurePotentialMovesCalculationsForShow.queenMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "pink");
-
-                        }
-                        if (item2 == ModItems.PINK_KING) {
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.UP, "pink");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.UP, "pink");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.EAST, Direction.UP, "pink");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.WEST, Direction.UP, "pink");
-
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.EAST, "pink");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.WEST, "pink");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "pink");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "pink");
-
-                        }
-                        if (item2 == ModItems.PINK_PAWN) {
-                            FigurePotentialMovesCalculationsForShow.pawnMoveScheme(w, data, Direction.NORTH, "pink");
-
-                        }
-                        if (item2 == ModItems.START_PINK_PAWN) {
-                            FigurePotentialMovesCalculationsForShow.startPawnMoveScheme(w, data, Direction.NORTH, Direction.UP, "pink");
-                            FigurePotentialMovesCalculationsForShow.startPawnMoveScheme(w, data, Direction.NORTH, Direction.NORTH, "pink");
-
-                        }
-                        if (item2 == ModItems.CASTLE_PINK_KING) {
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.UP, "pink");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.UP, "pink");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.EAST, Direction.UP, "pink");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.WEST, Direction.UP, "pink");
-
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.EAST, "pink");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.NORTH, Direction.WEST, "pink");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.EAST, "pink");
-                            FigurePotentialMovesCalculationsForShow.kingMoveScheme(w, data, Direction.SOUTH, Direction.WEST, "pink");
-
-
-                            FigurePotentialMovesCalculationsForShow.castlingScheme(w, data, Direction.NORTH, "pink");
-                            FigurePotentialMovesCalculationsForShow.castlingScheme(w, data, Direction.SOUTH, "pink");
-                            FigurePotentialMovesCalculationsForShow.castlingScheme(w, data, Direction.EAST, "pink");
-                            FigurePotentialMovesCalculationsForShow.castlingScheme(w, data, Direction.WEST, "pink");
-
-                        }
-                        if (item2 == ModItems.CASTLE_PINK_TOWER) {
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.NORTH, "pink");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.SOUTH, "pink");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.WEST, "pink");
-                            FigurePotentialMovesCalculationsForShow.towerMoveScheme(w, data, Direction.EAST, "pink");
-
-                        }
-
-
-                    }
-                    for (GlobalChessData data : FigurePotentialMovesCalculationsForShow.pinkPotentialMoves) {
-                        PacketByteBuf buffer = PacketByteBufs.create();
-                        buffer.writeIntArray(new int[]{data.pos.getX(), data.pos.getY(), data.pos.getZ(), 3, data.directionWall.getId()});
-                        ServerPlayNetworking.send(player, ModMessages.SPAWN_PARTICLE, buffer);
-
-                    }
                 }
             }
+
+
+
+
         }
         for(PlayerEntity player : server.getPlayerManager().getPlayerList()) {
 

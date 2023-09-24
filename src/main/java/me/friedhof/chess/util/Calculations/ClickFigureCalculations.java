@@ -1561,15 +1561,15 @@ public class ClickFigureCalculations {
         checkCheckForColour("pink",w,currentPosition);
 
         Chess.setEnd_time();
-        Chess.printDuration();
+        //Chess.printDuration();
 
     }
 
     private static void checkCheckForColour(String team, World w, GlobalChessData currentPosition){
 
 
-        boolean check = checkCalculations.isKingOfColourInCheck(w,team,currentPosition,checkCalculations.getCurrentBoardState(w,currentPosition));
-        boolean potentialCheck = checkCalculations.isKingOfColourInPotentialCheck(w,team,currentPosition,checkCalculations.getCurrentBoardState(w,currentPosition));
+        boolean check = checkCalculations.isKingOfColourInCheck(w,team,checkCalculations.getCurrentBoardState(w,currentPosition),false);
+        boolean potentialCheck = checkCalculations.isKingOfColourInPotentialCheck(w,team,currentPosition,checkCalculations.getCurrentBoardState(w,currentPosition),false);
 
         if(check && !potentialCheck){
 

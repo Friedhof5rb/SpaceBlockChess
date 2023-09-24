@@ -29,11 +29,11 @@ public class ModItems {
     public static final Item YELLOW_ROD_OF_MOVING = registerItem("yellow_rod_of_moving",new Item(new FabricItemSettings().maxCount(1)));
     public static final Item PINK_ROD_OF_MOVING = registerItem("pink_rod_of_moving",new Item(new FabricItemSettings().maxCount(1)));
 
-    public static final Item WHITE_TORCH = registerItem("white_torch",new Item(new FabricItemSettings().maxCount(1)));
-    public static final Item BLACK_TORCH= registerItem("black_torch",new Item(new FabricItemSettings().maxCount(1)));
+    public static final Item WHITE_TORCH = registerItem("white_torch",new TorchItem(new FabricItemSettings().maxCount(1)));
+    public static final Item BLACK_TORCH= registerItem("black_torch",new TorchItem(new FabricItemSettings().maxCount(1)));
 
-    public static final Item YELLOW_TORCH= registerItem("yellow_torch",new Item(new FabricItemSettings().maxCount(1)));
-    public static final Item PINK_TORCH= registerItem("pink_torch",new Item(new FabricItemSettings().maxCount(1)));
+    public static final Item YELLOW_TORCH= registerItem("yellow_torch",new TorchItem(new FabricItemSettings().maxCount(1)));
+    public static final Item PINK_TORCH= registerItem("pink_torch",new TorchItem(new FabricItemSettings().maxCount(1)));
 
 
 
