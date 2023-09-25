@@ -55,7 +55,11 @@ public class checkCalculations {
 
         for(FigureOnBoard f : b.allFiguresList){
             StringBuilder sb = new StringBuilder();
-            if(Chess.itemMap.get(f.item).equals(sb.append(team).append( " king").toString())){
+            StringBuilder sb2 = new StringBuilder();
+
+
+
+            if(Chess.itemMap.get(f.item).equals(sb.append(team).append( " king").toString()) || Chess.itemMap.get(f.item).equals(sb2.append(team).append( " castle_king").toString())){
                 kingsList.add(f);
             }
 

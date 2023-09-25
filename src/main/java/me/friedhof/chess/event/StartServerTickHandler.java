@@ -36,8 +36,9 @@ public class StartServerTickHandler implements ServerTickEvents.StartTick{
     @Override
     public void onStartTick(MinecraftServer server) {
 
+
         World w = server.getOverworld();
-        if(w.getGameRules().getBoolean(ModGamerules.canUseChessTorches)) {
+        if(w.getGameRules().getBoolean(ModGamerules.canUseChessTorches) && server.getTicks() % 10 == 0) {
 
             for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
                 Item item = player.getInventory().getMainHandStack().getItem();

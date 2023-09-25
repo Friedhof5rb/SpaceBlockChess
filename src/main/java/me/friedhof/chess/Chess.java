@@ -53,11 +53,15 @@ public class Chess implements ModInitializer {
 
     public static HashMap<Item, String> itemMap = new HashMap<>();
 
+    public static String[] turnOrder = {"white","black"};
+
+
+
+
+
 
     public static long start_time = 0;
-
     public static long end_time = 0;
-
     public static void setStart_time(){
         start_time = System.nanoTime();;
     }
