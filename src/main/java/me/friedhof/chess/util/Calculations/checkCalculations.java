@@ -1,11 +1,13 @@
 package me.friedhof.chess.util.Calculations;
 
 import me.friedhof.chess.Chess;
+import me.friedhof.chess.event.UseEntityHandler;
 import me.friedhof.chess.util.BoardState;
 import me.friedhof.chess.util.FigureOnBoard;
 import me.friedhof.chess.util.GlobalChessData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ItemFrameEntity;
+import net.minecraft.item.Item;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
@@ -46,18 +48,15 @@ public class checkCalculations {
 
 
 
-    public static boolean isKingOfColourInCheck(World w, String team, BoardState b, boolean forShow){
+    public static boolean isKingOfColourInCheck(World w, String team, BoardState b){
 
 
         ArrayList<FigureOnBoard> kingsList = new ArrayList<>();
 
-        ArrayList<FigureOnBoard> allFiguresList = new ArrayList<>(b.allFiguresList);
 
         for(FigureOnBoard f : b.allFiguresList){
             StringBuilder sb = new StringBuilder();
             StringBuilder sb2 = new StringBuilder();
-
-
 
             if(Chess.itemMap.get(f.item).equals(sb.append(team).append( " king").toString()) || Chess.itemMap.get(f.item).equals(sb2.append(team).append( " castle_king").toString())){
                 kingsList.add(f);
@@ -65,114 +64,58 @@ public class checkCalculations {
 
         }
 
+        FigurePotentialMovesCalculations calc = new FigurePotentialMovesCalculations();
 
-        if(!forShow) {
+
             switch (team) {
                 case "white" -> {
-                    FigurePotentialMovesCalculations.calculateAllMovesForColour(w, "black", allFiguresList, b);
-                    FigurePotentialMovesCalculations.calculateAllMovesForColour(w, "yellow", allFiguresList, b);
-                    FigurePotentialMovesCalculations.calculateAllMovesForColour(w, "pink", allFiguresList, b);
-                    FigurePotentialMovesCalculations.whitePotentialMoves.clear();
+                    calc.calculateAllMovesForColour(w, "black", b);
+                    calc.calculateAllMovesForColour(w, "yellow", b);
+                    calc.calculateAllMovesForColour(w, "pink", b);
+                    calc.whitePotentialMoves.clear();
                 }
                 case "black" -> {
-                    FigurePotentialMovesCalculations.calculateAllMovesForColour(w, "white", allFiguresList, b);
-                    FigurePotentialMovesCalculations.calculateAllMovesForColour(w, "yellow", allFiguresList, b);
-                    FigurePotentialMovesCalculations.calculateAllMovesForColour(w, "pink", allFiguresList, b);
-                    FigurePotentialMovesCalculations.blackPotentialMoves.clear();
+                    calc.calculateAllMovesForColour(w, "white", b);
+                    calc.calculateAllMovesForColour(w, "yellow", b);
+                    calc.calculateAllMovesForColour(w, "pink", b);
+                    calc.blackPotentialMoves.clear();
 
                 }
                 case "yellow" -> {
-                    FigurePotentialMovesCalculations.calculateAllMovesForColour(w, "white", allFiguresList, b);
-                    FigurePotentialMovesCalculations.calculateAllMovesForColour(w, "black", allFiguresList, b);
-                    FigurePotentialMovesCalculations.calculateAllMovesForColour(w, "pink", allFiguresList, b);
-                    FigurePotentialMovesCalculations.yellowPotentialMoves.clear();
+                    calc.calculateAllMovesForColour(w, "white", b);
+                    calc.calculateAllMovesForColour(w, "black", b);
+                    calc.calculateAllMovesForColour(w, "pink", b);
+                    calc.yellowPotentialMoves.clear();
                 }
                 case "pink" -> {
-                    FigurePotentialMovesCalculations.calculateAllMovesForColour(w, "white", allFiguresList, b);
-                    FigurePotentialMovesCalculations.calculateAllMovesForColour(w, "yellow", allFiguresList, b);
-                    FigurePotentialMovesCalculations.calculateAllMovesForColour(w, "black", allFiguresList, b);
-                    FigurePotentialMovesCalculations.pinkPotentialMoves.clear();
+                    calc.calculateAllMovesForColour(w, "white", b);
+                    calc.calculateAllMovesForColour(w, "yellow", b);
+                    calc.calculateAllMovesForColour(w, "black", b);
+                    calc.pinkPotentialMoves.clear();
                 }
             }
 
 
             for (FigureOnBoard king : kingsList) {
-                for (GlobalChessData data : FigurePotentialMovesCalculations.whitePotentialMoves) {
+                for (GlobalChessData data : calc.whitePotentialMoves) {
                     if (data.pos.getX() == king.data.pos.getX() && data.pos.getY() == king.data.pos.getY() && data.pos.getZ() == king.data.pos.getZ()
                             && data.directionWall == king.data.directionWall) {
                         return true;
                     }
                 }
-                for (GlobalChessData data : FigurePotentialMovesCalculations.blackPotentialMoves) {
+                for (GlobalChessData data : calc.blackPotentialMoves) {
                     if (data.pos.getX() == king.data.pos.getX() && data.pos.getY() == king.data.pos.getY() && data.pos.getZ() == king.data.pos.getZ()
                             && data.directionWall == king.data.directionWall) {
                         return true;
                     }
                 }
-                for (GlobalChessData data : FigurePotentialMovesCalculations.yellowPotentialMoves) {
+                for (GlobalChessData data : calc.yellowPotentialMoves) {
                     if (data.pos.getX() == king.data.pos.getX() && data.pos.getY() == king.data.pos.getY() && data.pos.getZ() == king.data.pos.getZ()
                             && data.directionWall == king.data.directionWall) {
                         return true;
                     }
                 }
-                for (GlobalChessData data : FigurePotentialMovesCalculations.pinkPotentialMoves) {
-                    if (data.pos.getX() == king.data.pos.getX() && data.pos.getY() == king.data.pos.getY() && data.pos.getZ() == king.data.pos.getZ()
-                            && data.directionWall == king.data.directionWall) {
-                        return true;
-                    }
-                }
-
-            }
-        }else{
-            switch (team) {
-                case "white" -> {
-                    FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w, "black", b);
-                    FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w, "yellow", b);
-                    FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w, "pink", b);
-                    FigurePotentialMovesCalculationsForShow.whitePotentialMoves.clear();
-                }
-                case "black" -> {
-                    FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w, "white", b);
-                    FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w, "yellow", b);
-                    FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w, "pink", b);
-                    FigurePotentialMovesCalculationsForShow.blackPotentialMoves.clear();
-
-                }
-                case "yellow" -> {
-                    FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w, "white", b);
-                    FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w, "black", b);
-                    FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w, "pink", b);
-                    FigurePotentialMovesCalculationsForShow.yellowPotentialMoves.clear();
-                }
-                case "pink" -> {
-                    FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w, "white", b);
-                    FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w, "yellow", b);
-                    FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w, "black", b);
-                    FigurePotentialMovesCalculationsForShow.pinkPotentialMoves.clear();
-                }
-            }
-
-
-            for (FigureOnBoard king : kingsList) {
-                for (GlobalChessData data : FigurePotentialMovesCalculationsForShow.whitePotentialMoves) {
-                    if (data.pos.getX() == king.data.pos.getX() && data.pos.getY() == king.data.pos.getY() && data.pos.getZ() == king.data.pos.getZ()
-                            && data.directionWall == king.data.directionWall) {
-                        return true;
-                    }
-                }
-                for (GlobalChessData data : FigurePotentialMovesCalculationsForShow.blackPotentialMoves) {
-                    if (data.pos.getX() == king.data.pos.getX() && data.pos.getY() == king.data.pos.getY() && data.pos.getZ() == king.data.pos.getZ()
-                            && data.directionWall == king.data.directionWall) {
-                        return true;
-                    }
-                }
-                for (GlobalChessData data : FigurePotentialMovesCalculationsForShow.yellowPotentialMoves) {
-                    if (data.pos.getX() == king.data.pos.getX() && data.pos.getY() == king.data.pos.getY() && data.pos.getZ() == king.data.pos.getZ()
-                            && data.directionWall == king.data.directionWall) {
-                        return true;
-                    }
-                }
-                for (GlobalChessData data : FigurePotentialMovesCalculationsForShow.pinkPotentialMoves) {
+                for (GlobalChessData data : calc.pinkPotentialMoves) {
                     if (data.pos.getX() == king.data.pos.getX() && data.pos.getY() == king.data.pos.getY() && data.pos.getZ() == king.data.pos.getZ()
                             && data.directionWall == king.data.directionWall) {
                         return true;
@@ -180,27 +123,22 @@ public class checkCalculations {
                 }
 
             }
-
-
-        }
-
 
         return false;
     }
 
 
-    public static boolean isKingOfColourInPotentialCheck(World w, String team, GlobalChessData currentPosition, BoardState b, boolean forShow) {
+    public static boolean isKingOfColourInPotentialCheck(World w, String team, BoardState b) {
 
-        ArrayList<BoardState> possibleMoves = BoardState.allPossibleMoves(w,b,team,forShow);
+        ArrayList<BoardState> possibleMoves = b.allPossibleMoves(w,team);
 
         int length = possibleMoves.size();
         if(length == 0){
             return false;
         }
         int count = 0;
-       // System.out.println(length);
         for(BoardState move : possibleMoves){
-            if(isKingOfColourInCheck(w,team,move,forShow)){
+            if(isKingOfColourInCheck(w,team,move)){
                 count += 1;
             }
         }
@@ -212,8 +150,14 @@ public class checkCalculations {
         int radius =  50;
         List<ItemFrameEntity> list = w.getEntitiesByType(EntityType.ITEM_FRAME, new Box(currentPosition.pos.getX()-radius,currentPosition.pos.getY()-radius,currentPosition.pos.getZ()-radius,currentPosition.pos.getX()+radius,currentPosition.pos.getY()+radius,currentPosition.pos.getZ()+radius), EntityPredicates.VALID_ENTITY);
         for(ItemFrameEntity entity : list){
-            FigureOnBoard figure = new FigureOnBoard(MovementCalculations.figureToData(entity),entity.getHeldItemStack().getItem());
-            allFiguresList.add(figure);
+            Item item = entity.getHeldItemStack().getItem();
+            if(Chess.arrayContains(UseEntityHandler.whitePieces,item) || Chess.arrayContains(UseEntityHandler.blackPieces,item) |
+                    Chess.arrayContains(UseEntityHandler.yellowPieces,item) || Chess.arrayContains(UseEntityHandler.pinkPieces,item)) {
+
+
+                FigureOnBoard figure = new FigureOnBoard(MovementCalculations.figureToData(entity), item);
+                allFiguresList.add(figure);
+            }
         }
         return new BoardState(allFiguresList);
     }

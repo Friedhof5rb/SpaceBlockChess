@@ -40,6 +40,7 @@ public class StartServerTickHandler implements ServerTickEvents.StartTick{
         World w = server.getOverworld();
         if(w.getGameRules().getBoolean(ModGamerules.canUseChessTorches) && server.getTicks() % 10 == 0) {
 
+            FigurePotentialMovesCalculations calc = new FigurePotentialMovesCalculations();
             for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
                 Item item = player.getInventory().getMainHandStack().getItem();
                 if (item instanceof TorchItem) {
@@ -48,9 +49,9 @@ public class StartServerTickHandler implements ServerTickEvents.StartTick{
                             if (!(((TorchItem) item).justShowCheck)) {
                                 GlobalChessData data1 = new GlobalChessData(player.getBlockPos(),Direction.UP,0,false);
                                 BoardState b = checkCalculations.getCurrentBoardState(w,data1);
-                                FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w,"white",b);
+                                calc.calculateAllMovesForColour(w,"white",b);
 
-                                ArrayList<GlobalChessData> potentialMoves = new ArrayList<>(FigurePotentialMovesCalculationsForShow.whitePotentialMoves);
+                                ArrayList<GlobalChessData> potentialMoves = new ArrayList<>(calc.whitePotentialMoves);
 
                                 for (GlobalChessData data : potentialMoves) {
                                     PacketByteBuf buffer = PacketByteBufs.create();
@@ -64,12 +65,12 @@ public class StartServerTickHandler implements ServerTickEvents.StartTick{
                                 GlobalChessData data1 = new GlobalChessData(player.getBlockPos(),Direction.UP,0,false);
                                 BoardState b = checkCalculations.getCurrentBoardState(w,data1);
 
-                                ArrayList<BoardState> list = BoardState.allPossibleMoves(w,b,"white",true);
+                                ArrayList<BoardState> list = b.allPossibleMoves(w,"white");
 
 
 
                                 for (BoardState b2 : list) {
-                                    if(!checkCalculations.isKingOfColourInCheck(w,"white",b2,true)) {
+                                    if(!checkCalculations.isKingOfColourInCheck(w,"white",b2)) {
                                         for(FigureOnBoard f : checkCalculations.compareBoardStates(b,b2)) {
                                             PacketByteBuf buffer = PacketByteBufs.create();
                                             buffer.writeIntArray(new int[]{f.data.pos.getX(), f.data.pos.getY(), f.data.pos.getZ(), 0, f.data.directionWall.getId()});
@@ -84,9 +85,9 @@ public class StartServerTickHandler implements ServerTickEvents.StartTick{
                         if (!(((TorchItem) item).justShowCheck)) {
                             GlobalChessData data1 = new GlobalChessData(player.getBlockPos(),Direction.UP,0,false);
                             BoardState b = checkCalculations.getCurrentBoardState(w,data1);
-                            FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w,"black",b);
+                            calc.calculateAllMovesForColour(w,"black",b);
 
-                            ArrayList<GlobalChessData> potentialMoves = new ArrayList<>(FigurePotentialMovesCalculationsForShow.blackPotentialMoves);
+                            ArrayList<GlobalChessData> potentialMoves = new ArrayList<>(calc.blackPotentialMoves);
 
                             for (GlobalChessData data : potentialMoves) {
                                 PacketByteBuf buffer = PacketByteBufs.create();
@@ -101,10 +102,10 @@ public class StartServerTickHandler implements ServerTickEvents.StartTick{
                             BoardState b = checkCalculations.getCurrentBoardState(w,data1);
 
 
-                            ArrayList<BoardState> list = BoardState.allPossibleMoves(w,b,"black",true);
+                            ArrayList<BoardState> list = b.allPossibleMoves(w,"black");
 
                             for (BoardState b2 : list) {
-                                if(!checkCalculations.isKingOfColourInCheck(w,"black",b2,true)) {
+                                if(!checkCalculations.isKingOfColourInCheck(w,"black",b2)) {
                                     for(FigureOnBoard f : checkCalculations.compareBoardStates(b,b2)) {
 
                                         PacketByteBuf buffer = PacketByteBufs.create();
@@ -120,9 +121,9 @@ public class StartServerTickHandler implements ServerTickEvents.StartTick{
                         if (!(((TorchItem) item).justShowCheck)) {
                             GlobalChessData data1 = new GlobalChessData(player.getBlockPos(),Direction.UP,0,false);
                             BoardState b = checkCalculations.getCurrentBoardState(w,data1);
-                            FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w,"yellow",b);
+                            calc.calculateAllMovesForColour(w,"yellow",b);
 
-                            ArrayList<GlobalChessData> potentialMoves = new ArrayList<>(FigurePotentialMovesCalculationsForShow.yellowPotentialMoves);
+                            ArrayList<GlobalChessData> potentialMoves = new ArrayList<>(calc.yellowPotentialMoves);
 
                             for (GlobalChessData data : potentialMoves) {
                                 PacketByteBuf buffer = PacketByteBufs.create();
@@ -137,10 +138,10 @@ public class StartServerTickHandler implements ServerTickEvents.StartTick{
                             BoardState b = checkCalculations.getCurrentBoardState(w,data1);
 
 
-                            ArrayList<BoardState> list = BoardState.allPossibleMoves(w,b,"yellow",true);
+                            ArrayList<BoardState> list = b.allPossibleMoves(w,"yellow");
 
                             for (BoardState b2 : list) {
-                                if(!checkCalculations.isKingOfColourInCheck(w,"yellow",b2,true)) {
+                                if(!checkCalculations.isKingOfColourInCheck(w,"yellow",b2)) {
                                     for(FigureOnBoard f : checkCalculations.compareBoardStates(b,b2)) {
                                         PacketByteBuf buffer = PacketByteBufs.create();
                                         buffer.writeIntArray(new int[]{f.data.pos.getX(), f.data.pos.getY(), f.data.pos.getZ(), 2, f.data.directionWall.getId()});
@@ -156,9 +157,9 @@ public class StartServerTickHandler implements ServerTickEvents.StartTick{
                         if (!(((TorchItem) item).justShowCheck)) {
                             GlobalChessData data1 = new GlobalChessData(player.getBlockPos(),Direction.UP,0,false);
                             BoardState b = checkCalculations.getCurrentBoardState(w,data1);
-                            FigurePotentialMovesCalculationsForShow.calculateAllMovesForColour(w,"pink",b);
+                            calc.calculateAllMovesForColour(w,"pink",b);
 
-                            ArrayList<GlobalChessData> potentialMoves = new ArrayList<>(FigurePotentialMovesCalculationsForShow.pinkPotentialMoves);
+                            ArrayList<GlobalChessData> potentialMoves = new ArrayList<>(calc.pinkPotentialMoves);
 
                             for (GlobalChessData data : potentialMoves) {
                                 PacketByteBuf buffer = PacketByteBufs.create();
@@ -173,10 +174,10 @@ public class StartServerTickHandler implements ServerTickEvents.StartTick{
                             BoardState b = checkCalculations.getCurrentBoardState(w,data1);
 
 
-                            ArrayList<BoardState> list = BoardState.allPossibleMoves(w,b,"pink",true);
+                            ArrayList<BoardState> list = b.allPossibleMoves(w,"pink");
 
                             for (BoardState b2 : list) {
-                                if(!checkCalculations.isKingOfColourInCheck(w,"pink",b2,true)) {
+                                if(!checkCalculations.isKingOfColourInCheck(w,"pink",b2)) {
                                     for(FigureOnBoard f : checkCalculations.compareBoardStates(b,b2)) {
                                         PacketByteBuf buffer = PacketByteBufs.create();
                                         buffer.writeIntArray(new int[]{f.data.pos.getX(), f.data.pos.getY(), f.data.pos.getZ(), 3, f.data.directionWall.getId()});
@@ -195,6 +196,8 @@ public class StartServerTickHandler implements ServerTickEvents.StartTick{
 
 
         }
+
+
         for(PlayerEntity player : server.getPlayerManager().getPlayerList()) {
 
 

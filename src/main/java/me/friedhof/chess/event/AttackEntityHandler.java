@@ -53,10 +53,7 @@ public class AttackEntityHandler implements AttackEntityCallback {
         if (world.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
             return ActionResult.PASS;
         }
-        if(player.getInventory().getMainHandStack().getItem() == ModItems.ROD_OF_REMOVAL){
-            entity.kill();
-            return ActionResult.PASS;
-        }
+
         Item[] items = Chess.combineLists();
         if(entity instanceof ItemFrameEntity){
             ItemFrameEntity e = (ItemFrameEntity) entity;

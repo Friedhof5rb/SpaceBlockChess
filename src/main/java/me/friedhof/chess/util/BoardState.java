@@ -1,13 +1,21 @@
 package me.friedhof.chess.util;
 
 import me.friedhof.chess.Chess;
+import me.friedhof.chess.item.ModItems;
+import me.friedhof.chess.networking.ModMessages;
 import me.friedhof.chess.util.Calculations.FigurePotentialMovesCalculations;
-import me.friedhof.chess.util.Calculations.FigurePotentialMovesCalculationsForShow;
+import me.friedhof.chess.util.Calculations.checkCalculations;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.Item;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
+
 
 public class BoardState {
 
@@ -21,11 +29,13 @@ public class BoardState {
     }
 
 
-    public static ArrayList<BoardState> allPossibleMoves(World w, BoardState b, String colour,boolean forShow){
+    public ArrayList<BoardState> allPossibleMoves(World w, String colour){
         ArrayList<BoardState> list = new ArrayList<>();
 
-        if(!forShow) {
-            clearList(colour);
+            BoardState b = this;
+            FigurePotentialMovesCalculations calc = new FigurePotentialMovesCalculations();
+
+            clearList(colour, calc);
             for (int i = 0; i < b.allFiguresList.size(); i++) {
 
                 FigureOnBoard figure = b.allFiguresList.get(i);
@@ -41,35 +51,51 @@ public class BoardState {
                 }
 
                 switch (Chess.itemMap.get(item2)) {
-                    case "white tower", "black tower", "yellow tower", "pink tower" -> FigurePotentialMovesCalculations.calculateAllMovesForTower(w, data, colour, b);
+                    case "white tower", "black tower", "yellow tower", "pink tower" -> calc.calculateAllMovesForTower(w, data, colour, b);
                     case "white bishop", "black bishop", "yellow bishop", "pink bishop" ->
-                            FigurePotentialMovesCalculations.calculateAllMovesForBishop(w, data, colour, b);
-                    case "white king", "black king", "yellow king", "pink king" -> FigurePotentialMovesCalculations.calculateAllMovesForKing(w, data, colour, b);
-                    case "white queen", "black queen", "yellow queen", "pink queen" -> FigurePotentialMovesCalculations.calculateAllMovesForQueen(w, data, colour, b);
+                            calc.calculateAllMovesForBishop(w, data, colour, b);
+                    case "white king", "black king", "yellow king", "pink king" -> calc.calculateAllMovesForKing(w, data, colour, b);
+                    case "white queen", "black queen", "yellow queen", "pink queen" -> calc.calculateAllMovesForQueen(w, data, colour, b);
                     case "white knight", "black knight", "yellow knight", "pink knight" ->
-                            FigurePotentialMovesCalculations.calculateAllMovesForKnight(w, data, colour, b);
-                    case "white pawn", "black pawn", "yellow pawn", "pink pawn" -> FigurePotentialMovesCalculations.calculateAllMovesForPawn(w, data, colour, b);
+                            calc.calculateAllMovesForKnight(w, data, colour, b);
+                    case "white pawn", "black pawn", "yellow pawn", "pink pawn" -> calc.calculateAllMovesForPawn(w, data, colour, b);
                     case "white start_pawn", "black start_pawn", "yellow start_pawn", "pink start_pawn" ->
-                            FigurePotentialMovesCalculations.calculateAllMovesForStartPawn(w, data, colour, b);
+                            calc.calculateAllMovesForStartPawn(w, data, colour, b);
                     case "white castle_king", "black castle_king", "yellow castle_king", "pink castle_king" ->
-                            FigurePotentialMovesCalculations.calculateAllMovesForCastleKing(w, data, colour, b);
+                            calc.calculateAllMovesForCastleKing(w, data, colour, b);
                     case "white castle_tower", "black castle_tower", "yellow castle_tower", "pink castle_tower" ->
-                            FigurePotentialMovesCalculations.calculateAllMovesForCastleTower(w, data, colour, b);
+                            calc.calculateAllMovesForCastleTower(w, data, colour, b);
                 }
 
 
                 switch (colour) {
                     case "white" -> {
 
-                        boolean isEmpty = FigurePotentialMovesCalculations.whitePotentialMoves.isEmpty();
+                        boolean isEmpty = calc.whitePotentialMoves.isEmpty();
 
                         if (!isEmpty) {
-                            for (GlobalChessData data2 : FigurePotentialMovesCalculations.whitePotentialMoves) {
+                            for (GlobalChessData data2 : calc.whitePotentialMoves) {
                                 BoardState state = new BoardState();
 
+                                
+                                
                                 state.allFiguresList.addAll(b.allFiguresList);
                                 state.allFiguresList.remove(b.allFiguresList.get(i));
-                                FigureOnBoard f = new FigureOnBoard(data2, figure.item);
+
+                                Item newItem;
+                                if(figure.item == ModItems.START_WHITE_PAWN){
+                                    newItem = ModItems.WHITE_PAWN ;
+                                }else if(figure.item == ModItems.CASTLE_WHITE_KING){
+                                    newItem = ModItems.WHITE_KING ;
+                                }else if(figure.item == ModItems.CASTLE_WHITE_TOWER){
+                                    newItem = ModItems.WHITE_TOWER;
+                                }else{
+                                    newItem = figure.item;
+                                }
+                                
+                                
+                                FigureOnBoard f = new FigureOnBoard(data2, newItem);
+                                
                                 for( FigureOnBoard f2 : b.allFiguresList){
                                     if(f2.data.pos.getX() == f.data.pos.getX() && f2.data.pos.getY() == f.data.pos.getY() && f2.data.pos.getZ() == f.data.pos.getZ()
                                             && f2.data.directionWall== f.data.directionWall) {
@@ -85,16 +111,28 @@ public class BoardState {
                     }
                     case "black" -> {
 
-                        boolean isEmpty = FigurePotentialMovesCalculations.blackPotentialMoves.isEmpty();
+                        boolean isEmpty = calc.blackPotentialMoves.isEmpty();
 
                         if (!isEmpty) {
-                            for (GlobalChessData data2 : FigurePotentialMovesCalculations.blackPotentialMoves) {
+                            for (GlobalChessData data2 : calc.blackPotentialMoves) {
                                 BoardState state = new BoardState();
 
 
                                 state.allFiguresList.addAll(b.allFiguresList);
                                 state.allFiguresList.remove(b.allFiguresList.get(i));
-                                FigureOnBoard f = new FigureOnBoard(data2, figure.item);
+
+                                Item newItem;
+                                if(figure.item == ModItems.START_BLACK_PAWN){
+                                    newItem = ModItems.BLACK_PAWN ;
+                                }else if(figure.item == ModItems.CASTLE_BLACK_KING){
+                                    newItem = ModItems.BLACK_KING;
+                                }else if(figure.item == ModItems.CASTLE_BLACK_TOWER){
+                                    newItem = ModItems.BLACK_TOWER ;
+                                }else{
+                                    newItem = figure.item;
+                                }
+                                
+                                FigureOnBoard f = new FigureOnBoard(data2, newItem);
                                 for( FigureOnBoard f2 :  b.allFiguresList){
                                     if(f2.data.pos.getX() == f.data.pos.getX() && f2.data.pos.getY() == f.data.pos.getY() && f2.data.pos.getZ() == f.data.pos.getZ()
                                     && f2.data.directionWall== f.data.directionWall) {
@@ -109,15 +147,27 @@ public class BoardState {
                     }
                     case "yellow" -> {
 
-                        boolean isEmpty = FigurePotentialMovesCalculations.yellowPotentialMoves.isEmpty();
+                        boolean isEmpty = calc.yellowPotentialMoves.isEmpty();
 
                         if (!isEmpty) {
-                            for (GlobalChessData data2 : FigurePotentialMovesCalculations.yellowPotentialMoves) {
+                            for (GlobalChessData data2 : calc.yellowPotentialMoves) {
                                 BoardState state = new BoardState();
 
                                 state.allFiguresList.addAll(b.allFiguresList);
                                 state.allFiguresList.remove(b.allFiguresList.get(i));
-                                FigureOnBoard f = new FigureOnBoard(data2, figure.item);
+
+                                Item newItem;
+                                if(figure.item == ModItems.START_YELLOW_PAWN){
+                                    newItem = ModItems.YELLOW_PAWN ;
+                                }else if(figure.item == ModItems.CASTLE_YELLOW_KING){
+                                    newItem = ModItems.YELLOW_KING;
+                                }else if(figure.item == ModItems.CASTLE_YELLOW_TOWER){
+                                    newItem = ModItems.YELLOW_TOWER ;
+                                }else{
+                                    newItem = figure.item;
+                                }
+                                
+                                FigureOnBoard f = new FigureOnBoard(data2,newItem);
                                 for( FigureOnBoard f2 :  b.allFiguresList){
                                     if(f2.data.pos.getX() == f.data.pos.getX() && f2.data.pos.getY() == f.data.pos.getY() && f2.data.pos.getZ() == f.data.pos.getZ()
                                             && f2.data.directionWall== f.data.directionWall) {
@@ -132,15 +182,28 @@ public class BoardState {
                     }
                     case "pink" -> {
 
-                        boolean isEmpty = FigurePotentialMovesCalculations.pinkPotentialMoves.isEmpty();
+                        boolean isEmpty = calc.pinkPotentialMoves.isEmpty();
 
                         if (!isEmpty) {
-                            for (GlobalChessData data2 : FigurePotentialMovesCalculations.pinkPotentialMoves) {
+                            for (GlobalChessData data2 : calc.pinkPotentialMoves) {
                                 BoardState state = new BoardState();
 
                                 state.allFiguresList.addAll(b.allFiguresList);
                                 state.allFiguresList.remove(b.allFiguresList.get(i));
-                                FigureOnBoard f = new FigureOnBoard(data2, figure.item);
+
+                                Item newItem;
+                                if(figure.item == ModItems.START_PINK_PAWN){
+                                    newItem = ModItems.PINK_PAWN ;
+                                }else if(figure.item == ModItems.CASTLE_PINK_KING){
+                                    newItem = ModItems.PINK_KING ;
+                                }else if(figure.item == ModItems.CASTLE_PINK_TOWER){
+                                    newItem = ModItems.PINK_TOWER ;
+                                }else{
+                                    newItem = figure.item;
+                                }
+                                
+                                
+                                FigureOnBoard f = new FigureOnBoard(data2, newItem);
                                 for( FigureOnBoard f2 :  b.allFiguresList){
                                     if(f2.data.pos.getX() == f.data.pos.getX() && f2.data.pos.getY() == f.data.pos.getY() && f2.data.pos.getZ() == f.data.pos.getZ()
                                             && f2.data.directionWall== f.data.directionWall) {
@@ -157,174 +220,74 @@ public class BoardState {
                 }
 
 
-                clearList(colour);
-            }
-        }else{
-            clearListForShow(colour);
-            for (int i = 0; i < b.allFiguresList.size(); i++) {
-
-                FigureOnBoard figure = b.allFiguresList.get(i);
-                Item item2 = figure.item;
-                GlobalChessData data = figure.data;
-
-                if (!Chess.itemMap.containsKey(item2)) {
-                    continue;
-                }
-
-                if (!Chess.ItemToColour(item2).equals(colour)) {
-                    continue;
-                }
-
-                switch (Chess.itemMap.get(item2)) {
-                    case "white tower", "black tower", "yellow tower", "pink tower" -> FigurePotentialMovesCalculationsForShow.calculateAllMovesForTower(w, data, colour, b);
-                    case "white bishop", "black bishop", "yellow bishop", "pink bishop" ->
-                            FigurePotentialMovesCalculationsForShow.calculateAllMovesForBishop(w, data, colour, b);
-                    case "white king", "black king", "yellow king", "pink king" -> FigurePotentialMovesCalculationsForShow.calculateAllMovesForKing(w, data, colour, b);
-                    case "white queen", "black queen", "yellow queen", "pink queen" -> FigurePotentialMovesCalculationsForShow.calculateAllMovesForQueen(w, data, colour, b);
-                    case "white knight", "black knight", "yellow knight", "pink knight" ->
-                            FigurePotentialMovesCalculationsForShow.calculateAllMovesForKnight(w, data, colour, b);
-                    case "white pawn", "black pawn", "yellow pawn", "pink pawn" -> FigurePotentialMovesCalculationsForShow.calculateAllMovesForPawn(w, data, colour, b);
-                    case "white start_pawn", "black start_pawn", "yellow start_pawn", "pink start_pawn" ->
-                            FigurePotentialMovesCalculationsForShow.calculateAllMovesForStartPawn(w, data, colour, b);
-                    case "white castle_king", "black castle_king", "yellow castle_king", "pink castle_king" ->
-                            FigurePotentialMovesCalculationsForShow.calculateAllMovesForCastleKing(w, data, colour, b);
-                    case "white castle_tower", "black castle_tower", "yellow castle_tower", "pink castle_tower" ->
-                            FigurePotentialMovesCalculationsForShow.calculateAllMovesForCastleTower(w, data, colour, b);
-                }
-
-
-                switch (colour) {
-                    case "white" -> {
-
-                        boolean isEmpty = FigurePotentialMovesCalculationsForShow.whitePotentialMoves.isEmpty();
-
-                        if (!isEmpty) {
-                            for (GlobalChessData data2 : FigurePotentialMovesCalculationsForShow.whitePotentialMoves) {
-                                BoardState state = new BoardState();
-
-                                state.allFiguresList.addAll(b.allFiguresList);
-                                state.allFiguresList.remove(b.allFiguresList.get(i));
-                                FigureOnBoard f = new FigureOnBoard(data2, figure.item);
-                                for( FigureOnBoard f2 : b.allFiguresList){
-                                    if(f2.data.pos.getX() == f.data.pos.getX() && f2.data.pos.getY() == f.data.pos.getY() && f2.data.pos.getZ() == f.data.pos.getZ()
-                                            && f2.data.directionWall== f.data.directionWall) {
-                                        state.allFiguresList.remove(f2);
-                                    }
-                                }
-                                state.allFiguresList.add(f);
-
-                                list.add(state);
-                            }
-                        }
-
-                    }
-                    case "black" -> {
-
-                        boolean isEmpty = FigurePotentialMovesCalculationsForShow.blackPotentialMoves.isEmpty();
-
-                        if (!isEmpty) {
-                            for (GlobalChessData data2 : FigurePotentialMovesCalculationsForShow.blackPotentialMoves) {
-                                BoardState state = new BoardState();
-
-                                state.allFiguresList.addAll(b.allFiguresList);
-                                state.allFiguresList.remove(b.allFiguresList.get(i));
-                                FigureOnBoard f = new FigureOnBoard(data2, figure.item);
-                                for( FigureOnBoard f2 : b.allFiguresList){
-                                    if(f2.data.pos.getX() == f.data.pos.getX() && f2.data.pos.getY() == f.data.pos.getY() && f2.data.pos.getZ() == f.data.pos.getZ()
-                                            && f2.data.directionWall== f.data.directionWall) {
-                                        state.allFiguresList.remove(f2);
-                                    }
-                                }
-                                state.allFiguresList.add(f);
-
-                                list.add(state);
-                            }
-                        }
-                    }
-                    case "yellow" -> {
-
-                        boolean isEmpty = FigurePotentialMovesCalculationsForShow.yellowPotentialMoves.isEmpty();
-
-                        if (!isEmpty) {
-                            for (GlobalChessData data2 : FigurePotentialMovesCalculationsForShow.yellowPotentialMoves) {
-                                BoardState state = new BoardState();
-
-                                state.allFiguresList.addAll(b.allFiguresList);
-                                state.allFiguresList.remove(b.allFiguresList.get(i));
-                                FigureOnBoard f = new FigureOnBoard(data2, figure.item);
-                                for( FigureOnBoard f2 : b.allFiguresList){
-                                    if(f2.data.pos.getX() == f.data.pos.getX() && f2.data.pos.getY() == f.data.pos.getY() && f2.data.pos.getZ() == f.data.pos.getZ()
-                                            && f2.data.directionWall== f.data.directionWall) {
-                                        state.allFiguresList.remove(f2);
-                                    }
-                                }
-                                state.allFiguresList.add(f);
-
-                                list.add(state);
-                            }
-                        }
-                    }
-                    case "pink" -> {
-
-                        boolean isEmpty = FigurePotentialMovesCalculationsForShow.pinkPotentialMoves.isEmpty();
-
-                        if (!isEmpty) {
-                            for (GlobalChessData data2 : FigurePotentialMovesCalculationsForShow.pinkPotentialMoves) {
-                                BoardState state = new BoardState();
-
-                                state.allFiguresList.addAll(b.allFiguresList);
-                                state.allFiguresList.remove(b.allFiguresList.get(i));
-                                FigureOnBoard f = new FigureOnBoard(data2, figure.item);
-                                for( FigureOnBoard f2 : b.allFiguresList){
-                                    if(f2.data.pos.getX() == f.data.pos.getX() && f2.data.pos.getY() == f.data.pos.getY() && f2.data.pos.getZ() == f.data.pos.getZ()
-                                            && f2.data.directionWall== f.data.directionWall) {
-                                        state.allFiguresList.remove(f2);
-                                    }
-                                }
-                                state.allFiguresList.add(f);
-
-                                list.add(state);
-                            }
-                        }
-
-                    }
-                }
-
-
-                clearListForShow(colour);
+                clearList("white", calc);
+                clearList("black", calc);
+                clearList("yellow", calc);
+                clearList("pink", calc);
             }
 
 
 
-        }
+
+
 
         return list;
 
     }
 
-    private static void clearList(String colour){
+
+
+    private boolean containsKing(String team, BoardState b){
+        boolean containsKing = false;
+
+        for(FigureOnBoard f : b.allFiguresList){
+            StringBuilder sb = new StringBuilder();
+            StringBuilder sb2 = new StringBuilder();
+
+            if(Chess.itemMap.get(f.item).equals(sb.append(team).append( " king").toString()) || Chess.itemMap.get(f.item).equals(sb2.append(team).append( " castle_king").toString())){
+              containsKing = true;
+            }
+
+        }
+
+
+        return containsKing;
+    }
+
+
+
+
+
+    private static void clearList(String colour, FigurePotentialMovesCalculations calc){
 
         switch (colour) {
-            case "white" -> FigurePotentialMovesCalculations.whitePotentialMoves.clear();
-            case "black" -> FigurePotentialMovesCalculations.blackPotentialMoves.clear();
-            case "yellow" -> FigurePotentialMovesCalculations.yellowPotentialMoves.clear();
-            case "pink" -> FigurePotentialMovesCalculations.pinkPotentialMoves.clear();
+            case "white" -> calc.whitePotentialMoves.clear();
+            case "black" -> calc.blackPotentialMoves.clear();
+            case "yellow" -> calc.yellowPotentialMoves.clear();
+            case "pink" -> calc.pinkPotentialMoves.clear();
         }
 
 
     }
 
-    private static void clearListForShow(String colour){
+    public String getColourOfFigure(GlobalChessData data){
 
-        switch (colour) {
-            case "white" -> FigurePotentialMovesCalculationsForShow.whitePotentialMoves.clear();
-            case "black" -> FigurePotentialMovesCalculationsForShow.blackPotentialMoves.clear();
-            case "yellow" -> FigurePotentialMovesCalculationsForShow.yellowPotentialMoves.clear();
-            case "pink" -> FigurePotentialMovesCalculationsForShow.pinkPotentialMoves.clear();
+        for(FigureOnBoard f: allFiguresList){
+            if(data.pos.getX() == f.data.pos.getX() &&  data.pos.getY() == f.data.pos.getY() && data.pos.getZ() == f.data.pos.getZ()
+            && data.directionWall == f.data.directionWall){
+                return Chess.ItemToColour(f.item);
+            }
         }
-
+        return "";
 
     }
+
+
+
+
+
+
+
 
 
 

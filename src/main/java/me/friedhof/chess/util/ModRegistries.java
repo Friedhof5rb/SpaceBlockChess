@@ -33,6 +33,11 @@ public class ModRegistries {
         CommandRegistrationCallback.EVENT.register(clearChessCommand::register);
         CommandRegistrationCallback.EVENT.register(chessCubeCommand::register);
         CommandRegistrationCallback.EVENT.register(switchChessNotationVisbility::register);
+
+        //CommandRegistrationCallback.EVENT.register(BotTurnCommandWhite::register);
+        //CommandRegistrationCallback.EVENT.register(BotTurnCommandBlack::register);
+        //CommandRegistrationCallback.EVENT.register(BotTurnCommandYellow::register);
+        //CommandRegistrationCallback.EVENT.register(BotTurnCommandPink::register);
     }
 
     private static void registerEvents() {

@@ -4,7 +4,7 @@ import me.friedhof.chess.Chess;
 import me.friedhof.chess.item.ModItems;
 import me.friedhof.chess.sound.ModSounds;
 import me.friedhof.chess.util.Calculations.ClickFigureCalculations;
-import me.friedhof.chess.util.Calculations.FigureMovesCalculations;
+import me.friedhof.chess.util.Calculations.FigurePotentialMovesCalculations;
 import me.friedhof.chess.util.Calculations.MovementCalculations;
 import me.friedhof.chess.util.GlobalChessData;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
@@ -78,6 +78,11 @@ public class UseEntityHandler implements UseEntityCallback {
             if(Chess.arrayContains(Chess.combineLists(),player.getInventory().getMainHandStack().getItem()) || (player.getInventory().getMainHandStack().getItem() instanceof AirBlockItem && Chess.arrayContains(Chess.combineLists(),player.getOffHandStack().getItem()))){
                 e5.setInvisible(true);
             }
+            if(player.getInventory().getMainHandStack().getItem() == ModItems.ROD_OF_REMOVAL){
+                entity.kill();
+                return ActionResult.PASS;
+            }
+
         }
 
 
@@ -129,7 +134,7 @@ public class UseEntityHandler implements UseEntityCallback {
             case "white" -> {
                 if (entity instanceof ItemFrameEntity frame) {
                     if (Chess.arrayContains(whitePieces, frame.getHeldItemStack().getItem())) {
-                        ClickFigureCalculations.selectFigure(world, frame);
+                        ClickFigureCalculations.selectFigure(world, frame,"white");
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(blackCapturePieces, frame.getHeldItemStack().getItem()) ||
                             Chess.arrayContains(yellowCapturePieces, frame.getHeldItemStack().getItem()) ||
@@ -172,7 +177,7 @@ public class UseEntityHandler implements UseEntityCallback {
             case "black" -> {
                 if (entity instanceof ItemFrameEntity frame) {
                     if (Chess.arrayContains(blackPieces, frame.getHeldItemStack().getItem())) {
-                        ClickFigureCalculations.selectFigure(world, frame);
+                        ClickFigureCalculations.selectFigure(world, frame, "black");
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(yellowCapturePieces, frame.getHeldItemStack().getItem()) ||
                             Chess.arrayContains(whiteCapturePieces, frame.getHeldItemStack().getItem()) ||
@@ -211,7 +216,7 @@ public class UseEntityHandler implements UseEntityCallback {
             case "yellow" -> {
                 if (entity instanceof ItemFrameEntity frame) {
                     if (Chess.arrayContains(yellowPieces, frame.getHeldItemStack().getItem())) {
-                        ClickFigureCalculations.selectFigure(world, frame);
+                        ClickFigureCalculations.selectFigure(world, frame,"yellow");
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(whiteCapturePieces, frame.getHeldItemStack().getItem()) ||
                             Chess.arrayContains(blackCapturePieces, frame.getHeldItemStack().getItem()) ||
@@ -248,7 +253,7 @@ public class UseEntityHandler implements UseEntityCallback {
             } case "pink" -> {
                 if (entity instanceof ItemFrameEntity frame) {
                     if (Chess.arrayContains(pinkPieces, frame.getHeldItemStack().getItem())) {
-                        ClickFigureCalculations.selectFigure(world, frame);
+                        ClickFigureCalculations.selectFigure(world, frame,"pink");
                         return ActionResult.SUCCESS;
                     } else if (Chess.arrayContains(whiteCapturePieces, frame.getHeldItemStack().getItem()) ||
                             Chess.arrayContains(blackCapturePieces, frame.getHeldItemStack().getItem()) ||
@@ -308,7 +313,7 @@ public class UseEntityHandler implements UseEntityCallback {
             if((Chess.arrayContains(whiteSelectedPieces,e.getHeldItemStack().getItem()) && Objects.equals(colour, "white"))|| (Chess.arrayContains(blackSelectedPieces,e.getHeldItemStack().getItem()) && Objects.equals(colour, "black")) ||
                     (Chess.arrayContains(yellowSelectedPieces,e.getHeldItemStack().getItem()) && Objects.equals(colour, "yellow")) || (Chess.arrayContains(pinkSelectedPieces,e.getHeldItemStack().getItem()) && Objects.equals(colour, "pink"))){
                     originPosition = MovementCalculations.figureToData(e);
-                    piece = Text.translatable(FigureMovesCalculations.exchangeItems(e.getHeldItemStack().getItem(),false).getTranslationKey()).getString();
+                    piece = Text.translatable(FigurePotentialMovesCalculations.exchangeItems(e.getHeldItemStack().getItem(),false).getTranslationKey()).getString();
                     break;
             }
         }

@@ -4,6 +4,7 @@ import me.friedhof.chess.Chess;
 import me.friedhof.chess.event.UseEntityHandler;
 import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItems;
+import me.friedhof.chess.util.BoardState;
 import me.friedhof.chess.util.GlobalChessData;
 import me.friedhof.chess.util.IEntityDataSaver;
 import net.minecraft.entity.EntityType;
@@ -21,1010 +22,290 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class ClickFigureCalculations {
 
 
-    public static void selectFigure(World w, ItemFrameEntity frame) {
+    private static void spawnMoveHighlighter(World w, GlobalChessData currentPosition){
+
+        ItemFrameEntity e = MovementCalculations.dataToFigure(w,currentPosition, ModItems.MOVE_HIGHLIGHTER);
+        e.setInvisible(true);
+        if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+            e.setInvulnerable(true);
+        }
+        w.spawnEntity(e);
+
+    }
+
+    private static void replaceOldFigure(World w,GlobalChessData currentPosition, String team){
+
+        if(Chess.arrayContains(UseEntityHandler.whitePieces,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem()) &&  team != "white"){
+            replacementForColour(w,currentPosition,FigurePotentialMovesCalculations.exchangeItems(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem(),true));
+
+        }
+        if(Chess.arrayContains(UseEntityHandler.blackPieces,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem()) &&   team != "black"){
+            replacementForColour(w,currentPosition,FigurePotentialMovesCalculations.exchangeItems(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem(),true));
+        }
+        if(Chess.arrayContains(UseEntityHandler.yellowPieces,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem()) &&   team != "yellow"){
+            replacementForColour(w,currentPosition,FigurePotentialMovesCalculations.exchangeItems(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem(),true));
+
+        }
+        if(Chess.arrayContains(UseEntityHandler.pinkPieces,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem()) &&   team != "pink"){
+            replacementForColour(w,currentPosition,FigurePotentialMovesCalculations.exchangeItems(MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem(),true));
+        }
+
+
+
+    }
+
+
+    private static void replaceOldFigureForCastling(World w,GlobalChessData currentPosition, String team){
+
+        if(Chess.arrayContains(UseEntityHandler.whitePieces,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem()) &&  team == "white"){
+            replacementForColour(w,currentPosition,ModItems.CASTLE_SWITCH_WHITE_TOWER);
+
+        }
+        if(Chess.arrayContains(UseEntityHandler.blackPieces,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem()) &&   team == "black"){
+            replacementForColour(w,currentPosition,ModItems.CASTLE_SWITCH_BLACK_TOWER);
+        }
+        if(Chess.arrayContains(UseEntityHandler.yellowPieces,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem()) &&   team == "yellow"){
+            replacementForColour(w,currentPosition,ModItems.CASTLE_SWITCH_YELLOW_TOWER);
+
+        }
+        if(Chess.arrayContains(UseEntityHandler.pinkPieces,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem()) &&   team == "pink"){
+            replacementForColour(w,currentPosition,ModItems.CASTLE_SWITCH_PINK_TOWER);
+        }
+
+
+
+    }
+
+
+
+
+
+
+    private static void replacementForColour(World w, GlobalChessData currentPosition, Item newItem){
+
+        List list = w.getEntitiesByType(EntityType.ITEM_FRAME,new Box(currentPosition.pos.getX()-1,currentPosition.pos.getY()-1,currentPosition.pos.getZ()-1,currentPosition.pos.getX()+1,currentPosition.pos.getY()+1,currentPosition.pos.getZ()+1),EntityPredicates.VALID_ENTITY);
+
+
+
+        ItemFrameEntity old = MovementCalculations.dataToFigure(w,currentPosition,MovementCalculations.getItemFrame(w,currentPosition.pos,currentPosition.directionWall).getHeldItemStack().getItem());
+        int rotation = currentPosition.itemRotation;
+        int id = 0;
+        for(int j = 0; j < list.size();j++){
+            if(list.get(j) instanceof ItemFrameEntity){
+                ItemFrameEntity old2 = (ItemFrameEntity) list.get(j);
+                if(old2.getHorizontalFacing() == old.getHorizontalFacing() &&
+                        old2.getBlockPos().getX() == old.getBlockPos().getX() &&  old2.getBlockPos().getY() == old.getBlockPos().getY() &&  old2.getBlockPos().getZ() == old.getBlockPos().getZ()  ){
+                    currentPosition.itemRotation = old2.getRotation();
+                    id = old2.getId();
+                    break;
+                }
+            }
+
+        }
+        ItemFrameEntity newEntity = MovementCalculations.dataToFigureWithDamage(w,currentPosition, newItem,rotation );
+        newEntity.setInvisible(true);
+        if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+            newEntity.setInvulnerable(true);
+        }
+        w.getEntityById(id).kill();
+        w.spawnEntity(newEntity);
+
+
+    }
+
+    private static ArrayList<GlobalChessData> listFromColour(String team, FigurePotentialMovesCalculations calc){
+
+        ArrayList<GlobalChessData> data = new ArrayList<>();
+        switch(team){
+
+            case "white" -> {
+                return calc.whitePotentialMoves;
+            }
+            case "black" -> {
+                return calc.blackPotentialMoves;
+            }
+            case "yellow" -> {
+                return calc.yellowPotentialMoves;
+            }
+            case "pink" -> {
+                return calc.pinkPotentialMoves;
+            }
+        }
+        return data;
+    }
+
+
+
+
+
+
+
+    private static void turnBoardToReality(World w, String team, FigurePotentialMovesCalculations calc,ItemFrameEntity frame, BoardState b ){
+        Item item = frame.getHeldItemStack().getItem();
+        for(GlobalChessData data2 : listFromColour(team,calc)){
+            if(FigurePotentialMovesCalculations.isContainedInBoardState(data2,b)){
+                if(!b.getColourOfFigure(data2).equals(team)) {
+                    replaceOldFigure(w, data2, team);
+                }else{
+                    replaceOldFigureForCastling(w, data2, team);
+                }
+            }else{
+                spawnMoveHighlighter(w,data2);
+            }
+        }
+
+
+        ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
+        newFrame.setRotation(frame.getRotation());
+        ItemStack stack = new ItemStack(FigurePotentialMovesCalculations.exchangeItems(item,false));
+        newFrame.setHeldItemStack(stack);
+        newFrame.setInvisible(true);
+        if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+            newFrame.setInvulnerable(true);
+        }
+        frame.kill();
+        w.spawnEntity(newFrame);
+
+
+    }
+
+
+
+
+
+
+    public static void selectFigure(World w, ItemFrameEntity frame, String team) {
         deselectFigure(w,frame);
-        //White and Black
-        if(frame.getHeldItemStack().getItem() == ModItems.WHITE_TOWER){
 
 
+        Item item = frame.getHeldItemStack().getItem();
+        if(Chess.itemMap.get(item).equals(team + " tower")){
 
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
+            FigurePotentialMovesCalculations calc = new FigurePotentialMovesCalculations();
+            GlobalChessData data = MovementCalculations.figureToData(frame);
+            BoardState b = checkCalculations.getCurrentBoardState(w,data);
 
-            FigureMovesCalculations.towerMoveScheme(w,forward, Direction.NORTH,"white");
-            FigureMovesCalculations.towerMoveScheme(w,backward,Direction.SOUTH,"white");
-            FigureMovesCalculations.towerMoveScheme(w,left,Direction.WEST,"white");
-            FigureMovesCalculations.towerMoveScheme(w,right,Direction.EAST,"white");
+            calc.calculateAllMovesForTower(w,data,team,b);
 
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_WHITE_TOWER);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
+            turnBoardToReality(w,team,calc,frame,b);
 
 
         }
-        if(frame.getHeldItemStack().getItem() == ModItems.BLACK_TOWER){
 
 
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
+        if(Chess.itemMap.get(item).equals(team + " bishop")) {
 
-            FigureMovesCalculations.towerMoveScheme(w,forward,Direction.NORTH,"black");
-            FigureMovesCalculations.towerMoveScheme(w,backward,Direction.SOUTH,"black");
-            FigureMovesCalculations.towerMoveScheme(w,left,Direction.WEST,"black");
-            FigureMovesCalculations.towerMoveScheme(w,right,Direction.EAST,"black");
+            FigurePotentialMovesCalculations calc = new FigurePotentialMovesCalculations();
+            GlobalChessData data = MovementCalculations.figureToData(frame);
+            BoardState b = checkCalculations.getCurrentBoardState(w,data);
 
+            calc.calculateAllMovesForBishop(w,data,team,b);
 
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_BLACK_TOWER);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-
-            frame.kill();
-            w.spawnEntity(newFrame);
-        }
-
-        if(frame.getHeldItemStack().getItem() == ModItems.WHITE_BISHOP) {
-
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.bishopMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"white");
-            FigureMovesCalculations.bishopMoveScheme(w,backward,Direction.NORTH,Direction.WEST,"white");
-            FigureMovesCalculations.bishopMoveScheme(w,left,Direction.SOUTH,Direction.EAST,"white");
-            FigureMovesCalculations.bishopMoveScheme(w,right,Direction.SOUTH,Direction.WEST,"white");
-
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_WHITE_BISHOP);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-
-            frame.kill();
-            w.spawnEntity(newFrame);
-
+            turnBoardToReality(w,team,calc,frame,b);
 
 
 
         }
 
-        if(frame.getHeldItemStack().getItem() == ModItems.BLACK_BISHOP) {
 
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.bishopMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"black");
-            FigureMovesCalculations.bishopMoveScheme(w,backward,Direction.NORTH,Direction.WEST,"black");
-            FigureMovesCalculations.bishopMoveScheme(w,left,Direction.SOUTH,Direction.EAST,"black");
-            FigureMovesCalculations.bishopMoveScheme(w,right,Direction.SOUTH,Direction.WEST,"black");
+        if(Chess.itemMap.get(item).equals(team + " knight")) {
 
 
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_BLACK_BISHOP);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
+            FigurePotentialMovesCalculations calc = new FigurePotentialMovesCalculations();
+            GlobalChessData data = MovementCalculations.figureToData(frame);
+            BoardState b = checkCalculations.getCurrentBoardState(w,data);
 
-            frame.kill();
-            w.spawnEntity(newFrame);
+            calc.calculateAllMovesForKnight(w,data,team,b);
+
+            turnBoardToReality(w,team,calc,frame,b);
         }
 
-        if(frame.getHeldItemStack().getItem() == ModItems.WHITE_KNIGHT) {
+        if(Chess.itemMap.get(item).equals(team + " queen")) {
 
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
+            FigurePotentialMovesCalculations calc = new FigurePotentialMovesCalculations();
+            GlobalChessData data = MovementCalculations.figureToData(frame);
+            BoardState b = checkCalculations.getCurrentBoardState(w,data);
 
-            FigureMovesCalculations.knightMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"white");
-            FigureMovesCalculations.knightMoveScheme(w,backward,Direction.SOUTH,Direction.EAST,"white");
-            FigureMovesCalculations.knightMoveScheme(w,left,Direction.EAST,Direction.NORTH,"white");
-            FigureMovesCalculations.knightMoveScheme(w,right,Direction.WEST,Direction.NORTH,"white");
-            FigureMovesCalculations.knightMoveScheme(w,forward,Direction.NORTH,Direction.WEST,"white");
-            FigureMovesCalculations.knightMoveScheme(w,backward,Direction.SOUTH,Direction.WEST,"white");
-            FigureMovesCalculations.knightMoveScheme(w,left,Direction.EAST,Direction.SOUTH,"white");
-            FigureMovesCalculations.knightMoveScheme(w,right,Direction.WEST,Direction.SOUTH,"white");
+            calc.calculateAllMovesForQueen(w,data,team,b);
 
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_WHITE_KNIGHT);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-
-            frame.kill();
-            w.spawnEntity(newFrame);
-        }
-        if(frame.getHeldItemStack().getItem() == ModItems.BLACK_KNIGHT) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.knightMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"black");
-            FigureMovesCalculations.knightMoveScheme(w,backward,Direction.SOUTH,Direction.EAST,"black");
-            FigureMovesCalculations.knightMoveScheme(w,left,Direction.EAST,Direction.NORTH,"black");
-            FigureMovesCalculations.knightMoveScheme(w,right,Direction.WEST,Direction.NORTH,"black");
-            FigureMovesCalculations.knightMoveScheme(w,forward,Direction.NORTH,Direction.WEST,"black");
-            FigureMovesCalculations.knightMoveScheme(w,backward,Direction.SOUTH,Direction.WEST,"black");
-            FigureMovesCalculations.knightMoveScheme(w,left,Direction.EAST,Direction.SOUTH,"black");
-            FigureMovesCalculations.knightMoveScheme(w,right,Direction.WEST,Direction.SOUTH,"black");
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_BLACK_KNIGHT);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-
-            frame.kill();
-            w.spawnEntity(newFrame);
+            turnBoardToReality(w,team,calc,frame,b);
 
         }
-        if(frame.getHeldItemStack().getItem() == ModItems.WHITE_QUEEN) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
 
-            FigureMovesCalculations.queenMoveScheme(w,forward,Direction.NORTH,Direction.UP,"white");
-            FigureMovesCalculations.queenMoveScheme(w,backward,Direction.SOUTH,Direction.UP,"white");
-            FigureMovesCalculations.queenMoveScheme(w,left,Direction.EAST,Direction.UP,"white");
-            FigureMovesCalculations.queenMoveScheme(w,right,Direction.WEST,Direction.UP,"white");
+        if(Chess.itemMap.get(item).equals(team + " king")) {
 
-            FigureMovesCalculations.queenMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"white");
-            FigureMovesCalculations.queenMoveScheme(w,backward,Direction.NORTH,Direction.WEST,"white");
-            FigureMovesCalculations.queenMoveScheme(w,left,Direction.SOUTH,Direction.EAST,"white");
-            FigureMovesCalculations.queenMoveScheme(w,right,Direction.SOUTH,Direction.WEST,"white");
 
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_WHITE_QUEEN);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
+            FigurePotentialMovesCalculations calc = new FigurePotentialMovesCalculations();
+            GlobalChessData data = MovementCalculations.figureToData(frame);
+            BoardState b = checkCalculations.getCurrentBoardState(w,data);
 
-            frame.kill();
-            w.spawnEntity(newFrame);
+            calc.calculateAllMovesForKing(w,data,team,b);
 
+            turnBoardToReality(w,team,calc,frame,b);
         }
-        if(frame.getHeldItemStack().getItem() == ModItems.BLACK_QUEEN) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
 
-            FigureMovesCalculations.queenMoveScheme(w,forward,Direction.NORTH,Direction.UP,"black");
-            FigureMovesCalculations.queenMoveScheme(w,backward,Direction.SOUTH,Direction.UP,"black");
-            FigureMovesCalculations.queenMoveScheme(w,left,Direction.EAST,Direction.UP,"black");
-            FigureMovesCalculations.queenMoveScheme(w,right,Direction.WEST,Direction.UP,"black");
+        if(Chess.itemMap.get(item).equals(team + " pawn")) {
 
-            FigureMovesCalculations.queenMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"black");
-            FigureMovesCalculations.queenMoveScheme(w,backward,Direction.NORTH,Direction.WEST,"black");
-            FigureMovesCalculations.queenMoveScheme(w,left,Direction.SOUTH,Direction.EAST,"black");
-            FigureMovesCalculations.queenMoveScheme(w,right,Direction.SOUTH,Direction.WEST,"black");
 
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_BLACK_QUEEN);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
+            FigurePotentialMovesCalculations calc = new FigurePotentialMovesCalculations();
+            GlobalChessData data = MovementCalculations.figureToData(frame);
+            BoardState b = checkCalculations.getCurrentBoardState(w,data);
 
-            frame.kill();
-            w.spawnEntity(newFrame);
+            calc.calculateAllMovesForPawn(w,data,team,b);
 
+            turnBoardToReality(w,team,calc,frame,b);
         }
-        if(frame.getHeldItemStack().getItem() == ModItems.WHITE_KING) {
 
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
 
-            FigureMovesCalculations.kingMoveScheme(w,forward,Direction.NORTH,Direction.UP,"white");
-            FigureMovesCalculations.kingMoveScheme(w,backward,Direction.SOUTH,Direction.UP,"white");
-            FigureMovesCalculations.kingMoveScheme(w,left,Direction.EAST,Direction.UP,"white");
-            FigureMovesCalculations.kingMoveScheme(w,right,Direction.WEST,Direction.UP,"white");
 
-            FigureMovesCalculations.kingMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"white");
-            FigureMovesCalculations.kingMoveScheme(w,backward,Direction.NORTH,Direction.WEST,"white");
-            FigureMovesCalculations.kingMoveScheme(w,left,Direction.SOUTH,Direction.EAST,"white");
-            FigureMovesCalculations.kingMoveScheme(w,right,Direction.SOUTH,Direction.WEST,"white");
+        if(Chess.itemMap.get(item).equals(team + " start_pawn")) {
 
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_WHITE_KING);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
 
-            frame.kill();
-            w.spawnEntity(newFrame);
+            FigurePotentialMovesCalculations calc = new FigurePotentialMovesCalculations();
+            GlobalChessData data = MovementCalculations.figureToData(frame);
+            BoardState b = checkCalculations.getCurrentBoardState(w,data);
+
+            calc.calculateAllMovesForStartPawn(w,data,team,b);
+
+            turnBoardToReality(w,team,calc,frame,b);
         }
-        if(frame.getHeldItemStack().getItem() == ModItems.BLACK_KING) {
 
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.kingMoveScheme(w,forward,Direction.NORTH,Direction.UP,"black");
-            FigureMovesCalculations.kingMoveScheme(w,backward,Direction.SOUTH,Direction.UP,"black");
-            FigureMovesCalculations.kingMoveScheme(w,left,Direction.EAST,Direction.UP,"black");
-            FigureMovesCalculations.kingMoveScheme(w,right,Direction.WEST,Direction.UP,"black");
-
-            FigureMovesCalculations.kingMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"black");
-            FigureMovesCalculations.kingMoveScheme(w,backward,Direction.NORTH,Direction.WEST,"black");
-            FigureMovesCalculations.kingMoveScheme(w,left,Direction.SOUTH,Direction.EAST,"black");
-            FigureMovesCalculations.kingMoveScheme(w,right,Direction.SOUTH,Direction.WEST,"black");
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_BLACK_KING);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-
-            frame.kill();
-            w.spawnEntity(newFrame);
-        }
-        if(frame.getHeldItemStack().getItem() == ModItems.WHITE_PAWN) {
-
-
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-
-
-            FigureMovesCalculations.pawnMoveScheme(w,forward,Direction.NORTH,"white");
-
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_WHITE_PAWN);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
-
-
-        }
-        if(frame.getHeldItemStack().getItem() == ModItems.BLACK_PAWN) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-
-
-            FigureMovesCalculations.pawnMoveScheme(w,forward,Direction.NORTH,"black");
-
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_BLACK_PAWN);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
-
-        }
-        if(frame.getHeldItemStack().getItem() == ModItems.START_WHITE_PAWN) {
-
-
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-
-
-            FigureMovesCalculations.startPawnMoveScheme(w,forward,Direction.NORTH,Direction.UP,"white");
-            FigureMovesCalculations.startPawnMoveScheme(w,forward,Direction.NORTH,Direction.NORTH,"white");
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.START_SELECTED_WHITE_PAWN);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
-
-
-        }
-        if(frame.getHeldItemStack().getItem() == ModItems.START_BLACK_PAWN) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-
-
-            FigureMovesCalculations.startPawnMoveScheme(w,forward,Direction.NORTH,Direction.UP,"black");
-            FigureMovesCalculations.startPawnMoveScheme(w,forward,Direction.NORTH,Direction.NORTH,"black");
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.START_SELECTED_BLACK_PAWN);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
-
-        }
 
             //Castling
 
-        if(frame.getHeldItemStack().getItem() == ModItems.CASTLE_WHITE_KING) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
 
-            FigureMovesCalculations.kingMoveScheme(w,forward,Direction.NORTH,Direction.UP,"white");
-            FigureMovesCalculations.kingMoveScheme(w,backward,Direction.SOUTH,Direction.UP,"white");
-            FigureMovesCalculations.kingMoveScheme(w,left,Direction.EAST,Direction.UP,"white");
-            FigureMovesCalculations.kingMoveScheme(w,right,Direction.WEST,Direction.UP,"white");
-
-            FigureMovesCalculations.kingMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"white");
-            FigureMovesCalculations.kingMoveScheme(w,backward,Direction.NORTH,Direction.WEST,"white");
-            FigureMovesCalculations.kingMoveScheme(w,left,Direction.SOUTH,Direction.EAST,"white");
-            FigureMovesCalculations.kingMoveScheme(w,right,Direction.SOUTH,Direction.WEST,"white");
+        if(Chess.itemMap.get(item).equals(team + " castle_king")) {
 
 
+            FigurePotentialMovesCalculations calc = new FigurePotentialMovesCalculations();
+            GlobalChessData data = MovementCalculations.figureToData(frame);
+            BoardState b = checkCalculations.getCurrentBoardState(w,data);
 
+            calc.calculateAllMovesForCastleKing(w,data,team,b);
 
-            FigureMovesCalculations.castlingScheme(w,forward,Direction.NORTH,"white");
-            FigureMovesCalculations.castlingScheme(w,backward,Direction.SOUTH,"white");
-            FigureMovesCalculations.castlingScheme(w,left,Direction.EAST,"white");
-            FigureMovesCalculations.castlingScheme(w,right,Direction.WEST,"white");
-
-
-
-
-
-
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.CASTLE_SELECTED_WHITE_KING);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
+            turnBoardToReality(w,team,calc,frame,b);
         }
 
-        if(frame.getHeldItemStack().getItem() == ModItems.CASTLE_BLACK_KING) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
 
-            FigureMovesCalculations.kingMoveScheme(w,forward,Direction.NORTH,Direction.UP,"black");
-            FigureMovesCalculations.kingMoveScheme(w,backward,Direction.SOUTH,Direction.UP,"black");
-            FigureMovesCalculations.kingMoveScheme(w,left,Direction.EAST,Direction.UP,"black");
-            FigureMovesCalculations.kingMoveScheme(w,right,Direction.WEST,Direction.UP,"black");
-
-            FigureMovesCalculations.kingMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"black");
-            FigureMovesCalculations.kingMoveScheme(w,backward,Direction.NORTH,Direction.WEST,"black");
-            FigureMovesCalculations.kingMoveScheme(w,left,Direction.SOUTH,Direction.EAST,"black");
-            FigureMovesCalculations.kingMoveScheme(w,right,Direction.SOUTH,Direction.WEST,"black");
+        if(Chess.itemMap.get(item).equals(team + " castle_tower")) {
 
 
-            FigureMovesCalculations.castlingScheme(w,forward,Direction.NORTH,"black");
-            FigureMovesCalculations.castlingScheme(w,backward,Direction.SOUTH,"black");
-            FigureMovesCalculations.castlingScheme(w,left,Direction.EAST,"black");
-            FigureMovesCalculations.castlingScheme(w,right,Direction.WEST,"black");
+            FigurePotentialMovesCalculations calc = new FigurePotentialMovesCalculations();
+            GlobalChessData data = MovementCalculations.figureToData(frame);
+            BoardState b = checkCalculations.getCurrentBoardState(w,data);
 
+            calc.calculateAllMovesForCastleTower(w,data,team,b);
 
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.CASTLE_SELECTED_BLACK_KING);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
+            turnBoardToReality(w,team,calc,frame,b);
         }
 
-        if(frame.getHeldItemStack().getItem() == ModItems.CASTLE_WHITE_TOWER) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.towerMoveScheme(w,forward, Direction.NORTH,"white");
-            FigureMovesCalculations.towerMoveScheme(w,backward,Direction.SOUTH,"white");
-            FigureMovesCalculations.towerMoveScheme(w,left,Direction.WEST,"white");
-            FigureMovesCalculations.towerMoveScheme(w,right,Direction.EAST,"white");
-
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.CASTLE_SELECTED_WHITE_TOWER);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
-        }
-
-        if(frame.getHeldItemStack().getItem() == ModItems.CASTLE_BLACK_TOWER) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.towerMoveScheme(w,forward, Direction.NORTH,"black");
-            FigureMovesCalculations.towerMoveScheme(w,backward,Direction.SOUTH,"black");
-            FigureMovesCalculations.towerMoveScheme(w,left,Direction.WEST,"black");
-            FigureMovesCalculations.towerMoveScheme(w,right,Direction.EAST,"black");
-
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.CASTLE_SELECTED_BLACK_TOWER);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
-        }
-        //Yellow and Pink
-
-        if(frame.getHeldItemStack().getItem() == ModItems.YELLOW_TOWER){
-
-
-
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.towerMoveScheme(w,forward, Direction.NORTH,"yellow");
-            FigureMovesCalculations.towerMoveScheme(w,backward,Direction.SOUTH,"yellow");
-            FigureMovesCalculations.towerMoveScheme(w,left,Direction.WEST,"yellow");
-            FigureMovesCalculations.towerMoveScheme(w,right,Direction.EAST,"yellow");
-
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_YELLOW_TOWER);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
-
-
-        }
-        if(frame.getHeldItemStack().getItem() == ModItems.PINK_TOWER){
-
-
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.towerMoveScheme(w,forward,Direction.NORTH,"pink");
-            FigureMovesCalculations.towerMoveScheme(w,backward,Direction.SOUTH,"pink");
-            FigureMovesCalculations.towerMoveScheme(w,left,Direction.WEST,"pink");
-            FigureMovesCalculations.towerMoveScheme(w,right,Direction.EAST,"pink");
-
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_PINK_TOWER);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-
-            frame.kill();
-            w.spawnEntity(newFrame);
-        }
-
-        if(frame.getHeldItemStack().getItem() == ModItems.YELLOW_BISHOP) {
-
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.bishopMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"yellow");
-            FigureMovesCalculations.bishopMoveScheme(w,backward,Direction.NORTH,Direction.WEST,"yellow");
-            FigureMovesCalculations.bishopMoveScheme(w,left,Direction.SOUTH,Direction.EAST,"yellow");
-            FigureMovesCalculations.bishopMoveScheme(w,right,Direction.SOUTH,Direction.WEST,"yellow");
-
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_YELLOW_BISHOP);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-
-            frame.kill();
-            w.spawnEntity(newFrame);
-
-
-
-
-        }
-
-        if(frame.getHeldItemStack().getItem() == ModItems.PINK_BISHOP) {
-
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.bishopMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"pink");
-            FigureMovesCalculations.bishopMoveScheme(w,backward,Direction.NORTH,Direction.WEST,"pink");
-            FigureMovesCalculations.bishopMoveScheme(w,left,Direction.SOUTH,Direction.EAST,"pink");
-            FigureMovesCalculations.bishopMoveScheme(w,right,Direction.SOUTH,Direction.WEST,"pink");
-
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_PINK_BISHOP);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-
-            frame.kill();
-            w.spawnEntity(newFrame);
-        }
-
-        if(frame.getHeldItemStack().getItem() == ModItems.YELLOW_KNIGHT) {
-
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.knightMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"yellow");
-            FigureMovesCalculations.knightMoveScheme(w,backward,Direction.SOUTH,Direction.EAST,"yellow");
-            FigureMovesCalculations.knightMoveScheme(w,left,Direction.EAST,Direction.NORTH,"yellow");
-            FigureMovesCalculations.knightMoveScheme(w,right,Direction.WEST,Direction.NORTH,"yellow");
-            FigureMovesCalculations.knightMoveScheme(w,forward,Direction.NORTH,Direction.WEST,"yellow");
-            FigureMovesCalculations.knightMoveScheme(w,backward,Direction.SOUTH,Direction.WEST,"yellow");
-            FigureMovesCalculations.knightMoveScheme(w,left,Direction.EAST,Direction.SOUTH,"yellow");
-            FigureMovesCalculations.knightMoveScheme(w,right,Direction.WEST,Direction.SOUTH,"yellow");
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_YELLOW_KNIGHT);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-
-            frame.kill();
-            w.spawnEntity(newFrame);
-        }
-        if(frame.getHeldItemStack().getItem() == ModItems.PINK_KNIGHT) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.knightMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"pink");
-            FigureMovesCalculations.knightMoveScheme(w,backward,Direction.SOUTH,Direction.EAST,"pink");
-            FigureMovesCalculations.knightMoveScheme(w,left,Direction.EAST,Direction.NORTH,"pink");
-            FigureMovesCalculations.knightMoveScheme(w,right,Direction.WEST,Direction.NORTH,"pink");
-            FigureMovesCalculations.knightMoveScheme(w,forward,Direction.NORTH,Direction.WEST,"pink");
-            FigureMovesCalculations.knightMoveScheme(w,backward,Direction.SOUTH,Direction.WEST,"pink");
-            FigureMovesCalculations.knightMoveScheme(w,left,Direction.EAST,Direction.SOUTH,"pink");
-            FigureMovesCalculations.knightMoveScheme(w,right,Direction.WEST,Direction.SOUTH,"pink");
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_PINK_KNIGHT);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-
-            frame.kill();
-            w.spawnEntity(newFrame);
-
-        }
-        if(frame.getHeldItemStack().getItem() == ModItems.YELLOW_QUEEN) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.queenMoveScheme(w,forward,Direction.NORTH,Direction.UP,"yellow");
-            FigureMovesCalculations.queenMoveScheme(w,backward,Direction.SOUTH,Direction.UP,"yellow");
-            FigureMovesCalculations.queenMoveScheme(w,left,Direction.EAST,Direction.UP,"yellow");
-            FigureMovesCalculations.queenMoveScheme(w,right,Direction.WEST,Direction.UP,"yellow");
-
-            FigureMovesCalculations.queenMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"yellow");
-            FigureMovesCalculations.queenMoveScheme(w,backward,Direction.NORTH,Direction.WEST,"yellow");
-            FigureMovesCalculations.queenMoveScheme(w,left,Direction.SOUTH,Direction.EAST,"yellow");
-            FigureMovesCalculations.queenMoveScheme(w,right,Direction.SOUTH,Direction.WEST,"yellow");
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_YELLOW_QUEEN);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-
-            frame.kill();
-            w.spawnEntity(newFrame);
-
-        }
-        if(frame.getHeldItemStack().getItem() == ModItems.PINK_QUEEN) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.queenMoveScheme(w,forward,Direction.NORTH,Direction.UP,"pink");
-            FigureMovesCalculations.queenMoveScheme(w,backward,Direction.SOUTH,Direction.UP,"pink");
-            FigureMovesCalculations.queenMoveScheme(w,left,Direction.EAST,Direction.UP,"pink");
-            FigureMovesCalculations.queenMoveScheme(w,right,Direction.WEST,Direction.UP,"pink");
-
-            FigureMovesCalculations.queenMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"pink");
-            FigureMovesCalculations.queenMoveScheme(w,backward,Direction.NORTH,Direction.WEST,"pink");
-            FigureMovesCalculations.queenMoveScheme(w,left,Direction.SOUTH,Direction.EAST,"pink");
-            FigureMovesCalculations.queenMoveScheme(w,right,Direction.SOUTH,Direction.WEST,"pink");
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_PINK_QUEEN);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-
-            frame.kill();
-            w.spawnEntity(newFrame);
-
-        }
-        if(frame.getHeldItemStack().getItem() == ModItems.YELLOW_KING) {
-
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.kingMoveScheme(w,forward,Direction.NORTH,Direction.UP,"yellow");
-            FigureMovesCalculations.kingMoveScheme(w,backward,Direction.SOUTH,Direction.UP,"yellow");
-            FigureMovesCalculations.kingMoveScheme(w,left,Direction.EAST,Direction.UP,"yellow");
-            FigureMovesCalculations.kingMoveScheme(w,right,Direction.WEST,Direction.UP,"yellow");
-
-            FigureMovesCalculations.kingMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"yellow");
-            FigureMovesCalculations.kingMoveScheme(w,backward,Direction.NORTH,Direction.WEST,"yellow");
-            FigureMovesCalculations.kingMoveScheme(w,left,Direction.SOUTH,Direction.EAST,"yellow");
-            FigureMovesCalculations.kingMoveScheme(w,right,Direction.SOUTH,Direction.WEST,"yellow");
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_YELLOW_KING);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-
-            frame.kill();
-            w.spawnEntity(newFrame);
-        }
-        if(frame.getHeldItemStack().getItem() == ModItems.PINK_KING) {
-
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.kingMoveScheme(w,forward,Direction.NORTH,Direction.UP,"pink");
-            FigureMovesCalculations.kingMoveScheme(w,backward,Direction.SOUTH,Direction.UP,"pink");
-            FigureMovesCalculations.kingMoveScheme(w,left,Direction.EAST,Direction.UP,"pink");
-            FigureMovesCalculations.kingMoveScheme(w,right,Direction.WEST,Direction.UP,"pink");
-
-            FigureMovesCalculations.kingMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"pink");
-            FigureMovesCalculations.kingMoveScheme(w,backward,Direction.NORTH,Direction.WEST,"pink");
-            FigureMovesCalculations.kingMoveScheme(w,left,Direction.SOUTH,Direction.EAST,"pink");
-            FigureMovesCalculations.kingMoveScheme(w,right,Direction.SOUTH,Direction.WEST,"pink");
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_PINK_KING);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-
-            frame.kill();
-            w.spawnEntity(newFrame);
-        }
-        if(frame.getHeldItemStack().getItem() == ModItems.YELLOW_PAWN) {
-
-
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-
-
-            FigureMovesCalculations.pawnMoveScheme(w,forward,Direction.NORTH,"yellow");
-
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_YELLOW_PAWN);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
-
-
-        }
-        if(frame.getHeldItemStack().getItem() == ModItems.PINK_PAWN) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-
-
-            FigureMovesCalculations.pawnMoveScheme(w,forward,Direction.NORTH,"pink");
-
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.SELECTED_PINK_PAWN);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
-
-        }
-        if(frame.getHeldItemStack().getItem() == ModItems.START_YELLOW_PAWN) {
-
-
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-
-
-            FigureMovesCalculations.startPawnMoveScheme(w,forward,Direction.NORTH,Direction.UP,"yellow");
-            FigureMovesCalculations.startPawnMoveScheme(w,forward,Direction.NORTH,Direction.NORTH,"yellow");
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.START_SELECTED_YELLOW_PAWN);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
-
-
-        }
-        if(frame.getHeldItemStack().getItem() == ModItems.START_PINK_PAWN) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-
-
-            FigureMovesCalculations.startPawnMoveScheme(w,forward,Direction.NORTH,Direction.UP,"pink");
-            FigureMovesCalculations.startPawnMoveScheme(w,forward,Direction.NORTH,Direction.NORTH,"pink");
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.START_SELECTED_PINK_PAWN);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
-
-        }
-
-        //Castling
-
-        if(frame.getHeldItemStack().getItem() == ModItems.CASTLE_YELLOW_KING) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.kingMoveScheme(w,forward,Direction.NORTH,Direction.UP,"yellow");
-            FigureMovesCalculations.kingMoveScheme(w,backward,Direction.SOUTH,Direction.UP,"yellow");
-            FigureMovesCalculations.kingMoveScheme(w,left,Direction.EAST,Direction.UP,"yellow");
-            FigureMovesCalculations.kingMoveScheme(w,right,Direction.WEST,Direction.UP,"yellow");
-
-            FigureMovesCalculations.kingMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"yellow");
-            FigureMovesCalculations.kingMoveScheme(w,backward,Direction.NORTH,Direction.WEST,"yellow");
-            FigureMovesCalculations.kingMoveScheme(w,left,Direction.SOUTH,Direction.EAST,"yellow");
-            FigureMovesCalculations.kingMoveScheme(w,right,Direction.SOUTH,Direction.WEST,"yellow");
-
-
-
-
-            FigureMovesCalculations.castlingScheme(w,forward,Direction.NORTH,"yellow");
-            FigureMovesCalculations.castlingScheme(w,backward,Direction.SOUTH,"yellow");
-            FigureMovesCalculations.castlingScheme(w,left,Direction.EAST,"yellow");
-            FigureMovesCalculations.castlingScheme(w,right,Direction.WEST,"yellow");
-
-
-
-
-
-
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.CASTLE_SELECTED_YELLOW_KING);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
-        }
-
-        if(frame.getHeldItemStack().getItem() == ModItems.CASTLE_PINK_KING) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.kingMoveScheme(w,forward,Direction.NORTH,Direction.UP,"pink");
-            FigureMovesCalculations.kingMoveScheme(w,backward,Direction.SOUTH,Direction.UP,"pink");
-            FigureMovesCalculations.kingMoveScheme(w,left,Direction.EAST,Direction.UP,"pink");
-            FigureMovesCalculations.kingMoveScheme(w,right,Direction.WEST,Direction.UP,"pink");
-
-            FigureMovesCalculations.kingMoveScheme(w,forward,Direction.NORTH,Direction.EAST,"pink");
-            FigureMovesCalculations.kingMoveScheme(w,backward,Direction.NORTH,Direction.WEST,"pink");
-            FigureMovesCalculations.kingMoveScheme(w,left,Direction.SOUTH,Direction.EAST,"pink");
-            FigureMovesCalculations.kingMoveScheme(w,right,Direction.SOUTH,Direction.WEST,"pink");
-
-
-            FigureMovesCalculations.castlingScheme(w,forward,Direction.NORTH,"pink");
-            FigureMovesCalculations.castlingScheme(w,backward,Direction.SOUTH,"pink");
-            FigureMovesCalculations.castlingScheme(w,left,Direction.EAST,"pink");
-            FigureMovesCalculations.castlingScheme(w,right,Direction.WEST,"pink");
-
-
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.CASTLE_SELECTED_PINK_KING);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
-        }
-
-        if(frame.getHeldItemStack().getItem() == ModItems.CASTLE_YELLOW_TOWER) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.towerMoveScheme(w,forward, Direction.NORTH,"yellow");
-            FigureMovesCalculations.towerMoveScheme(w,backward,Direction.SOUTH,"yellow");
-            FigureMovesCalculations.towerMoveScheme(w,left,Direction.WEST,"yellow");
-            FigureMovesCalculations.towerMoveScheme(w,right,Direction.EAST,"yellow");
-
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.CASTLE_SELECTED_YELLOW_TOWER);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
-        }
-
-        if(frame.getHeldItemStack().getItem() == ModItems.CASTLE_PINK_TOWER) {
-            GlobalChessData forward = MovementCalculations.figureToData(frame);
-            GlobalChessData backward = MovementCalculations.figureToData(frame);
-            GlobalChessData left = MovementCalculations.figureToData(frame);
-            GlobalChessData right = MovementCalculations.figureToData(frame);
-
-            FigureMovesCalculations.towerMoveScheme(w,forward, Direction.NORTH,"pink");
-            FigureMovesCalculations.towerMoveScheme(w,backward,Direction.SOUTH,"pink");
-            FigureMovesCalculations.towerMoveScheme(w,left,Direction.WEST,"pink");
-            FigureMovesCalculations.towerMoveScheme(w,right,Direction.EAST,"pink");
-
-
-            ItemFrameEntity newFrame = new ItemFrameEntity(w,frame.getBlockPos(),frame.getHorizontalFacing());
-            newFrame.setRotation(frame.getRotation());
-            ItemStack stack = new ItemStack(ModItems.CASTLE_SELECTED_PINK_TOWER);
-            newFrame.setHeldItemStack(stack);
-            newFrame.setInvisible(true);
-            if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                newFrame.setInvulnerable(true);
-            }
-            frame.kill();
-            w.spawnEntity(newFrame);
-        }
-        
-        
-        
-        
-        
-        
-        
         
     }
 
@@ -1041,7 +322,7 @@ public class ClickFigureCalculations {
                 }
 
                 if(Chess.arrayContains(UseEntityHandler.switchPieces,entity.getHeldItemStack().getItem())){
-                    Item item = FigureMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),true);
+                    Item item = FigurePotentialMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),true);
 
                     ItemFrameEntity e = new ItemFrameEntity(w,entity.getBlockPos(),entity.getHorizontalFacing());
                     ItemStack stack = new ItemStack(item);
@@ -1058,7 +339,7 @@ public class ClickFigureCalculations {
                 }
 
                 if(Chess.arrayContains(UseEntityHandler.whiteCapturePieces,entity.getHeldItemStack().getItem()) || Chess.arrayContains(UseEntityHandler.blackCapturePieces,entity.getHeldItemStack().getItem()) || Chess.arrayContains(UseEntityHandler.yellowCapturePieces,entity.getHeldItemStack().getItem()) || Chess.arrayContains(UseEntityHandler.pinkCapturePieces,entity.getHeldItemStack().getItem()) ){
-                    Item item = FigureMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),true);
+                    Item item = FigurePotentialMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),true);
 
                     ItemFrameEntity e = new ItemFrameEntity(w,entity.getBlockPos(),entity.getHorizontalFacing());
                     ItemStack stack = new ItemStack(item);
@@ -1073,7 +354,7 @@ public class ClickFigureCalculations {
 
                 }
                 if(Chess.arrayContains(UseEntityHandler.whiteSelectedPieces,entity.getHeldItemStack().getItem() ) || Chess.arrayContains(UseEntityHandler.blackSelectedPieces,entity.getHeldItemStack().getItem() ) || Chess.arrayContains(UseEntityHandler.yellowSelectedPieces,entity.getHeldItemStack().getItem() ) || Chess.arrayContains(UseEntityHandler.pinkSelectedPieces,entity.getHeldItemStack().getItem() )){
-                    Item item = FigureMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),false);
+                    Item item = FigurePotentialMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),false);
 
                     ItemFrameEntity e = new ItemFrameEntity(w,entity.getBlockPos(),entity.getHorizontalFacing());
                     ItemStack stack = new ItemStack(item);
@@ -1112,7 +393,7 @@ public class ClickFigureCalculations {
                 }
 
                 if(Chess.arrayContains(UseEntityHandler.switchPieces,entity.getHeldItemStack().getItem())){
-                    Item item = FigureMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),true);
+                    Item item = FigurePotentialMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),true);
 
                     ItemFrameEntity e = new ItemFrameEntity(w,entity.getBlockPos(),entity.getHorizontalFacing());
                     ItemStack stack = new ItemStack(item);
@@ -1129,7 +410,7 @@ public class ClickFigureCalculations {
 
                 if(Chess.arrayContains(UseEntityHandler.whiteCapturePieces,entity.getHeldItemStack().getItem()) || Chess.arrayContains(UseEntityHandler.blackCapturePieces,entity.getHeldItemStack().getItem()) ||
                         Chess.arrayContains(UseEntityHandler.yellowCapturePieces,entity.getHeldItemStack().getItem())  || Chess.arrayContains(UseEntityHandler.pinkCapturePieces,entity.getHeldItemStack().getItem())  ){
-                    Item item = FigureMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),true);
+                    Item item = FigurePotentialMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),true);
 
 
                     ItemFrameEntity e = new ItemFrameEntity(w,entity.getBlockPos(),entity.getHorizontalFacing());
@@ -1146,7 +427,7 @@ public class ClickFigureCalculations {
                 }
                 if(Chess.arrayContains(UseEntityHandler.whiteSelectedPieces,entity.getHeldItemStack().getItem() ) || Chess.arrayContains(UseEntityHandler.blackSelectedPieces,entity.getHeldItemStack().getItem() ) ||
                         Chess.arrayContains(UseEntityHandler.yellowSelectedPieces,entity.getHeldItemStack().getItem() ) || Chess.arrayContains(UseEntityHandler.pinkSelectedPieces,entity.getHeldItemStack().getItem() )){
-                    Item item = FigureMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),false);
+                    Item item = FigurePotentialMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),false);
                     if(item == ModItems.START_WHITE_PAWN ){
                         item = ModItems.WHITE_PAWN;
                     }
@@ -1219,7 +500,7 @@ public class ClickFigureCalculations {
                 w.getEntityById(entity.getId()).kill();
             }
             if(Chess.arrayContains(UseEntityHandler.switchPieces,entity.getHeldItemStack().getItem())){
-                Item item = FigureMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),true);
+                Item item = FigurePotentialMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),true);
 
                 ItemFrameEntity e = new ItemFrameEntity(w,entity.getBlockPos(),entity.getHorizontalFacing());
                 ItemStack stack = new ItemStack(item);
@@ -1236,7 +517,7 @@ public class ClickFigureCalculations {
 
             if(Chess.arrayContains(UseEntityHandler.whiteCapturePieces,entity.getHeldItemStack().getItem()) || Chess.arrayContains(UseEntityHandler.blackCapturePieces,entity.getHeldItemStack().getItem()) ||
                     Chess.arrayContains(UseEntityHandler.yellowCapturePieces,entity.getHeldItemStack().getItem()) || Chess.arrayContains(UseEntityHandler.pinkCapturePieces,entity.getHeldItemStack().getItem())) {
-                Item item = FigureMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(), true);
+                Item item = FigurePotentialMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(), true);
 
 
                 if (w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
@@ -1302,7 +583,7 @@ public class ClickFigureCalculations {
             ItemFrameEntity entity = list.get(j);
             if(Chess.arrayContains(UseEntityHandler.whiteSelectedPieces,entity.getHeldItemStack().getItem() ) || Chess.arrayContains(UseEntityHandler.blackSelectedPieces,entity.getHeldItemStack().getItem() ) |
                     Chess.arrayContains(UseEntityHandler.yellowSelectedPieces,entity.getHeldItemStack().getItem() )  || Chess.arrayContains(UseEntityHandler.pinkSelectedPieces,entity.getHeldItemStack().getItem() ) ){
-                Item item = FigureMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),false);
+                Item item = FigurePotentialMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),false);
                 if(item == ModItems.START_WHITE_PAWN ){
                     item = ModItems.WHITE_PAWN;
                 }
@@ -1409,7 +690,7 @@ public class ClickFigureCalculations {
                     Chess.arrayContains(UseEntityHandler.yellowCapturePieces,entity.getHeldItemStack().getItem()) || Chess.arrayContains(UseEntityHandler.pinkCapturePieces,entity.getHeldItemStack().getItem())){
 
 
-                Item item = FigureMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),true);
+                Item item = FigurePotentialMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),true);
 
 
                 ItemFrameEntity e = new ItemFrameEntity(w,entity.getBlockPos(),entity.getHorizontalFacing());
@@ -1427,7 +708,7 @@ public class ClickFigureCalculations {
 
 
             if(Chess.arrayContains(UseEntityHandler.switchPieces,entity.getHeldItemStack().getItem())) {
-                Item item = FigureMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(), true);
+                Item item = FigurePotentialMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(), true);
 
 
                 ItemFrameEntity e = new ItemFrameEntity(w, entity.getBlockPos(), entity.getHorizontalFacing());
@@ -1476,8 +757,8 @@ public class ClickFigureCalculations {
             w.getEntityById(entity.getId()).kill();
 
 
-            Item item2 = FigureMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),false);
-            Item item = FigureMovesCalculations.exchangeItems(frame.getHeldItemStack().getItem(),false);
+            Item item2 = FigurePotentialMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),false);
+            Item item = FigurePotentialMovesCalculations.exchangeItems(frame.getHeldItemStack().getItem(),false);
 
                 if(item2 == ModItems.CASTLE_WHITE_KING){
                     item2 = ModItems.WHITE_KING;
@@ -1550,17 +831,17 @@ public class ClickFigureCalculations {
         return false;
     }
 
-    private static void checkForCheck(World w, GlobalChessData currentPosition){
+    public static void checkForCheck(World w, GlobalChessData currentPosition){
 
 
-        Chess.setStart_time();
+        //Chess.setStart_time();
 
         checkCheckForColour("white",w,currentPosition);
         checkCheckForColour("black",w,currentPosition);
         checkCheckForColour("yellow",w,currentPosition);
         checkCheckForColour("pink",w,currentPosition);
 
-        Chess.setEnd_time();
+        //Chess.setEnd_time();
         //Chess.printDuration();
 
     }
@@ -1568,8 +849,8 @@ public class ClickFigureCalculations {
     private static void checkCheckForColour(String team, World w, GlobalChessData currentPosition){
 
 
-        boolean check = checkCalculations.isKingOfColourInCheck(w,team,checkCalculations.getCurrentBoardState(w,currentPosition),false);
-        boolean potentialCheck = checkCalculations.isKingOfColourInPotentialCheck(w,team,currentPosition,checkCalculations.getCurrentBoardState(w,currentPosition),false);
+        boolean check = checkCalculations.isKingOfColourInCheck(w,team,checkCalculations.getCurrentBoardState(w,currentPosition));
+        boolean potentialCheck = checkCalculations.isKingOfColourInPotentialCheck(w,team,checkCalculations.getCurrentBoardState(w,currentPosition));
 
         if(check && !potentialCheck){
 

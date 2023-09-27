@@ -39,8 +39,7 @@ public class AttackBlockHandler implements AttackBlockCallback {
             return ActionResult.PASS;
         }
 
-
-        if(player.getInventory().getMainHandStack().getItem() == ModItems.ROD_OF_REMOVAL) {
+        if(player.getInventory().getMainHandStack().getItem() == ModItems.ROD_OF_REMOVAL){
             return ActionResult.PASS;
         }
 
