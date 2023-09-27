@@ -73,7 +73,7 @@ public class BotTurnCommandWhite {
         }
         for(FigureOnBoard f : list) {
             GlobalChessData data = f.data;
-            Item item = f.item;
+            Item item = f.stack.getItem();
             ItemFrameEntity e = MovementCalculations.dataToFigure(w,data,item);
             e.setInvisible(true);
             e.setInvulnerable(true);

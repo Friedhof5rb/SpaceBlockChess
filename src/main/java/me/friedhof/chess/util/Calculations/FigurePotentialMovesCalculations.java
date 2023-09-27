@@ -13,7 +13,9 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.math.Box;
@@ -31,6 +33,35 @@ public class FigurePotentialMovesCalculations {
     public  ArrayList<GlobalChessData> blackPotentialMoves = new ArrayList<>();
     public  ArrayList<GlobalChessData> yellowPotentialMoves = new ArrayList<>();
     public  ArrayList<GlobalChessData> pinkPotentialMoves = new ArrayList<>();
+
+
+    public static boolean isEnPassanable(GlobalChessData currentPosition, BoardState b){
+
+        if(currentPosition == null){
+            return false;
+        }
+
+        for(FigureOnBoard f : b.allFiguresList){
+            if(currentPosition.pos.getX() == f.data.pos.getX() && currentPosition.pos.getY() == f.data.pos.getY() && currentPosition.pos.getZ() == f.data.pos.getZ() &&
+                    currentPosition.directionWall == f.data.directionWall ){
+
+                ItemStack stack = f.stack;
+                if(stack.hasNbt()) {
+                    NbtCompound nbt = stack.getNbt();
+                    if (nbt.contains("allowEnPassant")) {
+                        if (nbt.getBoolean("allowEnPassant")) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+
+
+    }
+
 
 
 
@@ -56,7 +87,7 @@ public class FigurePotentialMovesCalculations {
         for(FigureOnBoard f : b.allFiguresList){
             if(currentPosition.pos.getX() == f.data.pos.getX() && currentPosition.pos.getY() == f.data.pos.getY() && currentPosition.pos.getZ() == f.data.pos.getZ() &&
                     currentPosition.directionWall == f.data.directionWall){
-                return f.item;
+                return f.stack.getItem();
             }
         }
 
@@ -310,6 +341,9 @@ public class FigurePotentialMovesCalculations {
         GlobalChessData takingPosition1 = MovementCalculations.moveOneInDirection(w, currentPosition, Direction.EAST);
         GlobalChessData takingPosition2 = MovementCalculations.moveOneInDirection(w, currentPosition, Direction.WEST);
 
+        GlobalChessData enPassant1 = MovementCalculations.moveOneInDirection(w, takingPosition1, Direction.SOUTH);
+        GlobalChessData enPassant2 = MovementCalculations.moveOneInDirection(w, takingPosition2, Direction.SOUTH);
+
 
         if (currentPosition != null) {
             if (!isContainedInBoardState(currentPosition,b)) {
@@ -339,29 +373,63 @@ public class FigurePotentialMovesCalculations {
         if (takingPosition1 != null) {
             if (isContainedInBoardState(takingPosition1,b)) {
 
-
-
                     replaceOldFigure(takingPosition1,team,b);
 
+            }else{
+                if(isEnPassanable(enPassant1,b)){
 
+
+                    switch(team){
+                        case "white":{
+                            whitePotentialMoves.add(takingPosition1);
+
+                        }
+                        case "black":{
+                            blackPotentialMoves.add(takingPosition1);
+
+                        }
+                        case "yellow":{
+                            yellowPotentialMoves.add(takingPosition1);
+
+                        }
+                        case "pink":{
+                            pinkPotentialMoves.add(takingPosition1);
+
+                        }
+                    }
+                }
             }
+
         }
         //2
         if(takingPosition2 != null) {
             if (isContainedInBoardState(takingPosition2,b)) {
 
-
-
                     replaceOldFigure(takingPosition2,team,b);
+            }else{
+                if(isEnPassanable(enPassant2,b)){
 
+                    switch(team){
+                        case "white":{
+                            whitePotentialMoves.add(takingPosition2);
 
+                        }
+                        case "black":{
+                            blackPotentialMoves.add(takingPosition2);
+
+                        }
+                        case "yellow":{
+                            yellowPotentialMoves.add(takingPosition2);
+
+                        }
+                        case "pink":{
+                            pinkPotentialMoves.add(takingPosition2);
+
+                        }
+                    }
+                }
             }
         }
-
-
-
-
-
 
     }
 
@@ -373,14 +441,16 @@ public class FigurePotentialMovesCalculations {
 
         GlobalChessData takingPosition1 = MovementCalculations.moveOneInDirection(w, currentPosition, Direction.EAST);
         GlobalChessData takingPosition2 = MovementCalculations.moveOneInDirection(w, currentPosition, Direction.WEST);
+
+        GlobalChessData enPassant1 = MovementCalculations.moveOneInDirection(w, takingPosition1, Direction.SOUTH);
+        GlobalChessData enPassant2 = MovementCalculations.moveOneInDirection(w, takingPosition2, Direction.SOUTH);
+
         if(relativeDirection2 != Direction.UP) {
 
             if(!isContainedInBoardState(currentPosition,b)) {
                 currentPosition = MovementCalculations.moveOneInDirection(w, currentPosition, relativeDirection2);
             }
         }
-
-
 
 
         if(currentPosition != null) {
@@ -406,22 +476,64 @@ public class FigurePotentialMovesCalculations {
             }
         }
         //1
-        if(takingPosition1 != null) {
+        if (takingPosition1 != null) {
             if (isContainedInBoardState(takingPosition1,b)) {
 
-                    replaceOldFigure(takingPosition1,team,b);
+                replaceOldFigure(takingPosition1,team,b);
 
+            }else{
+                if(isEnPassanable(enPassant1,b)){
+                    switch(team){
+                        case "white":{
+                            whitePotentialMoves.add(takingPosition1);
+
+                        }
+                        case "black":{
+                            blackPotentialMoves.add(takingPosition1);
+
+                        }
+                        case "yellow":{
+                            yellowPotentialMoves.add(takingPosition1);
+
+                        }
+                        case "pink":{
+                            pinkPotentialMoves.add(takingPosition1);
+
+                        }
+                    }
+                }
             }
+
         }
         //2
         if(takingPosition2 != null) {
             if (isContainedInBoardState(takingPosition2,b)) {
 
-                    replaceOldFigure(takingPosition2,team,b);
+                replaceOldFigure(takingPosition2,team,b);
+            }else{
+                if(isEnPassanable(enPassant2,b)){
+
+                    switch(team){
+                        case "white":{
+                            whitePotentialMoves.add(takingPosition2);
+
+                        }
+                        case "black":{
+                            blackPotentialMoves.add(takingPosition2);
+
+                        }
+                        case "yellow":{
+                            yellowPotentialMoves.add(takingPosition2);
+
+                        }
+                        case "pink":{
+                            pinkPotentialMoves.add(takingPosition2);
+
+                        }
+                    }
+                }
             }
         }
-
-
 
     }
 
@@ -490,7 +602,7 @@ public class FigurePotentialMovesCalculations {
 
 
         for (FigureOnBoard figure : b.allFiguresList) {
-            Item item2 = figure.item;
+            Item item2 = figure.stack.getItem();
             GlobalChessData data = figure.data;
 
 

@@ -1,6 +1,7 @@
 package me.friedhof.chess.item.custom;
 
 import me.friedhof.chess.networking.ModMessages;
+import me.friedhof.chess.util.Calculations.RotationCalculations;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.item.Item;
@@ -28,10 +29,10 @@ public class PinkBishopItem extends Item {
 
 
 
-
+        int rotation = RotationCalculations.rotationAccordingToPlayerPosition(pos,context.getPlayer().getBlockPos(),d);
         if(w.isClient()) {
             PacketByteBuf buffer = PacketByteBufs.create();
-            buffer.writeIntArray(new int[]{pos.getX(), pos.getY(), pos.getZ(), d.getId(),27});
+            buffer.writeIntArray(new int[]{pos.getX(), pos.getY(), pos.getZ(), d.getId(),27,rotation});
             ClientPlayNetworking.send(ModMessages.SPAWN_FIGURE, buffer);
         }
 

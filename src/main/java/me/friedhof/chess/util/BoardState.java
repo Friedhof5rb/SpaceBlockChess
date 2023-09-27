@@ -8,6 +8,7 @@ import me.friedhof.chess.util.Calculations.checkCalculations;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
 
@@ -39,18 +40,18 @@ public class BoardState {
             for (int i = 0; i < b.allFiguresList.size(); i++) {
 
                 FigureOnBoard figure = b.allFiguresList.get(i);
-                Item item2 = figure.item;
+                ItemStack item2 = figure.stack;
                 GlobalChessData data = figure.data;
 
-                if (!Chess.itemMap.containsKey(item2)) {
+                if (!Chess.itemMap.containsKey(item2.getItem())) {
                     continue;
                 }
 
-                if (!Chess.ItemToColour(item2).equals(colour)) {
+                if (!Chess.ItemToColour(item2.getItem()).equals(colour)) {
                     continue;
                 }
 
-                switch (Chess.itemMap.get(item2)) {
+                switch (Chess.itemMap.get(item2.getItem())) {
                     case "white tower", "black tower", "yellow tower", "pink tower" -> calc.calculateAllMovesForTower(w, data, colour, b);
                     case "white bishop", "black bishop", "yellow bishop", "pink bishop" ->
                             calc.calculateAllMovesForBishop(w, data, colour, b);
@@ -82,15 +83,18 @@ public class BoardState {
                                 state.allFiguresList.addAll(b.allFiguresList);
                                 state.allFiguresList.remove(b.allFiguresList.get(i));
 
-                                Item newItem;
-                                if(figure.item == ModItems.START_WHITE_PAWN){
-                                    newItem = ModItems.WHITE_PAWN ;
-                                }else if(figure.item == ModItems.CASTLE_WHITE_KING){
-                                    newItem = ModItems.WHITE_KING ;
-                                }else if(figure.item == ModItems.CASTLE_WHITE_TOWER){
-                                    newItem = ModItems.WHITE_TOWER;
+                                ItemStack newItem;
+                                if(figure.stack.getItem() == ModItems.START_WHITE_PAWN){
+                                    newItem = new ItemStack(ModItems.WHITE_PAWN);
+                                    newItem.setNbt(figure.stack.getNbt());
+                                }else if(figure.stack.getItem() == ModItems.CASTLE_WHITE_KING){
+                                    newItem = new ItemStack(ModItems.WHITE_KING);
+                                    newItem.setNbt(figure.stack.getNbt());
+                                }else if(figure.stack.getItem() == ModItems.CASTLE_WHITE_TOWER){
+                                    newItem = new ItemStack(ModItems.WHITE_TOWER);
+                                    newItem.setNbt(figure.stack.getNbt());
                                 }else{
-                                    newItem = figure.item;
+                                    newItem = figure.stack;
                                 }
                                 
                                 
@@ -121,15 +125,18 @@ public class BoardState {
                                 state.allFiguresList.addAll(b.allFiguresList);
                                 state.allFiguresList.remove(b.allFiguresList.get(i));
 
-                                Item newItem;
-                                if(figure.item == ModItems.START_BLACK_PAWN){
-                                    newItem = ModItems.BLACK_PAWN ;
-                                }else if(figure.item == ModItems.CASTLE_BLACK_KING){
-                                    newItem = ModItems.BLACK_KING;
-                                }else if(figure.item == ModItems.CASTLE_BLACK_TOWER){
-                                    newItem = ModItems.BLACK_TOWER ;
+                                ItemStack newItem;
+                                if(figure.stack.getItem() == ModItems.START_BLACK_PAWN){
+                                    newItem = new ItemStack(ModItems.BLACK_PAWN);
+                                    newItem.setNbt(figure.stack.getNbt());
+                                }else if(figure.stack.getItem() == ModItems.CASTLE_BLACK_KING){
+                                    newItem = new ItemStack(ModItems.BLACK_KING);
+                                    newItem.setNbt(figure.stack.getNbt());
+                                }else if(figure.stack.getItem() == ModItems.CASTLE_BLACK_TOWER){
+                                    newItem = new ItemStack(ModItems.BLACK_TOWER);
+                                    newItem.setNbt(figure.stack.getNbt());
                                 }else{
-                                    newItem = figure.item;
+                                   newItem = figure.stack;
                                 }
                                 
                                 FigureOnBoard f = new FigureOnBoard(data2, newItem);
@@ -156,15 +163,18 @@ public class BoardState {
                                 state.allFiguresList.addAll(b.allFiguresList);
                                 state.allFiguresList.remove(b.allFiguresList.get(i));
 
-                                Item newItem;
-                                if(figure.item == ModItems.START_YELLOW_PAWN){
-                                    newItem = ModItems.YELLOW_PAWN ;
-                                }else if(figure.item == ModItems.CASTLE_YELLOW_KING){
-                                    newItem = ModItems.YELLOW_KING;
-                                }else if(figure.item == ModItems.CASTLE_YELLOW_TOWER){
-                                    newItem = ModItems.YELLOW_TOWER ;
+                                ItemStack newItem;
+                                if(figure.stack.getItem() == ModItems.START_YELLOW_PAWN){
+                                    newItem = new ItemStack(ModItems.YELLOW_PAWN);
+                                    newItem.setNbt(figure.stack.getNbt());
+                                }else if(figure.stack.getItem() == ModItems.CASTLE_YELLOW_KING){
+                                    newItem = new ItemStack(ModItems.YELLOW_KING);
+                                    newItem.setNbt(figure.stack.getNbt());
+                                }else if(figure.stack.getItem() == ModItems.CASTLE_YELLOW_TOWER){
+                                    newItem = new ItemStack(ModItems.YELLOW_TOWER);
+                                    newItem.setNbt(figure.stack.getNbt());
                                 }else{
-                                    newItem = figure.item;
+                                    newItem = figure.stack;
                                 }
                                 
                                 FigureOnBoard f = new FigureOnBoard(data2,newItem);
@@ -191,15 +201,18 @@ public class BoardState {
                                 state.allFiguresList.addAll(b.allFiguresList);
                                 state.allFiguresList.remove(b.allFiguresList.get(i));
 
-                                Item newItem;
-                                if(figure.item == ModItems.START_PINK_PAWN){
-                                    newItem = ModItems.PINK_PAWN ;
-                                }else if(figure.item == ModItems.CASTLE_PINK_KING){
-                                    newItem = ModItems.PINK_KING ;
-                                }else if(figure.item == ModItems.CASTLE_PINK_TOWER){
-                                    newItem = ModItems.PINK_TOWER ;
+                                ItemStack newItem;
+                                if(figure.stack.getItem() == ModItems.START_PINK_PAWN){
+                                    newItem = new ItemStack(ModItems.PINK_PAWN);
+                                    newItem.setNbt(figure.stack.getNbt());
+                                }else if(figure.stack.getItem() == ModItems.CASTLE_PINK_KING){
+                                    newItem = new ItemStack(ModItems.PINK_KING);
+                                    newItem.setNbt(figure.stack.getNbt());
+                                }else if(figure.stack.getItem() == ModItems.CASTLE_PINK_TOWER){
+                                    newItem = new ItemStack(ModItems.PINK_TOWER);
+                                    newItem.setNbt(figure.stack.getNbt());
                                 }else{
-                                    newItem = figure.item;
+                                    newItem = figure.stack;
                                 }
                                 
                                 
@@ -228,9 +241,6 @@ public class BoardState {
 
 
 
-
-
-
         return list;
 
     }
@@ -244,7 +254,7 @@ public class BoardState {
             StringBuilder sb = new StringBuilder();
             StringBuilder sb2 = new StringBuilder();
 
-            if(Chess.itemMap.get(f.item).equals(sb.append(team).append( " king").toString()) || Chess.itemMap.get(f.item).equals(sb2.append(team).append( " castle_king").toString())){
+            if(Chess.itemMap.get(f.stack.getItem()).equals(sb.append(team).append( " king").toString()) || Chess.itemMap.get(f.stack.getItem()).equals(sb2.append(team).append( " castle_king").toString())){
               containsKing = true;
             }
 
@@ -275,7 +285,7 @@ public class BoardState {
         for(FigureOnBoard f: allFiguresList){
             if(data.pos.getX() == f.data.pos.getX() &&  data.pos.getY() == f.data.pos.getY() && data.pos.getZ() == f.data.pos.getZ()
             && data.directionWall == f.data.directionWall){
-                return Chess.ItemToColour(f.item);
+                return Chess.ItemToColour(f.stack.getItem());
             }
         }
         return "";

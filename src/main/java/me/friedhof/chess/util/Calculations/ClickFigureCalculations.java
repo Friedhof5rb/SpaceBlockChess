@@ -13,6 +13,7 @@ import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -381,12 +382,15 @@ public class ClickFigureCalculations {
 
 
     public static GlobalChessData moveFigure(World w, ItemFrameEntity frame) {
+
+
         GlobalChessData result = MovementCalculations.figureToData(frame);
         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
-        List list = w.getEntitiesByType(EntityType.ITEM_FRAME,new Box(currentPosition.pos.getX()- UseEntityHandler.searchRadius,currentPosition.pos.getY()-UseEntityHandler.searchRadius,currentPosition.pos.getZ()-UseEntityHandler.searchRadius,currentPosition.pos.getX()+UseEntityHandler.searchRadius,currentPosition.pos.getY()+UseEntityHandler.searchRadius,currentPosition.pos.getZ()+UseEntityHandler.searchRadius),EntityPredicates.VALID_ENTITY);
+        List<ItemFrameEntity> list = w.getEntitiesByType(EntityType.ITEM_FRAME,new Box(currentPosition.pos.getX()- UseEntityHandler.searchRadius,currentPosition.pos.getY()-UseEntityHandler.searchRadius,currentPosition.pos.getZ()-UseEntityHandler.searchRadius,currentPosition.pos.getX()+UseEntityHandler.searchRadius,currentPosition.pos.getY()+UseEntityHandler.searchRadius,currentPosition.pos.getZ()+UseEntityHandler.searchRadius),EntityPredicates.VALID_ENTITY);
+
+
         for(int j = 0; j < list.size();j++) {
-            if (list.get(j) instanceof ItemFrameEntity) {
-                ItemFrameEntity entity = (ItemFrameEntity) list.get(j);
+                ItemFrameEntity entity = list.get(j);
                 if(entity.getHeldItemStack().getItem() == ModItems.MOVE_HIGHLIGHTER){
 
                     w.getEntityById(entity.getId()).kill();
@@ -428,11 +432,16 @@ public class ClickFigureCalculations {
                 if(Chess.arrayContains(UseEntityHandler.whiteSelectedPieces,entity.getHeldItemStack().getItem() ) || Chess.arrayContains(UseEntityHandler.blackSelectedPieces,entity.getHeldItemStack().getItem() ) ||
                         Chess.arrayContains(UseEntityHandler.yellowSelectedPieces,entity.getHeldItemStack().getItem() ) || Chess.arrayContains(UseEntityHandler.pinkSelectedPieces,entity.getHeldItemStack().getItem() )){
                     Item item = FigurePotentialMovesCalculations.exchangeItems(entity.getHeldItemStack().getItem(),false);
+                    GlobalChessData oneStep = MovementCalculations.moveOneInDirection(w,MovementCalculations.figureToData(entity),Direction.NORTH);
+                    GlobalChessData twoStep = MovementCalculations.moveOneInDirection(w,oneStep,Direction.NORTH);
+
                     if(item == ModItems.START_WHITE_PAWN ){
                         item = ModItems.WHITE_PAWN;
+
                     }
                     if(item == ModItems.START_BLACK_PAWN ){
                         item = ModItems.BLACK_PAWN;
+
                     }
                     if(item == ModItems.CASTLE_WHITE_KING){
                         item = ModItems.WHITE_KING;
@@ -449,9 +458,11 @@ public class ClickFigureCalculations {
 
                     if(item == ModItems.START_YELLOW_PAWN ){
                         item = ModItems.YELLOW_PAWN;
+
                     }
                     if(item == ModItems.START_PINK_PAWN ){
                         item = ModItems.PINK_PAWN;
+
                     }
                     if(item == ModItems.CASTLE_YELLOW_KING){
                         item = ModItems.YELLOW_KING;
@@ -466,12 +477,39 @@ public class ClickFigureCalculations {
                         item = ModItems.PINK_TOWER;
                     }
 
+
+
+
                     result = currentPosition;
                     ItemFrameEntity e = new ItemFrameEntity(w,currentPosition.pos,currentPosition.directionWall);
+
+
+
                     ItemStack stack = new ItemStack(item);
                     e.setHeldItemStack(stack);
                     e.setRotation(currentPosition.itemRotation);
+                    deleteFigureFromEnPassant(w, e);
+                    removeEnPassantPermission(frame,w);
+
+
+
+
+                    NbtCompound nbt = new NbtCompound();
+
+
+                    boolean isPawn = item == ModItems.WHITE_PAWN || item == ModItems.BLACK_PAWN || item == ModItems.YELLOW_PAWN || item == ModItems.PINK_PAWN;
+                    if(twoStep.pos.getX() == currentPosition.pos.getX() && twoStep.pos.getY() == currentPosition.pos.getY() && twoStep.pos.getZ() == currentPosition.pos.getZ()
+                            && twoStep.directionWall== currentPosition.directionWall) {
+                        if(isPawn) {
+                            nbt.putBoolean("allowEnPassant", true);
+                            stack.setNbt(nbt);
+                        }
+                    }
+
+
+                    e.setHeldItemStack(stack);
                     e.setInvisible(true);
+
                     if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                         e.setInvulnerable(true);
                     }
@@ -481,16 +519,19 @@ public class ClickFigureCalculations {
 
 
 
-            }
+
         }
         checkForCheck(w,currentPosition);
         return result;
     }
 
+
     public static GlobalChessData takeWithFigure( World w, ItemFrameEntity frame) {
+
         GlobalChessData result = MovementCalculations.figureToData(frame);
         int rotation = 0;
         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
+        removeEnPassantPermission(frame,w);
         List<ItemFrameEntity> list = w.getEntitiesByType(EntityType.ITEM_FRAME,new Box(currentPosition.pos.getX()-UseEntityHandler.searchRadius,currentPosition.pos.getY()-UseEntityHandler.searchRadius,currentPosition.pos.getZ()-UseEntityHandler.searchRadius,currentPosition.pos.getX()+UseEntityHandler.searchRadius,currentPosition.pos.getY()+UseEntityHandler.searchRadius,currentPosition.pos.getZ()+UseEntityHandler.searchRadius),EntityPredicates.VALID_ENTITY);
         for(int j = 0; j < list.size();j++) {
 
@@ -674,10 +715,12 @@ public class ClickFigureCalculations {
 
 
     public static GlobalChessData switchFigure( World w, ItemFrameEntity frame){
+
+
         GlobalChessData result1 = MovementCalculations.figureToData(frame);
         GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
         List<ItemFrameEntity> list = w.getEntitiesByType(EntityType.ITEM_FRAME,new Box(currentPosition.pos.getX()-UseEntityHandler.searchRadius,currentPosition.pos.getY()-UseEntityHandler.searchRadius,currentPosition.pos.getZ()-UseEntityHandler.searchRadius,currentPosition.pos.getX()+UseEntityHandler.searchRadius,currentPosition.pos.getY()+UseEntityHandler.searchRadius,currentPosition.pos.getZ()+UseEntityHandler.searchRadius),EntityPredicates.VALID_ENTITY);
-
+        removeEnPassantPermission(frame,w);
         for(int j = 0; j < list.size();j++) {
 
             ItemFrameEntity entity = list.get(j);
@@ -865,6 +908,56 @@ public class ClickFigureCalculations {
 
 
     }
+
+
+    private static void removeEnPassantPermission(ItemFrameEntity frame, World w){
+        GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
+        List<ItemFrameEntity> list = w.getEntitiesByType(EntityType.ITEM_FRAME,new Box(currentPosition.pos.getX()-UseEntityHandler.searchRadius,currentPosition.pos.getY()-UseEntityHandler.searchRadius,currentPosition.pos.getZ()-UseEntityHandler.searchRadius,currentPosition.pos.getX()+UseEntityHandler.searchRadius,currentPosition.pos.getY()+UseEntityHandler.searchRadius,currentPosition.pos.getZ()+UseEntityHandler.searchRadius),EntityPredicates.VALID_ENTITY);
+
+        for(ItemFrameEntity e : list){
+
+            ItemStack stack = e.getHeldItemStack();
+            if(stack.hasNbt()){
+                if(stack.getNbt().contains("allowEnPassant")){
+                    stack.getNbt().remove("allowEnPassant");
+                }
+            }
+            e.setHeldItemStack(stack);
+        }
+    }
+
+
+    private static void deleteFigureFromEnPassant(World w, ItemFrameEntity frame){
+        Item item = frame.getHeldItemStack().getItem();
+        boolean isPawn = item == ModItems.WHITE_PAWN || item == ModItems.BLACK_PAWN || item == ModItems.YELLOW_PAWN || item == ModItems.PINK_PAWN;
+        if(isPawn) {
+
+            GlobalChessData backStep = MovementCalculations.moveOneInDirection(w, MovementCalculations.figureToData(frame), Direction.SOUTH);
+            if (MovementCalculations.isItemFrame(w, backStep.pos, backStep.directionWall)) {
+
+                ItemFrameEntity e2 = MovementCalculations.getItemFrame(w, backStep.pos, backStep.directionWall);
+                ItemStack stack = e2.getHeldItemStack();
+                if (stack.hasNbt()) {
+                    NbtCompound nbt = stack.getNbt();
+                    if (nbt.contains("allowEnPassant")) {
+                        if (nbt.getBoolean("allowEnPassant")) {
+                          w.getEntityById(e2.getId()).kill();
+
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+
+
+
+
+
+
+
 
 
 

@@ -5,6 +5,7 @@ import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.GlassBlock;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
@@ -37,7 +38,6 @@ public class MovementCalculations {
             if(w.getBlockState(nextTo).getBlock() instanceof GlassBlock || w.getBlockState(nextTo).getFluidState() != Fluids.EMPTY.getDefaultState()){
                 return null;
             }
-
 
             int newItemRotation = RotationCalculations.correctRotationsInnerEdges(data.itemRotation,data.directionWall,absolute.getOpposite());
 
@@ -91,15 +91,12 @@ public class MovementCalculations {
     }
     public static ItemFrameEntity getItemFrame(World w, BlockPos pos, Direction direction){
         ItemFrameEntity frame = new ItemFrameEntity(w,pos,direction);
-        List list = w.getEntitiesByType(frame.getType(),new Box(pos.getX()-1,pos.getY()-1,pos.getZ()-1,pos.getX()+1, pos.getY()+1, pos.getZ()+1), EntityPredicates.VALID_ENTITY);
+        List<ItemFrameEntity> list = w.getEntitiesByType(EntityType.ITEM_FRAME,new Box(pos.getX()-1,pos.getY()-1,pos.getZ()-1,pos.getX()+1, pos.getY()+1, pos.getZ()+1), EntityPredicates.VALID_ENTITY);
         for(int i = 0; i< list.size(); i++){
-            if(list.get(i) instanceof ItemFrameEntity){
-                ItemFrameEntity entity = (ItemFrameEntity) list.get(i);
+                ItemFrameEntity entity =  list.get(i);
                 if(entity.getBlockPos().getX() == pos.getX() && entity.getBlockPos().getY() == pos.getY() && entity.getBlockPos().getZ() == pos.getZ() && entity.getHorizontalFacing() == direction){
                     return entity;
                 }
-            }
-
         }
         return frame;
     }

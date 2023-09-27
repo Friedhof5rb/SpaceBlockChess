@@ -60,11 +60,11 @@ public class TreeNode {
         boolean hasKing = false;
         for (FigureOnBoard f : state.allFiguresList) {
             StringBuilder sb = new StringBuilder();
-            if (Chess.itemMap.get(f.item).equals(sb.append(team).append(" king").toString())) {
+            if (Chess.itemMap.get(f.stack.getItem()).equals(sb.append(team).append(" king").toString())) {
                 hasKing = true;
             }
             sb = new StringBuilder();
-            if (Chess.itemMap.get(f.item).equals(sb.append(team).append(" castle_king").toString())) {
+            if (Chess.itemMap.get(f.stack.getItem()).equals(sb.append(team).append(" castle_king").toString())) {
                 hasKing = true;
             }
 
@@ -81,39 +81,39 @@ public class TreeNode {
         for(FigureOnBoard f : state.allFiguresList){
             StringBuilder sb = new StringBuilder();
 
-            if(Chess.itemMap.get(f.item).equals(sb.append(team).append( " king").toString())){
+            if(Chess.itemMap.get(f.stack.getItem()).equals(sb.append(team).append( " king").toString())){
                 v+= 900;
             }
              sb = new StringBuilder();
-            if(Chess.itemMap.get(f.item).equals(sb.append(team).append( " queen").toString())){
+            if(Chess.itemMap.get(f.stack.getItem()).equals(sb.append(team).append( " queen").toString())){
                 v+= 90;
             }
              sb = new StringBuilder();
-            if(Chess.itemMap.get(f.item).equals(sb.append(team).append( " bishop").toString())){
+            if(Chess.itemMap.get(f.stack.getItem()).equals(sb.append(team).append( " bishop").toString())){
                 v+= 30;
             }
              sb = new StringBuilder();
-            if(Chess.itemMap.get(f.item).equals(sb.append(team).append( " tower").toString())){
+            if(Chess.itemMap.get(f.stack.getItem()).equals(sb.append(team).append( " tower").toString())){
                 v+= 50;
             }
             sb = new StringBuilder();
-            if(Chess.itemMap.get(f.item).equals(sb.append(team).append( " pawn").toString())){
+            if(Chess.itemMap.get(f.stack.getItem()).equals(sb.append(team).append( " pawn").toString())){
                 v+= 10;
             }
             sb = new StringBuilder();
-            if(Chess.itemMap.get(f.item).equals(sb.append(team).append( " knight").toString())){
+            if(Chess.itemMap.get(f.stack.getItem()).equals(sb.append(team).append( " knight").toString())){
                 v+= 30;
             }
             sb = new StringBuilder();
-            if(Chess.itemMap.get(f.item).equals(sb.append(team).append( " castle_king").toString())){
+            if(Chess.itemMap.get(f.stack.getItem()).equals(sb.append(team).append( " castle_king").toString())){
                 v+= 900;
             }
             sb = new StringBuilder();
-            if(Chess.itemMap.get(f.item).equals(sb.append(team).append( " castle_tower").toString())){
+            if(Chess.itemMap.get(f.stack.getItem()).equals(sb.append(team).append( " castle_tower").toString())){
                 v+= 50;
             }
             sb = new StringBuilder();
-            if(Chess.itemMap.get(f.item).equals(sb.append(team).append( " start_pawn").toString())){
+            if(Chess.itemMap.get(f.stack.getItem()).equals(sb.append(team).append( " start_pawn").toString())){
                 v+= 10;
             }
 

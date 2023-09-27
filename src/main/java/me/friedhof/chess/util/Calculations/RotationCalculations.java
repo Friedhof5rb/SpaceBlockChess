@@ -1,9 +1,128 @@
 package me.friedhof.chess.util.Calculations;
 
 import me.friedhof.chess.util.GlobalChessData;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 public class RotationCalculations {
+
+
+    public static int rotationAccordingToPlayerPosition(BlockPos pos, BlockPos player, Direction d){
+
+        int r = 0;
+        switch(d){
+
+            case DOWN ->{
+                BlockPos onSurface = new BlockPos(pos.getX()-player.getX(),0,pos.getZ()-player.getZ());
+                if(onSurface.getZ() >= onSurface.getX() && onSurface.getZ() >= -onSurface.getX() ){
+                    r = 4;
+                }
+                if(onSurface.getZ() <= onSurface.getX() && onSurface.getZ() >= -onSurface.getX() ){
+                    r = 6;
+                }
+                if(onSurface.getZ() >= onSurface.getX() && onSurface.getZ() <= -onSurface.getX() ){
+                    r = 2;
+                }
+                if(onSurface.getZ() <= onSurface.getX() && onSurface.getZ() <= -onSurface.getX() ){
+                    r = 0;
+                }
+
+            }
+            case UP -> {
+                BlockPos onSurface = new BlockPos(pos.getX()-player.getX(),0,pos.getZ()-player.getZ());
+                if(onSurface.getZ() >= onSurface.getX() && onSurface.getZ() >= -onSurface.getX() ){
+                    r = 4;
+                }
+                if(onSurface.getZ() <= onSurface.getX() && onSurface.getZ() >= -onSurface.getX() ){
+                    r = 2;
+                }
+                if(onSurface.getZ() >= onSurface.getX() && onSurface.getZ() <= -onSurface.getX() ){
+                    r = 6;
+                }
+                if(onSurface.getZ() <= onSurface.getX() && onSurface.getZ() <= -onSurface.getX() ){
+                    r = 0;
+                }
+
+            }
+            case NORTH-> {
+                BlockPos onSurface = new BlockPos(pos.getX()-player.getX(),pos.getY()-player.getY(),0);
+                if(onSurface.getY() >= onSurface.getX() && onSurface.getY() >= -onSurface.getX() ){
+                    r = 4;
+                }
+                if(onSurface.getY() <= onSurface.getX() && onSurface.getY() >= -onSurface.getX() ){
+                    r = 6;
+                }
+                if(onSurface.getY() >= onSurface.getX() && onSurface.getY() <= -onSurface.getX() ){
+                    r = 2;
+                }
+                if(onSurface.getY() <= onSurface.getX() && onSurface.getY() <= -onSurface.getX() ){
+                    r = 0;
+                }
+
+
+            }
+            case SOUTH-> {
+
+                BlockPos onSurface = new BlockPos(pos.getX()-player.getX(),pos.getY()-player.getY(),0);
+                if(onSurface.getY() >= onSurface.getX() && onSurface.getY() >= -onSurface.getX() ){
+                    r = 4;
+                }
+                if(onSurface.getY() <= onSurface.getX() && onSurface.getY() >= -onSurface.getX() ){
+                    r = 6;
+                }
+                if(onSurface.getY() >= onSurface.getX() && onSurface.getY() <= -onSurface.getX() ){
+                    r = 2;
+                }
+                if(onSurface.getY() <= onSurface.getX() && onSurface.getY() <= -onSurface.getX() ){
+                    r = 0;
+                }
+
+
+            }
+            case EAST -> {
+                BlockPos onSurface = new BlockPos(0,pos.getY()-player.getY(),pos.getZ()-player.getZ());
+                if(onSurface.getY() >= onSurface.getZ() && onSurface.getY() >= -onSurface.getZ() ){
+                    r = 0;
+                }
+                if(onSurface.getY() <= onSurface.getZ() && onSurface.getY() >= -onSurface.getZ() ){
+                    r = 6;
+                }
+                if(onSurface.getY() >= onSurface.getZ() && onSurface.getY() <= -onSurface.getZ() ){
+                    r = 2;
+                }
+                if(onSurface.getY() <= onSurface.getZ() && onSurface.getY() <= -onSurface.getZ() ){
+                    r = 4;
+                }
+
+
+            }
+            case WEST-> {
+
+                BlockPos onSurface = new BlockPos(0,pos.getY()-player.getY(),pos.getZ()-player.getZ());
+                if(onSurface.getY() >= onSurface.getZ() && onSurface.getY() >= -onSurface.getZ() ){
+                    r = 0;
+                }
+                if(onSurface.getY() <= onSurface.getZ() && onSurface.getY() >= -onSurface.getZ() ){
+                    r = 2;
+                }
+                if(onSurface.getY() >= onSurface.getZ() && onSurface.getY() <= -onSurface.getZ() ){
+                    r = 6;
+                }
+                if(onSurface.getY() <= onSurface.getZ() && onSurface.getY() <= -onSurface.getZ() ){
+                    r = 4;
+                }
+                
+
+            }
+
+        }
+        return r;
+
+    }
+
+
+
+
 
 
 

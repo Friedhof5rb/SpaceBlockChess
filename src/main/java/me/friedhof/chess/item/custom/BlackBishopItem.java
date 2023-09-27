@@ -2,6 +2,7 @@ package me.friedhof.chess.item.custom;
 
 import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.networking.ModMessages;
+import me.friedhof.chess.util.Calculations.RotationCalculations;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.item.Item;
@@ -27,12 +28,11 @@ public class BlackBishopItem extends Item {
         BlockPos pos = context.getBlockPos();
         Direction d = context.getSide();
 
-
-
+        int rotation = RotationCalculations.rotationAccordingToPlayerPosition(pos,context.getPlayer().getBlockPos(),d);
 
         if(w.isClient()) {
             PacketByteBuf buffer = PacketByteBufs.create();
-            buffer.writeIntArray(new int[]{pos.getX(), pos.getY(), pos.getZ(), d.getId(),0});
+            buffer.writeIntArray(new int[]{pos.getX(), pos.getY(), pos.getZ(), d.getId(),0,rotation});
             ClientPlayNetworking.send(ModMessages.SPAWN_FIGURE, buffer);
         }
 

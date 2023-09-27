@@ -72,7 +72,7 @@ public class BotTurnCommandBlack {
 
         for(FigureOnBoard f : list2){
             GlobalChessData data = f.data;
-            Item item = f.item;
+            Item item = f.stack.getItem();
             for(ItemFrameEntity e : EntityList){
                 if(e.getBlockPos().getX() == data.pos.getX() && e.getBlockPos().getY() == data.pos.getY() &&
                         e.getBlockPos().getZ() == data.pos.getZ() && e.getHorizontalFacing() == data.directionWall){
@@ -107,7 +107,7 @@ public class BotTurnCommandBlack {
         }
         for(FigureOnBoard f : list) {
             GlobalChessData data = f.data;
-            Item item = f.item;
+            Item item = f.stack.getItem();
             ItemFrameEntity e = MovementCalculations.dataToFigure(w,data,item);
             e.setInvisible(true);
             e.setInvulnerable(true);

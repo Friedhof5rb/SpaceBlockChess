@@ -12,6 +12,7 @@ public class GlobalChessData {
     public int itemRotation;
     public boolean isFigure;
 
+
     public GlobalChessData(BlockPos pos, Direction directionWall, int itemRotation, boolean isFigure) {
         this.pos = pos;
         this.directionWall = directionWall;

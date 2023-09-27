@@ -8,6 +8,7 @@ import me.friedhof.chess.util.GlobalChessData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
@@ -30,7 +31,7 @@ public class checkCalculations {
 
                 if(fc.data.pos.getX() == fi.data.pos.getX() && fc.data.pos.getY() == fi.data.pos.getY() && fc.data.pos.getZ() == fi.data.pos.getZ() && fc.data.directionWall == fi.data.directionWall){
                     contains = true;
-                    if(  fc.item != fi.item){
+                    if(  fc.stack.getItem() != fi.stack.getItem()){
                         list.add(fc);
                     }
                 }
@@ -58,7 +59,7 @@ public class checkCalculations {
             StringBuilder sb = new StringBuilder();
             StringBuilder sb2 = new StringBuilder();
 
-            if(Chess.itemMap.get(f.item).equals(sb.append(team).append( " king").toString()) || Chess.itemMap.get(f.item).equals(sb2.append(team).append( " castle_king").toString())){
+            if(Chess.itemMap.get(f.stack.getItem()).equals(sb.append(team).append( " king").toString()) || Chess.itemMap.get(f.stack.getItem()).equals(sb2.append(team).append( " castle_king").toString())){
                 kingsList.add(f);
             }
 
@@ -150,9 +151,9 @@ public class checkCalculations {
         int radius =  50;
         List<ItemFrameEntity> list = w.getEntitiesByType(EntityType.ITEM_FRAME, new Box(currentPosition.pos.getX()-radius,currentPosition.pos.getY()-radius,currentPosition.pos.getZ()-radius,currentPosition.pos.getX()+radius,currentPosition.pos.getY()+radius,currentPosition.pos.getZ()+radius), EntityPredicates.VALID_ENTITY);
         for(ItemFrameEntity entity : list){
-            Item item = entity.getHeldItemStack().getItem();
-            if(Chess.arrayContains(UseEntityHandler.whitePieces,item) || Chess.arrayContains(UseEntityHandler.blackPieces,item) |
-                    Chess.arrayContains(UseEntityHandler.yellowPieces,item) || Chess.arrayContains(UseEntityHandler.pinkPieces,item)) {
+            ItemStack item = entity.getHeldItemStack();
+            if(Chess.arrayContains(UseEntityHandler.whitePieces,item.getItem()) || Chess.arrayContains(UseEntityHandler.blackPieces,item.getItem()) |
+                    Chess.arrayContains(UseEntityHandler.yellowPieces,item.getItem()) || Chess.arrayContains(UseEntityHandler.pinkPieces,item.getItem())) {
 
 
                 FigureOnBoard figure = new FigureOnBoard(MovementCalculations.figureToData(entity), item);

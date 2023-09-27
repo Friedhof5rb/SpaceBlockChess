@@ -17,6 +17,8 @@ import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
@@ -108,7 +110,18 @@ public class UseEntityHandler implements UseEntityCallback {
 
 
         if (player.getInventory().getMainHandStack().getItem() == ModItems.ROD_OF_ROTATION) {
-            return ActionResult.PASS;
+
+            if(player.isSneaking()){
+                if(entity instanceof ItemFrameEntity){
+                    ItemFrameEntity e = (ItemFrameEntity) entity;
+                    int rotation = (e.getRotation()-1)%8;
+                    e.setRotation(rotation);
+                    world.playSound(null,e.getBlockPos(), SoundEvents.ENTITY_ITEM_FRAME_ROTATE_ITEM,SoundCategory.PLAYERS);
+                }
+
+            }else {
+                return ActionResult.PASS;
+            }
         }
         else
         if (player.getInventory().getMainHandStack().getItem() == ModItems.WHITE_ROD_OF_MOVING) {

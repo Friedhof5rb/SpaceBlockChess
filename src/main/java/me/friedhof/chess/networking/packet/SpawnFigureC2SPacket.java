@@ -34,6 +34,12 @@ public class SpawnFigureC2SPacket {
         BlockPos pos = new BlockPos(data[0], data[1], data[2]);
         int figureIndex = data[4];
 
+        int rotation = 0;
+        if(data.length == 6) {
+             rotation = data[5];
+        }
+
+
 
         if (d == Direction.DOWN) {
             pos = new BlockPos(data[0], data[1] - 1, data[2]);
@@ -58,7 +64,7 @@ public class SpawnFigureC2SPacket {
         ItemStack stack = new ItemStack(Chess.poolAndPlace[figureIndex]);
         e.setHeldItemStack(stack);
         e.setInvisible(true);
-
+        e.setRotation(rotation);
         w.spawnEntity(e);
 
     }

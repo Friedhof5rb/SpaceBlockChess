@@ -1,15 +1,16 @@
 package me.friedhof.chess.util;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 public class FigureOnBoard {
 
     public GlobalChessData data;
-    public Item item;
+    public ItemStack stack;
 
-    public FigureOnBoard(GlobalChessData data, Item item) {
+    public FigureOnBoard(GlobalChessData data, ItemStack stack) {
         this.data = data;
-        this.item = item;
+        this.stack = stack;
     }
 
 
