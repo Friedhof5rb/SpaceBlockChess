@@ -88,6 +88,10 @@ public class ModItemGroup {
                         entries.add(ModItems.YELLOW_TORCH);
                         entries.add(ModItems.PINK_TORCH);
 
+                        entries.add(ModItems.PAWN_TO_TOWER);
+                        entries.add(ModItems.PAWN_TO_KNIGHT);
+                        entries.add(ModItems.PAWN_TO_BISHOP);
+                        entries.add(ModItems.PAWN_TO_QUEEN);
 
                     })
                     .build());

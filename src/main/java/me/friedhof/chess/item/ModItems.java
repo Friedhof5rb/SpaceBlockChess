@@ -35,6 +35,12 @@ public class ModItems {
     public static final Item YELLOW_TORCH= registerItem("yellow_torch",new TorchItem(new FabricItemSettings().maxCount(1)));
     public static final Item PINK_TORCH= registerItem("pink_torch",new TorchItem(new FabricItemSettings().maxCount(1)));
 
+    public static final Item PAWN_TO_KNIGHT = registerItem("pawn_to_knight",new Item(new FabricItemSettings().maxCount(1)));
+    public static final Item PAWN_TO_BISHOP = registerItem("pawn_to_bishop",new Item(new FabricItemSettings().maxCount(1)));
+    public static final Item PAWN_TO_QUEEN = registerItem("pawn_to_queen",new Item(new FabricItemSettings().maxCount(1)));
+    public static final Item PAWN_TO_TOWER= registerItem("pawn_to_tower",new Item(new FabricItemSettings().maxCount(1)));
+
+
 
 
     //White

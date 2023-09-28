@@ -59,6 +59,10 @@
   "item.chess.yellow_torch": "Yellow Torch",
   "item.chess.pink_torch": "Pink Torch",
 
+  "item.chess.pawn_to_knight": "Pawn Promotion",
+  "item.chess.pawn_to_bishop": "Pawn Promotion",
+  "item.chess.pawn_to_queen": "Pawn Promotion",
+  "item.chess.pawn_to_tower": "Pawn Promotion",
 
   "item.chess.chess_core": "Chess Core",
   "item.chess.chesspos1": "Chess Pos1",

@@ -35,7 +35,10 @@ public class ChessModelGenerator extends FabricModelProvider {
         itemModelGenerator.register(ModItems.YELLOW_TORCH, Models.GENERATED);
         itemModelGenerator.register(ModItems.PINK_TORCH, Models.GENERATED);
 
-
+        itemModelGenerator.register(ModItems.PAWN_TO_KNIGHT, Models.GENERATED);
+        itemModelGenerator.register(ModItems.PAWN_TO_BISHOP, Models.GENERATED);
+        itemModelGenerator.register(ModItems.PAWN_TO_QUEEN, Models.GENERATED);
+        itemModelGenerator.register(ModItems.PAWN_TO_TOWER, Models.GENERATED);
 
 
         CustomModel customModel =  item("generated", TextureKey.LAYER0);;
