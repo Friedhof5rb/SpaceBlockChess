@@ -5,6 +5,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.friedhof.chess.Chess;
 import me.friedhof.chess.gamerule.ModGamerules;
+import me.friedhof.chess.util.IItemFrameDataSaver;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.GlassBlock;
 import net.minecraft.command.CommandRegistryAccess;
@@ -137,6 +138,8 @@ public class randomChessFigures {
             e.setRotation(rotation*2);
             e.setInvisible(true);
             e.setInvulnerable(true);
+            IItemFrameDataSaver saver = (IItemFrameDataSaver) e;
+            saver.setFixed(true);
             w.spawnEntity(e);
 
             return 1;
