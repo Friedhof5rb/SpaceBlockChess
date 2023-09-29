@@ -34,9 +34,11 @@ public class AttackEntityHandler implements AttackEntityCallback {
         if (entity instanceof ItemFrameEntity  && world.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
             ItemFrameEntity e5 = (ItemFrameEntity) entity;
             if(Chess.arrayContains(Chess.combineLists(),e5.getHeldItemStack().getItem()) ){
-                e5.setInvisible(false);
-                ItemStack stack = e5.getHeldItemStack();
-                world.spawnEntity(new ItemEntity(world,e5.getX(),e5.getY(),e5.getZ(),stack));
+                if(!player.isCreative()) {
+                    e5.setInvisible(false);
+                    ItemStack stack = e5.getHeldItemStack();
+                    world.spawnEntity(new ItemEntity(world, e5.getX(), e5.getY(), e5.getZ(), stack));
+                }
                 e5.kill();
                 return ActionResult.PASS;
             }

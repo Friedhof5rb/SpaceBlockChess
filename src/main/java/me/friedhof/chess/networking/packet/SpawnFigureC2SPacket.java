@@ -66,7 +66,7 @@ public class SpawnFigureC2SPacket {
         }
 
         if(!FigurePotentialMovesCalculations.isContainedInBoardState(new GlobalChessData(pos,d,0,false), checkCalculations.getCurrentBoardState(w,new GlobalChessData(pos,d,0,false)))) {
-            if (w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+            if (w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized) && !player.isCreative()) {
                 ItemStack stack = player.getInventory().getMainHandStack();
                 if(stack.getItem() ==Chess.poolAndPlace[figureIndex] ) {
                     stack.setCount(stack.getCount()-1);

@@ -85,8 +85,10 @@ public class UseEntityHandler implements UseEntityCallback {
             }
             if(player.getInventory().getMainHandStack().getItem() == ModItems.ROD_OF_REMOVAL){
                 if(world.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-                    ItemStack stack = e5.getHeldItemStack();
-                    world.spawnEntity(new ItemEntity(world, e5.getX(), e5.getY(), e5.getZ(), stack));
+                    if(!player.isCreative()) {
+                        ItemStack stack = e5.getHeldItemStack();
+                        world.spawnEntity(new ItemEntity(world, e5.getX(), e5.getY(), e5.getZ(), stack));
+                    }
                 }
                 entity.kill();
                 return ActionResult.PASS;
