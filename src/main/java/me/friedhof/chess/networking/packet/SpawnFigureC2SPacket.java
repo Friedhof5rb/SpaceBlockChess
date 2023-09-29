@@ -4,6 +4,9 @@ import me.friedhof.chess.Chess;
 import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItemGroup;
 import me.friedhof.chess.item.ModItems;
+import me.friedhof.chess.util.Calculations.FigurePotentialMovesCalculations;
+import me.friedhof.chess.util.Calculations.checkCalculations;
+import me.friedhof.chess.util.GlobalChessData;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.item.*;
@@ -23,9 +26,7 @@ public class SpawnFigureC2SPacket {
                                ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
         World w = player.getWorld();
 
-        if (w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
-            return;
-        }
+
 
 
 
@@ -60,12 +61,31 @@ public class SpawnFigureC2SPacket {
             pos = new BlockPos(data[0] + 1, data[1], data[2]);
         }
 
-        ItemFrameEntity e = new ItemFrameEntity(w, pos, d);
-        ItemStack stack = new ItemStack(Chess.poolAndPlace[figureIndex]);
-        e.setHeldItemStack(stack);
-        e.setInvisible(true);
-        e.setRotation(rotation);
-        w.spawnEntity(e);
+        if(!FigurePotentialMovesCalculations.isContainedInBoardState(new GlobalChessData(pos,d,0,false), checkCalculations.getCurrentBoardState(w,new GlobalChessData(pos,d,0,false)))) {
+            if (w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                ItemStack stack = player.getInventory().getMainHandStack();
+                if(stack.getItem() ==Chess.poolAndPlace[figureIndex] ) {
+                    stack.setCount(stack.getCount()-1);
+                }else if(player.getOffHandStack().getItem() ==Chess.poolAndPlace[figureIndex] ){
+                    ItemStack stack2 = player.getOffHandStack();
+                    stack2.setCount(stack2.getCount()-1);
+                }else{
+                    return;
+                }
+
+
+            }
+
+
+            ItemFrameEntity e = new ItemFrameEntity(w, pos, d);
+
+                ItemStack stack = new ItemStack(Chess.poolAndPlace[figureIndex]);
+                e.setHeldItemStack(stack);
+                e.setInvisible(true);
+                e.setRotation(rotation);
+                w.spawnEntity(e);
+        }
+
 
     }
 

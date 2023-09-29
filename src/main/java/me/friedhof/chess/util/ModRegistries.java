@@ -24,15 +24,16 @@ public class ModRegistries {
 
     private static void registerCommands(){
 
+        CommandRegistrationCallback.EVENT.register(switchChessNotationVisbility::register);
+        CommandRegistrationCallback.EVENT.register(pos1Command::register);
+        CommandRegistrationCallback.EVENT.register(pos2Command::register);
+        CommandRegistrationCallback.EVENT.register(chessCubeCommand::register);
         CommandRegistrationCallback.EVENT.register(poolAddMainhand::register);
         CommandRegistrationCallback.EVENT.register(poolRemoveMainhand::register);
         CommandRegistrationCallback.EVENT.register(printPool::register);
-        CommandRegistrationCallback.EVENT.register(pos1Command::register);
-        CommandRegistrationCallback.EVENT.register(pos2Command::register);
         CommandRegistrationCallback.EVENT.register(randomChessFigures::register);
         CommandRegistrationCallback.EVENT.register(clearChessCommand::register);
-        CommandRegistrationCallback.EVENT.register(chessCubeCommand::register);
-        CommandRegistrationCallback.EVENT.register(switchChessNotationVisbility::register);
+
 
         //CommandRegistrationCallback.EVENT.register(BotTurnCommandWhite::register);
         //CommandRegistrationCallback.EVENT.register(BotTurnCommandBlack::register);

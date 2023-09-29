@@ -1,6 +1,7 @@
 package me.friedhof.chess.event;
 
 import me.friedhof.chess.Chess;
+import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItems;
 import me.friedhof.chess.sound.ModSounds;
 import me.friedhof.chess.util.Calculations.ClickFigureCalculations;
@@ -10,6 +11,7 @@ import me.friedhof.chess.util.GlobalChessData;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AirBlockItem;
@@ -82,6 +84,10 @@ public class UseEntityHandler implements UseEntityCallback {
                 e5.setInvisible(true);
             }
             if(player.getInventory().getMainHandStack().getItem() == ModItems.ROD_OF_REMOVAL){
+                if(world.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+                    ItemStack stack = e5.getHeldItemStack();
+                    world.spawnEntity(new ItemEntity(world, e5.getX(), e5.getY(), e5.getZ(), stack));
+                }
                 entity.kill();
                 return ActionResult.PASS;
             }
@@ -165,7 +171,6 @@ public class UseEntityHandler implements UseEntityCallback {
 
 
         }
-
 
 
 
