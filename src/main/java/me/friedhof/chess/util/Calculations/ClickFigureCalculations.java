@@ -7,6 +7,7 @@ import me.friedhof.chess.item.ModItems;
 import me.friedhof.chess.util.BoardState;
 import me.friedhof.chess.util.GlobalChessData;
 import me.friedhof.chess.util.IEntityDataSaver;
+import me.friedhof.chess.util.IItemFrameDataSaver;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.decoration.ItemFrameEntity;
@@ -34,6 +35,8 @@ public class ClickFigureCalculations {
 
         ItemFrameEntity e = MovementCalculations.dataToFigure(w,currentPosition, ModItems.MOVE_HIGHLIGHTER);
         e.setInvisible(true);
+        IItemFrameDataSaver saver = (IItemFrameDataSaver) e;
+        saver.setFixed(true);
         if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
             e.setInvulnerable(true);
         }
@@ -112,6 +115,8 @@ public class ClickFigureCalculations {
         }
         ItemFrameEntity newEntity = MovementCalculations.dataToFigureWithDamage(w,currentPosition, newItem,rotation );
         newEntity.setInvisible(true);
+        IItemFrameDataSaver saver = (IItemFrameDataSaver) newEntity;
+        saver.setFixed(true);
         if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
             newEntity.setInvulnerable(true);
         }
@@ -168,6 +173,8 @@ public class ClickFigureCalculations {
         ItemStack stack = new ItemStack(FigurePotentialMovesCalculations.exchangeItems(item,false));
         newFrame.setHeldItemStack(stack);
         newFrame.setInvisible(true);
+        IItemFrameDataSaver saver = (IItemFrameDataSaver) newFrame;
+        saver.setFixed(true);
         if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
             newFrame.setInvulnerable(true);
         }
@@ -330,7 +337,8 @@ public class ClickFigureCalculations {
                     e.setHeldItemStack(stack);
                     e.setRotation(entity.getRotation());
                     e.setInvisible(true);
-
+                    IItemFrameDataSaver saver = (IItemFrameDataSaver) e;
+                    saver.setFixed(true);
                     if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                         e.setInvulnerable(true);
                     }
@@ -347,6 +355,8 @@ public class ClickFigureCalculations {
                     e.setHeldItemStack(stack);
                     e.setRotation(entity.getRotation());
                     e.setInvisible(true);
+                    IItemFrameDataSaver saver = (IItemFrameDataSaver) e;
+                    saver.setFixed(true);
                     if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                         e.setInvulnerable(true);
                     }
@@ -362,6 +372,8 @@ public class ClickFigureCalculations {
                     e.setHeldItemStack(stack);
                     e.setRotation(entity.getRotation());
                     e.setInvisible(true);
+                    IItemFrameDataSaver saver = (IItemFrameDataSaver) e;
+                    saver.setFixed(true);
                     if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                         e.setInvulnerable(true);
                     }
@@ -404,6 +416,8 @@ public class ClickFigureCalculations {
                     e.setHeldItemStack(stack);
                     e.setRotation(entity.getRotation());
                     e.setInvisible(true);
+                    IItemFrameDataSaver saver = (IItemFrameDataSaver) e;
+                    saver.setFixed(true);
                     if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                         e.setInvulnerable(true);
                     }
@@ -422,6 +436,8 @@ public class ClickFigureCalculations {
                     e.setHeldItemStack(stack);
                     e.setRotation(entity.getRotation());
                     e.setInvisible(true);
+                    IItemFrameDataSaver saver = (IItemFrameDataSaver) e;
+                    saver.setFixed(true);
                     if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                         e.setInvulnerable(true);
                     }
@@ -509,7 +525,8 @@ public class ClickFigureCalculations {
 
                     e.setHeldItemStack(stack);
                     e.setInvisible(true);
-
+                    IItemFrameDataSaver saver = (IItemFrameDataSaver) e;
+                    saver.setFixed(true);
                     if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                         e.setInvulnerable(true);
                     }
@@ -548,6 +565,8 @@ public class ClickFigureCalculations {
                 e.setHeldItemStack(stack);
                 e.setRotation(entity.getRotation());
                 e.setInvisible(true);
+                IItemFrameDataSaver saver = (IItemFrameDataSaver) e;
+                saver.setFixed(true);
                 if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                     e.setInvulnerable(true);
                 }
@@ -573,6 +592,8 @@ public class ClickFigureCalculations {
                 e.setHeldItemStack(stack);
                 e.setRotation(entity.getRotation());
                 e.setInvisible(true);
+                IItemFrameDataSaver saver = (IItemFrameDataSaver) e;
+                saver.setFixed(true);
                 w.getEntityById(entity.getId()).kill();
                 if (!(e.getBlockPos().getX() == currentPosition.pos.getX() && e.getBlockPos().getY() == currentPosition.pos.getY() && e.getBlockPos().getZ() == currentPosition.pos.getZ() && e.getHorizontalFacing() == currentPosition.directionWall)){
                     if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
@@ -670,7 +691,8 @@ public class ClickFigureCalculations {
                 ItemStack stack = new ItemStack(item);
                 e.setHeldItemStack(stack);
                 e.setInvisible(true);
-
+                IItemFrameDataSaver saver = (IItemFrameDataSaver) e;
+                saver.setFixed(true);
                 e.setRotation(rotation);
                 if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                     e.setInvulnerable(true);
@@ -741,6 +763,8 @@ public class ClickFigureCalculations {
                 e.setHeldItemStack(stack);
                 e.setRotation(entity.getRotation());
                 e.setInvisible(true);
+                IItemFrameDataSaver saver = (IItemFrameDataSaver) e;
+                saver.setFixed(true);
                 if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                     e.setInvulnerable(true);
                 }
@@ -759,6 +783,8 @@ public class ClickFigureCalculations {
                 e.setHeldItemStack(stack);
                 e.setRotation(entity.getRotation());
                 e.setInvisible(true);
+                IItemFrameDataSaver saver = (IItemFrameDataSaver) e;
+                saver.setFixed(true);
                 if(!(e.getBlockPos().getX() == currentPosition.pos.getX() && e.getBlockPos().getY() == currentPosition.pos.getY() && e.getBlockPos().getZ() == currentPosition.pos.getZ() && e.getHorizontalFacing() == currentPosition.directionWall)){
 
                     if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
@@ -834,6 +860,8 @@ public class ClickFigureCalculations {
             e.setHeldItemStack(stack);
             e.setRotation(newSwitchPiece.itemRotation);
             e.setInvisible(true);
+            IItemFrameDataSaver saver = (IItemFrameDataSaver) e;
+            saver.setFixed(true);
             if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                 e.setInvulnerable(true);
             }
@@ -844,6 +872,8 @@ public class ClickFigureCalculations {
             e2.setHeldItemStack(stack2);
             e2.setRotation(newPiece.itemRotation);
             e2.setInvisible(true);
+            IItemFrameDataSaver saver2 = (IItemFrameDataSaver) e2;
+            saver2.setFixed(true);
             if(!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
                 e2.setInvulnerable(true);
             }

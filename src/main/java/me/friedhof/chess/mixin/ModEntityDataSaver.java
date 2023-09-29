@@ -15,6 +15,9 @@ public abstract class ModEntityDataSaver implements IEntityDataSaver {
 
     private NbtCompound persistentData;
 
+
+
+
     @Override
     public NbtCompound getPersistentData() {
         if(this.persistentData == null) {
@@ -23,6 +26,9 @@ public abstract class ModEntityDataSaver implements IEntityDataSaver {
         return persistentData;
     }
 
+
+
+
     @Inject(method = "writeNbt", at = @At("HEAD"))
     protected void injectWriteMethod(NbtCompound nbt, CallbackInfoReturnable info) {
         if(persistentData != null) {
@@ -30,12 +36,21 @@ public abstract class ModEntityDataSaver implements IEntityDataSaver {
         }
     }
 
+
+
+
     @Inject(method = "readNbt", at = @At("HEAD"))
     protected void injectReadMethod(NbtCompound nbt, CallbackInfo info) {
         if (nbt.contains("chess.friedhofdata", 10)) {
             persistentData = nbt.getCompound("chess.friedhofdata");
         }
     }
+
+
+
+
+
+
 
 
 

@@ -4,9 +4,13 @@ import me.friedhof.chess.Chess;
 import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItemGroup;
 import me.friedhof.chess.item.ModItems;
+import me.friedhof.chess.mixin.ModEntityDataSaver;
+import me.friedhof.chess.mixin.ModItemFrameDataSaver;
 import me.friedhof.chess.util.Calculations.FigurePotentialMovesCalculations;
 import me.friedhof.chess.util.Calculations.checkCalculations;
 import me.friedhof.chess.util.GlobalChessData;
+import me.friedhof.chess.util.IEntityDataSaver;
+import me.friedhof.chess.util.IItemFrameDataSaver;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.item.*;
@@ -79,11 +83,18 @@ public class SpawnFigureC2SPacket {
 
             ItemFrameEntity e = new ItemFrameEntity(w, pos, d);
 
-                ItemStack stack = new ItemStack(Chess.poolAndPlace[figureIndex]);
-                e.setHeldItemStack(stack);
-                e.setInvisible(true);
-                e.setRotation(rotation);
-                w.spawnEntity(e);
+            ItemStack stack = new ItemStack(Chess.poolAndPlace[figureIndex]);
+            e.setHeldItemStack(stack);
+            e.setInvisible(true);
+            if (!w.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
+              e.setInvulnerable(true);
+            }
+
+            IItemFrameDataSaver saver = (IItemFrameDataSaver) e;
+            saver.setFixed(true);
+
+            e.setRotation(rotation);
+            w.spawnEntity(e);
         }
 
 
