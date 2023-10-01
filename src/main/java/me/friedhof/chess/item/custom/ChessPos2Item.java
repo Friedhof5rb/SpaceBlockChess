@@ -20,7 +20,7 @@ public class ChessPos2Item extends Item {
             PlayerEntity player = context.getPlayer();
 
             Chess.pos2.put(player.getUuidAsString(), pos);
-            player.sendMessage(Text.literal("Pos2: " + player.getBlockPos().getX() + ", " + player.getBlockPos().getY() + ", " + player.getBlockPos().getZ()), false);
+            player.sendMessage(Text.literal("Pos2: " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ()), false);
         }
         return super.useOnBlock(context);
     }

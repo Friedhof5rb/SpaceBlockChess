@@ -72,7 +72,7 @@ public class randomChessFigures {
             list.remove(list.get(i));
         }
         Chess.pool.remove(uuid);
-        context.getSource().getPlayer().sendMessage(Text.literal("Spawend " + how_many_Spawned + " Figures in the Area."), false);
+        context.getSource().getPlayer().sendMessage(Text.literal("Spawned " + how_many_Spawned + " Figures in the Area."), false);
         return 1;
     }
 
@@ -130,7 +130,7 @@ public class randomChessFigures {
             int result = r.nextInt(sides.size());
 
             Random r2 = new Random();
-            int rotation = r2.nextInt(3);
+            int rotation = r2.nextInt(4);
 
             ItemFrameEntity e = new ItemFrameEntity(w,sides.get(result),direc.get(result));
             ItemStack stack = new ItemStack(item);
@@ -185,7 +185,7 @@ public class randomChessFigures {
             low =   Chess.pos1.get(uuid).getX();
             high =  Chess.pos2.get(uuid).getX();
         }
-        int rx = r.nextInt(high-low) + low;
+        int rx = r.nextInt((high-low)+1) + low;
 
         r = new Random();
         low = 0;
@@ -198,7 +198,7 @@ public class randomChessFigures {
             low =   Chess.pos1.get(uuid).getY();
             high =  Chess.pos2.get(uuid).getY();
         }
-        int ry = r.nextInt(high-low) + low;
+        int ry = r.nextInt((high-low)+1) + low;
 
         r = new Random();
         low = 0;
@@ -211,7 +211,7 @@ public class randomChessFigures {
             low =   Chess.pos1.get(uuid).getZ();
             high =  Chess.pos2.get(uuid).getZ();
         }
-        int rz = r.nextInt(high-low) + low;
+        int rz = r.nextInt((high-low)+1) + low;
 
         return new BlockPos(rx,ry,rz);
 

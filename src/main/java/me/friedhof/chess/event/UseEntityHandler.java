@@ -200,10 +200,11 @@ public class UseEntityHandler implements UseEntityCallback {
                 return ActionResult.PASS;
             }
         }
-
+        if (world.isClient()) {
+            return ActionResult.SUCCESS;
+        }
 
         if (player.getInventory().getMainHandStack().getItem() == ModItems.ROD_OF_ROTATION) {
-
             if(player.isSneaking()){
                 if(entity instanceof ItemFrameEntity){
                     ItemFrameEntity e = (ItemFrameEntity) entity;
@@ -211,8 +212,15 @@ public class UseEntityHandler implements UseEntityCallback {
                     e.setRotation(rotation);
                     world.playSound(null,e.getBlockPos(), SoundEvents.ENTITY_ITEM_FRAME_ROTATE_ITEM,SoundCategory.PLAYERS);
                 }
-
+                return ActionResult.PASS;
             }else {
+                if(entity instanceof ItemFrameEntity){
+                    ItemFrameEntity e = (ItemFrameEntity) entity;
+                    int rotation = (e.getRotation()+1)%8;
+                    e.setRotation(rotation);
+                    world.playSound(null,e.getBlockPos(), SoundEvents.ENTITY_ITEM_FRAME_ROTATE_ITEM,SoundCategory.PLAYERS);
+                }
+
                 return ActionResult.PASS;
             }
         }
@@ -232,9 +240,7 @@ public class UseEntityHandler implements UseEntityCallback {
 
         String playerName = player.getDisplayName().getString();
 
-        if (world.isClient()) {
-            return ActionResult.SUCCESS;
-        }
+
 
         switch (whosturn) {
             case "white" -> {
