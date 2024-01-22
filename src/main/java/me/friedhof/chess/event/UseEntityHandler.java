@@ -17,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AirBlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.sound.SoundCategory;
@@ -73,6 +74,9 @@ public class UseEntityHandler implements UseEntityCallback {
     public static Item[] switchPieces = {ModItems.CASTLE_SWITCH_WHITE_TOWER,ModItems.CASTLE_SWITCH_BLACK_TOWER,ModItems.CASTLE_SWITCH_YELLOW_TOWER,ModItems.CASTLE_SWITCH_PINK_TOWER};
 
 
+
+
+
     @Override
     public ActionResult interact(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult) {
 
@@ -102,58 +106,107 @@ public class UseEntityHandler implements UseEntityCallback {
 
                         if (e5.getHeldItemStack().getItem() == ModItems.WHITE_PAWN) {
                             newItem = ModItems.WHITE_BISHOP;
+                            if(!player.isCreative() && !player.isSpectator()){
+                                player.getInventory().getMainHandStack().setCount(player.getInventory().getMainHandStack().getCount()-1);
+                            }
                         }
                         if (e5.getHeldItemStack().getItem() == ModItems.BLACK_PAWN) {
                             newItem = ModItems.BLACK_BISHOP;
+                            if(!player.isCreative() && !player.isSpectator()){
+                                player.getInventory().getMainHandStack().setCount(player.getInventory().getMainHandStack().getCount()-1);
+                            }
                         }
                         if (e5.getHeldItemStack().getItem() == ModItems.YELLOW_PAWN) {
                             newItem = ModItems.YELLOW_BISHOP;
+                            if(!player.isCreative() && !player.isSpectator()){
+                                player.getInventory().getMainHandStack().setCount(player.getInventory().getMainHandStack().getCount()-1);
+                            }
                         }
                         if (e5.getHeldItemStack().getItem() == ModItems.PINK_PAWN) {
                             newItem = ModItems.PINK_BISHOP;
+                            if(!player.isCreative() && !player.isSpectator()){
+                                player.getInventory().getMainHandStack().setCount(player.getInventory().getMainHandStack().getCount()-1);
+                            }
                         }
 
                     }
                     if (player.getInventory().getMainHandStack().getItem() == ModItems.PAWN_TO_KNIGHT) {
                         if (e5.getHeldItemStack().getItem() == ModItems.WHITE_PAWN) {
                             newItem = ModItems.WHITE_KNIGHT;
+                            if(!player.isCreative() && !player.isSpectator()){
+                                player.getInventory().getMainHandStack().setCount(player.getInventory().getMainHandStack().getCount()-1);
+                            }
                         }
                         if (e5.getHeldItemStack().getItem() == ModItems.BLACK_PAWN) {
                             newItem = ModItems.BLACK_KNIGHT;
+                            if(!player.isCreative() && !player.isSpectator()){
+                                player.getInventory().getMainHandStack().setCount(player.getInventory().getMainHandStack().getCount()-1);
+                            }
                         }
                         if (e5.getHeldItemStack().getItem() == ModItems.YELLOW_PAWN) {
                             newItem = ModItems.YELLOW_KNIGHT;
+                            if(!player.isCreative() && !player.isSpectator()){
+                                player.getInventory().getMainHandStack().setCount(player.getInventory().getMainHandStack().getCount()-1);
+                            }
                         }
                         if (e5.getHeldItemStack().getItem() == ModItems.PINK_PAWN) {
                             newItem = ModItems.PINK_KNIGHT;
+                            if(!player.isCreative() && !player.isSpectator()){
+                                player.getInventory().getMainHandStack().setCount(player.getInventory().getMainHandStack().getCount()-1);
+                            }
                         }
                     }
                     if (player.getInventory().getMainHandStack().getItem() == ModItems.PAWN_TO_TOWER) {
                         if (e5.getHeldItemStack().getItem() == ModItems.WHITE_PAWN) {
                             newItem = ModItems.WHITE_TOWER;
+                            if(!player.isCreative() && !player.isSpectator()){
+                                player.getInventory().getMainHandStack().setCount(player.getInventory().getMainHandStack().getCount()-1);
+                            }
                         }
                         if (e5.getHeldItemStack().getItem() == ModItems.BLACK_PAWN) {
                             newItem = ModItems.BLACK_TOWER;
+                            if(!player.isCreative() && !player.isSpectator()){
+                                player.getInventory().getMainHandStack().setCount(player.getInventory().getMainHandStack().getCount()-1);
+                            }
                         }
                         if (e5.getHeldItemStack().getItem() == ModItems.YELLOW_PAWN) {
                             newItem = ModItems.YELLOW_TOWER;
+                            if(!player.isCreative() && !player.isSpectator()){
+                                player.getInventory().getMainHandStack().setCount(player.getInventory().getMainHandStack().getCount()-1);
+                            }
                         }
                         if (e5.getHeldItemStack().getItem() == ModItems.PINK_PAWN) {
                             newItem = ModItems.PINK_TOWER;
+                            if(!player.isCreative() && !player.isSpectator()){
+                                player.getInventory().getMainHandStack().setCount(player.getInventory().getMainHandStack().getCount()-1);
+                            }
                         }
                     }
                     if (player.getInventory().getMainHandStack().getItem() == ModItems.PAWN_TO_QUEEN) {
                         if (e5.getHeldItemStack().getItem() == ModItems.WHITE_PAWN) {
                             newItem = ModItems.WHITE_QUEEN;
+                            if(!player.isCreative() && !player.isSpectator()){
+                                player.getInventory().getMainHandStack().setCount(player.getInventory().getMainHandStack().getCount()-1);
+                            }
                         }
                         if (e5.getHeldItemStack().getItem() == ModItems.BLACK_PAWN) {
                             newItem = ModItems.BLACK_QUEEN;
+                            if(!player.isCreative() && !player.isSpectator()){
+                                player.getInventory().getMainHandStack().setCount(player.getInventory().getMainHandStack().getCount()-1);
+                            }
                         }
                         if (e5.getHeldItemStack().getItem() == ModItems.YELLOW_PAWN) {
                             newItem = ModItems.YELLOW_QUEEN;
+                            if(!player.isCreative() && !player.isSpectator()){
+                                player.getInventory().getMainHandStack().setCount(player.getInventory().getMainHandStack().getCount()-1);
+                            }
                         }
                         if (e5.getHeldItemStack().getItem() == ModItems.PINK_PAWN) {
                             newItem = ModItems.PINK_QUEEN;
+                            if(!player.isCreative() && !player.isSpectator()){
+                                player.getInventory().getMainHandStack().setCount(player.getInventory().getMainHandStack().getCount()-1);
+                            }
+
                         }
                     }
                     ItemStack stack = new ItemStack(newItem);

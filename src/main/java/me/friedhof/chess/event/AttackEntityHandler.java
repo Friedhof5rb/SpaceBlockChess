@@ -3,6 +3,7 @@ package me.friedhof.chess.event;
 import me.friedhof.chess.Chess;
 import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItems;
+import me.friedhof.chess.util.Calculations.FigurePotentialMovesCalculations;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
@@ -16,6 +17,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
 
 public class AttackEntityHandler implements AttackEntityCallback {
 
@@ -37,6 +40,9 @@ public class AttackEntityHandler implements AttackEntityCallback {
                 if(!player.isCreative()) {
                     e5.setInvisible(false);
                     ItemStack stack = e5.getHeldItemStack();
+                    if(!Arrays.asList(Chess.poolAndPlace).contains(stack.getItem())){
+                        stack = new ItemStack(FigurePotentialMovesCalculations.exchangeItems(stack.getItem(),false));
+                    }
                     world.spawnEntity(new ItemEntity(world, e5.getX(), e5.getY(), e5.getZ(), stack));
                 }
                 e5.kill();
