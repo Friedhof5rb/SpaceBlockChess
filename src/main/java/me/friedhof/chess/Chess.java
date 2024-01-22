@@ -1,5 +1,6 @@
 package me.friedhof.chess;
 
+import me.friedhof.chess.block.ModBlocks;
 import me.friedhof.chess.event.*;
 import me.friedhof.chess.gamerule.ModGamerules;
 import me.friedhof.chess.item.ModItemGroup;
@@ -53,8 +54,6 @@ public class Chess implements ModInitializer {
 
     public static HashMap<Item, String> itemMap = new HashMap<>();
 
-    public static String[] turnOrder = {"white","black"};
-
 
 
 
@@ -95,6 +94,7 @@ public class Chess implements ModInitializer {
         ModMessages.registerC2SPackets();
         ModGamerules.registerGamerules();
         ModItems.registerModItems();
+        ModBlocks.registerModBlocks();
         ModItemGroup.registerItemGroups();
         ModRegistries.registerModStuffs();
         ModParticles.registerParticles();

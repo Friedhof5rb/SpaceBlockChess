@@ -53,6 +53,7 @@
   "item.chess.rod_of_removal": "Rod of Removal",
   "itemgroup.chess.figures": "Figures Tab",
   "itemgroup.chess.chess_tools": "Tools Tab",
+  "itemgroup.chess.dev": "DEV",
 
   "item.chess.white_torch": "White Torch",
   "item.chess.black_torch": "Black Torch",
@@ -63,6 +64,7 @@
   "item.chess.pawn_to_bishop": "Pawn Promotion",
   "item.chess.pawn_to_queen": "Pawn Promotion",
   "item.chess.pawn_to_tower": "Pawn Promotion",
+
 
   "item.chess.chess_core": "Chess Core",
   "item.chess.chesspos1": "Chess Pos1",

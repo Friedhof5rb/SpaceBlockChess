@@ -1,6 +1,7 @@
 package me.friedhof.chess.item;
 
 import me.friedhof.chess.Chess;
+import me.friedhof.chess.block.ModBlocks;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 
@@ -95,7 +96,6 @@ public class ModItemGroup {
 
                     })
                     .build());
-
 
 
     public static void registerItemGroups(){
