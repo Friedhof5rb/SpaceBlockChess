@@ -68,6 +68,9 @@
 
   "item.chess.chess_core": "Chess Core",
   "item.chess.chesspos1": "Chess Pos1",
-  "item.chess.chesspos2": "Chess Pos2"
+  "item.chess.chesspos2": "Chess Pos2",
+
+  "key.category.chess": "Escher's Gambit",
+  "key.chess.change_chess_notation_visibility": "Change Chessnotation Visibility"
 
 }

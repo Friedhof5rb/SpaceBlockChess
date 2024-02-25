@@ -49,7 +49,7 @@ public class AttackEntityHandler implements AttackEntityCallback {
                 return ActionResult.PASS;
             }
         }
-
+/*
 
         if(entity instanceof ZombieEntity && world.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)){
           if(((ZombieEntity) entity).getHealth() < 1) {
@@ -59,7 +59,7 @@ public class AttackEntityHandler implements AttackEntityCallback {
               world.spawnEntity(e);
           }
         }
-
+*/
 
 
         if (world.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {

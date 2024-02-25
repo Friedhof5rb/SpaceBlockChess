@@ -1,6 +1,7 @@
 package me.friedhof.chess.client;
 
 import me.friedhof.chess.Chess;
+import me.friedhof.chess.event.KeyInputHandler;
 import me.friedhof.chess.networking.ModMessages;
 import me.friedhof.chess.particle.ModParticles;
 import me.friedhof.chess.particle.custom.ChessParticle;
@@ -21,5 +22,7 @@ public class ChessClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register(new ChessNotationHudOverlay());
 
         ParticleFactoryRegistry.getInstance().register(ModParticles.CHESS_PARTICLE, ChessParticle.Factory::new);
+
+        KeyInputHandler.register();
     }
 }

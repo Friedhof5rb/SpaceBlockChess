@@ -906,16 +906,10 @@ public class ClickFigureCalculations {
 
     public static void checkForCheck(World w, GlobalChessData currentPosition){
 
-
-        //Chess.setStart_time();
-
         checkCheckForColour("white",w,currentPosition);
         checkCheckForColour("black",w,currentPosition);
         checkCheckForColour("yellow",w,currentPosition);
         checkCheckForColour("pink",w,currentPosition);
-
-        //Chess.setEnd_time();
-        //Chess.printDuration();
 
     }
 

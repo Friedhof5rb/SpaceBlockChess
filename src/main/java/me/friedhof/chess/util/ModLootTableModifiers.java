@@ -13,6 +13,9 @@ import net.minecraft.util.Identifier;
 public class ModLootTableModifiers {
     private static final Identifier SIMPLE_DUNGEON_ID = new Identifier("minecraft","chests/simple_dungeon");
 
+    private static final Identifier ZOMBIE_ID = new Identifier("minecraft","entities/zombie");
+
+
     public static void modifyLootTables(){
 
         LootTableEvents.MODIFY.register(((resourceManager, lootManager, id, tableBuilder, source) -> {
@@ -47,7 +50,15 @@ public class ModLootTableModifiers {
                tableBuilder.pool(poolBuilder3.build());
                tableBuilder.pool(poolBuilder4.build());
            }
+            if(ZOMBIE_ID.equals(id)) {
+                LootPool.Builder poolBuilder = LootPool.builder()
+                        .rolls(ConstantLootNumberProvider.create (1))
+                        .conditionally (RandomChanceLootCondition.builder( 1f))
+                        .with(ItemEntry.builder (ModItems.CHESS_CORE))
+                        .apply(SetCountLootFunction.builder (UniformLootNumberProvider.create(1.0f, 1.0f)).build ());
+                tableBuilder.pool (poolBuilder.build());
 
+            }
 
         }));
 

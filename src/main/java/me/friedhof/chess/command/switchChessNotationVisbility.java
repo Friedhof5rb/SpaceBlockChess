@@ -20,8 +20,6 @@ public class switchChessNotationVisbility {
 
     private static int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 
-        String uuid = context.getSource().getPlayer().getUuidAsString();
-        World w = context.getSource().getWorld();
 
         IEntityDataSaver saver = (IEntityDataSaver) context.getSource().getPlayer();
 

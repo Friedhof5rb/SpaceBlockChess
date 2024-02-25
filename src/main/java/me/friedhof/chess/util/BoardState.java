@@ -240,17 +240,16 @@ public class BoardState {
             }
 
 
-
         return list;
 
     }
 
 
 
-    private boolean containsKing(String team, BoardState b){
+    public boolean containsKing(String team){
         boolean containsKing = false;
 
-        for(FigureOnBoard f : b.allFiguresList){
+        for(FigureOnBoard f : this.allFiguresList){
             StringBuilder sb = new StringBuilder();
             StringBuilder sb2 = new StringBuilder();
 
