@@ -58,8 +58,6 @@ public class Chess implements ModInitializer {
 
 
 
-
-
     public static long start_time = 0;
     public static long end_time = 0;
     public static void setStart_time(){

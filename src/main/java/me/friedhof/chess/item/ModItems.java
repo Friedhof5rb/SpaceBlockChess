@@ -84,7 +84,7 @@ public class ModItems {
 
 
 
-    //public static final Item CASTLE_SWITCH_WHITE_KING = registerItem("castle_switch_white_king",new Item(new FabricItemSettings().maxCount(64)));
+
     public static final Item CASTLE_SWITCH_WHITE_TOWER = registerItem("castle_switch_white_tower",new Item(new FabricItemSettings().maxCount(64)));
 
 
@@ -136,7 +136,7 @@ public class ModItems {
 
 
 
-    //public static final Item CASTLE_SWITCH_BLACK_KING = registerItem("castle_switch_black_king",new Item(new FabricItemSettings().maxCount(64)));
+
     public static final Item CASTLE_SWITCH_BLACK_TOWER = registerItem("castle_switch_black_tower",new Item(new FabricItemSettings().maxCount(64)));
 
 
@@ -183,7 +183,7 @@ public class ModItems {
 
 
 
-    //public static final Item CASTLE_SWITCH_BLACK_KING = registerItem("castle_switch_black_king",new Item(new FabricItemSettings().maxCount(64)));
+
     public static final Item CASTLE_SWITCH_YELLOW_TOWER = registerItem("castle_switch_yellow_tower",new Item(new FabricItemSettings().maxCount(64)));
 
 
@@ -231,7 +231,6 @@ public class ModItems {
 
 
 
-    //public static final Item CASTLE_SWITCH_BLACK_KING = registerItem("castle_switch_black_king",new Item(new FabricItemSettings().maxCount(64)));
     public static final Item CASTLE_SWITCH_PINK_TOWER = registerItem("castle_switch_pink_tower",new Item(new FabricItemSettings().maxCount(64)));
 
 

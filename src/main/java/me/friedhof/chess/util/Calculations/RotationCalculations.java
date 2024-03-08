@@ -47,7 +47,7 @@ public class RotationCalculations {
             case NORTH-> {
                 BlockPos onSurface = new BlockPos(pos.getX()-player.getX(),pos.getY()-player.getY(),0);
                 if(onSurface.getY() >= onSurface.getX() && onSurface.getY() >= -onSurface.getX() ){
-                    r = 4;
+                    r = 0;
                 }
                 if(onSurface.getY() <= onSurface.getX() && onSurface.getY() >= -onSurface.getX() ){
                     r = 6;
@@ -56,7 +56,7 @@ public class RotationCalculations {
                     r = 2;
                 }
                 if(onSurface.getY() <= onSurface.getX() && onSurface.getY() <= -onSurface.getX() ){
-                    r = 0;
+                    r = 4;
                 }
 
 
@@ -65,16 +65,16 @@ public class RotationCalculations {
 
                 BlockPos onSurface = new BlockPos(pos.getX()-player.getX(),pos.getY()-player.getY(),0);
                 if(onSurface.getY() >= onSurface.getX() && onSurface.getY() >= -onSurface.getX() ){
-                    r = 4;
+                    r = 0;
                 }
                 if(onSurface.getY() <= onSurface.getX() && onSurface.getY() >= -onSurface.getX() ){
-                    r = 6;
-                }
-                if(onSurface.getY() >= onSurface.getX() && onSurface.getY() <= -onSurface.getX() ){
                     r = 2;
                 }
+                if(onSurface.getY() >= onSurface.getX() && onSurface.getY() <= -onSurface.getX() ){
+                    r = 6;
+                }
                 if(onSurface.getY() <= onSurface.getX() && onSurface.getY() <= -onSurface.getX() ){
-                    r = 0;
+                    r = 4;
                 }
 
 
@@ -119,10 +119,6 @@ public class RotationCalculations {
         return r;
 
     }
-
-
-
-
 
 
 
