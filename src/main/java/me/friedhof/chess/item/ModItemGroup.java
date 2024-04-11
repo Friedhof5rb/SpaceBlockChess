@@ -77,6 +77,8 @@ public class ModItemGroup {
                         entries.add(ModItems.YELLOW_ROD_OF_MOVING);
                         entries.add(ModItems.PINK_ROD_OF_MOVING);
 
+                        entries.add(ModItems.UNIVERSAL_ROD_OF_CHESS);
+
                         entries.add(ModItems.ROD_OF_REMOVAL);
                         entries.add(ModItems.ROD_OF_ROTATION);
                         entries.add(ModItems.CHESS_POS1);

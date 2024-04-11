@@ -30,6 +30,8 @@ public class ChessModelGenerator extends FabricModelProvider {
         itemModelGenerator.register(ModItems.YELLOW_ROD_OF_MOVING, Models.GENERATED);
         itemModelGenerator.register(ModItems.PINK_ROD_OF_MOVING, Models.GENERATED);
 
+        itemModelGenerator.register(ModItems.UNIVERSAL_ROD_OF_CHESS,Models.GENERATED);
+
         itemModelGenerator.register(ModItems.WHITE_TORCH, Models.GENERATED);
         itemModelGenerator.register(ModItems.BLACK_TORCH, Models.GENERATED);
         itemModelGenerator.register(ModItems.YELLOW_TORCH, Models.GENERATED);

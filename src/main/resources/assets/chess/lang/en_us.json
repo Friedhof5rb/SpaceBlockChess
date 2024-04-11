@@ -70,6 +70,9 @@
   "item.chess.chesspos1": "Chess Pos1",
   "item.chess.chesspos2": "Chess Pos2",
 
+  "item.chess.universal_rod_of_chess": "Universal Rod of Chess",
+
+
   "key.category.chess": "Escher's Gambit",
   "key.chess.change_chess_notation_visibility": "Change Chessnotation Visibility"
 

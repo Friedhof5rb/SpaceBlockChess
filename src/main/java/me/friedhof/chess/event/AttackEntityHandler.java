@@ -34,6 +34,24 @@ public class AttackEntityHandler implements AttackEntityCallback {
             return ActionResult.PASS;
         }
 
+
+        if(player.getInventory().getMainHandStack().getItem() == ModItems.UNIVERSAL_ROD_OF_CHESS){
+                ItemFrameEntity e5 = (ItemFrameEntity) entity;
+                ItemStack stack = e5.getHeldItemStack();
+                world.spawnEntity(new ItemEntity(world, e5.getX(), e5.getY(), e5.getZ(), stack));
+            entity.kill();
+            return ActionResult.PASS;
+        }
+
+        if(player.getInventory().getMainHandStack().getItem() == ModItems.ROD_OF_REMOVAL){
+            ItemFrameEntity e5 = (ItemFrameEntity) entity;
+            ItemStack stack = e5.getHeldItemStack();
+            world.spawnEntity(new ItemEntity(world, e5.getX(), e5.getY(), e5.getZ(), stack));
+            entity.kill();
+            return ActionResult.PASS;
+        }
+
+
         if (entity instanceof ItemFrameEntity  && world.getGameRules().getBoolean(ModGamerules.isChessSurvivalOptimized)) {
             ItemFrameEntity e5 = (ItemFrameEntity) entity;
             if(Chess.arrayContains(Chess.combineLists(),e5.getHeldItemStack().getItem()) ){
@@ -73,6 +91,10 @@ public class AttackEntityHandler implements AttackEntityCallback {
                 return ActionResult.FAIL;
             }
         }
+
+
+
+
         return ActionResult.PASS;
 
     }

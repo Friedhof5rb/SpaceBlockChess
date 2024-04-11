@@ -234,7 +234,8 @@ public class UseEntityHandler implements UseEntityCallback {
 
 
 
-        if (player.getInventory().getMainHandStack().getItem() != ModItems.WHITE_ROD_OF_MOVING && player.getInventory().getMainHandStack().getItem() != ModItems.BLACK_ROD_OF_MOVING && player.getInventory().getMainHandStack().getItem() != ModItems.ROD_OF_ROTATION && player.getInventory().getMainHandStack().getItem() != ModItems.YELLOW_ROD_OF_MOVING && player.getInventory().getMainHandStack().getItem() != ModItems.PINK_ROD_OF_MOVING) {
+        if (player.getInventory().getMainHandStack().getItem() != ModItems.WHITE_ROD_OF_MOVING && player.getInventory().getMainHandStack().getItem() != ModItems.BLACK_ROD_OF_MOVING && player.getInventory().getMainHandStack().getItem() != ModItems.ROD_OF_ROTATION && player.getInventory().getMainHandStack().getItem() != ModItems.YELLOW_ROD_OF_MOVING && player.getInventory().getMainHandStack().getItem() != ModItems.PINK_ROD_OF_MOVING &&
+                player.getInventory().getMainHandStack().getItem() != ModItems.UNIVERSAL_ROD_OF_CHESS ) {
             if (entity instanceof ItemFrameEntity frame) {
                 if (Chess.arrayContains(whitePieces, frame.getHeldItemStack().getItem()) || Chess.arrayContains(whiteCapturePieces, frame.getHeldItemStack().getItem())
                         || Chess.arrayContains(blackPieces, frame.getHeldItemStack().getItem()) || Chess.arrayContains(blackCapturePieces, frame.getHeldItemStack().getItem())
@@ -290,6 +291,29 @@ public class UseEntityHandler implements UseEntityCallback {
         if (player.getInventory().getMainHandStack().getItem() == ModItems.PINK_ROD_OF_MOVING) {
             whosturn = "pink";
         }
+
+        if(player.getInventory().getMainHandStack().getItem() == ModItems.UNIVERSAL_ROD_OF_CHESS){
+
+            if(player.isSneaking()) {
+
+                if(entity instanceof ItemFrameEntity){
+                    ItemFrameEntity e = (ItemFrameEntity) entity;
+                    int rotation = (e.getRotation()+1)%8;
+                    e.setRotation(rotation);
+                    world.playSound(null,e.getBlockPos(), SoundEvents.ENTITY_ITEM_FRAME_ROTATE_ITEM,SoundCategory.PLAYERS);
+                }
+
+                return ActionResult.PASS;
+
+            }else{
+                whosturn = "any";
+
+            }
+        }
+
+
+
+
 
         String playerName = player.getDisplayName().getString();
 
@@ -451,6 +475,75 @@ public class UseEntityHandler implements UseEntityCallback {
                     }
 
                 }
+            }case "any" ->{
+
+                if (entity instanceof ItemFrameEntity frame) {
+                    if (Chess.arrayContains(whitePieces, frame.getHeldItemStack().getItem())) {
+                        ClickFigureCalculations.selectFigure(world, frame, "white");
+                        return ActionResult.SUCCESS;
+                    }else if(Chess.arrayContains(blackPieces, frame.getHeldItemStack().getItem())) {
+                        ClickFigureCalculations.selectFigure(world, frame, "black");
+                        return ActionResult.SUCCESS;
+
+                    }else if(Chess.arrayContains(yellowPieces, frame.getHeldItemStack().getItem())) {
+                        ClickFigureCalculations.selectFigure(world, frame, "yellow");
+                        return ActionResult.SUCCESS;
+
+                    }else if(Chess.arrayContains(pinkPieces, frame.getHeldItemStack().getItem())) {
+                        ClickFigureCalculations.selectFigure(world, frame, "pink");
+                        return ActionResult.SUCCESS;
+
+                    }else if (Chess.arrayContains(whiteCapturePieces, frame.getHeldItemStack().getItem())||
+                            Chess.arrayContains(blackCapturePieces, frame.getHeldItemStack().getItem()) ||
+                            Chess.arrayContains(yellowCapturePieces, frame.getHeldItemStack().getItem()) ||
+                            Chess.arrayContains(pinkCapturePieces, frame.getHeldItemStack().getItem())) {
+
+
+
+                        GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
+
+
+
+                        sendAnyMovement(world, playerName, currentPosition,Formatting.WHITE);
+                        ClickFigureCalculations.takeWithFigure(world, frame);
+
+                        world.playSound(null,currentPosition.pos, ModSounds.take, SoundCategory.BLOCKS,2f,1f);
+
+
+                        return ActionResult.SUCCESS;
+                    } else if (Chess.arrayContains(whiteSelectedPieces, frame.getHeldItemStack().getItem())) {
+                        ClickFigureCalculations.deselectFigure(world, frame);
+                        return ActionResult.SUCCESS;
+                    }else if (Chess.arrayContains(blackSelectedPieces, frame.getHeldItemStack().getItem())) {
+                            ClickFigureCalculations.deselectFigure(world, frame);
+                            return ActionResult.SUCCESS;
+                    }else if (Chess.arrayContains(yellowSelectedPieces, frame.getHeldItemStack().getItem())) {
+                        ClickFigureCalculations.deselectFigure(world, frame);
+                        return ActionResult.SUCCESS;
+                    }else if (Chess.arrayContains(pinkSelectedPieces, frame.getHeldItemStack().getItem())) {
+                        ClickFigureCalculations.deselectFigure(world, frame);
+                        return ActionResult.SUCCESS;
+                    } else if (frame.getHeldItemStack().getItem() == ModItems.MOVE_HIGHLIGHTER) {
+
+
+                        GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
+                        sendAnyMovement(world, playerName, currentPosition,Formatting.WHITE);
+                        ClickFigureCalculations.moveFigure(world, frame);
+                        world.playSound(null,currentPosition.pos, ModSounds.move, SoundCategory.BLOCKS,2f,1f);
+                        return ActionResult.SUCCESS;
+                    } else if (Chess.arrayContains(switchPieces, frame.getHeldItemStack().getItem())) {
+
+
+                        GlobalChessData currentPosition = MovementCalculations.figureToData(frame);
+                        sendAnyMovement(world, playerName, currentPosition,Formatting.WHITE);
+                        ClickFigureCalculations.switchFigure(world, frame);
+                        return ActionResult.SUCCESS;
+                    }
+
+                }
+
+
+
             } default -> {
             }
         }
@@ -508,7 +601,35 @@ public class UseEntityHandler implements UseEntityCallback {
 
 
 
+    private static void sendAnyMovement(World world,  String playerName, GlobalChessData currentPosition, Formatting textColour){
 
+
+        int r = 20;
+        GlobalChessData originPosition = currentPosition;
+        String piece = "Piece";
+
+
+        String message = playerName + " moved a " +piece + " from: [" + originPosition.pos.getX() + ", " +  originPosition.pos.getY() + ", " + originPosition.pos.getZ() + ", " +originPosition.directionWall.name() + "]\n" +
+                " to: [" + currentPosition.pos.getX() + ", " +  currentPosition.pos.getY() + ", " + currentPosition.pos.getZ() + ", " +currentPosition.directionWall.name() + "]";
+
+
+        int radius = 50;
+        List<PlayerEntity> list2 = world.getEntitiesByType(EntityType.PLAYER,new Box(currentPosition.pos.getX()-radius,currentPosition.pos.getY()-radius,currentPosition.pos.getZ()-radius,currentPosition.pos.getX()+radius,currentPosition.pos.getY()+radius,currentPosition.pos.getZ()+radius),EntityPredicates.VALID_ENTITY);
+
+        for(PlayerEntity p : list2) {
+            String uuid = p.getUuidAsString();
+
+            Chess.lastMoveFrom.put(uuid, originPosition);
+            Chess.lastMoveTo.put(uuid, currentPosition);
+
+        }
+
+
+        ClickFigureCalculations.sendMessageToClosePlayers(world,message,50,currentPosition.pos,false,true, textColour);
+
+
+
+    }
 
 
 
